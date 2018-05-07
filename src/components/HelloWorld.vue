@@ -1,6 +1,5 @@
 <template>
   <div class="hello">
-    <nav-footer></nav-footer>
     <h1>{{ msg }}</h1>
     <h2>Essential Links</h2>
     <ul>
@@ -81,22 +80,16 @@
         </a>
       </li>
     </ul>
-
   </div>
-
 </template>
 
 <script>
-  import NavFooter from './footer'
 export default {
   name: 'HelloWorld',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
-  },
-  components: {
-    NavFooter
   }
 }
 </script>
