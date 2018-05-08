@@ -1,4 +1,10 @@
 {
+  "checkLogin": {
+    "username": "yudongdong",
+    "userId": 123123,
+    "result":{"state":0}
+
+  },
   "getNewsList": [
     {
       "id": 1,
