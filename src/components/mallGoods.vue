@@ -58,7 +58,17 @@
           }*/
           // 登录了 直接存在用户名下
             /*addCart({userId: getStore('userId'), productId: id, productNum: 1}).then(res => {*/
-          addCart({userId: '1', productId: id, productNum: 1}).then(res => {
+          let cartAddParams = {
+            cartDto :{
+              userId: '1',
+              productId: id,
+              productNum: 1,
+              goodsId:''
+            }
+          }
+
+
+          addCart(cartAddParams).then(res => {
               // 并不重新请求数据
               this.ADD_CART({productId: id, salePrice: price, productName: name, productImg: img})
             })

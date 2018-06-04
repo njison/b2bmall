@@ -11,7 +11,8 @@ export const getCartList = (params) => {
 }
 // 加入购物车
 export const addCart = (params) => {
-  return http.fetchPost('/member/addCart', params)
+  /*return http.fetchPost('/member/addCart', params)*/
+  return http.fetchPost('http://192.168.1.193:8080/cart/addCart', params)
 }
 // 删除购物车
 export const delCart = (params) => {
