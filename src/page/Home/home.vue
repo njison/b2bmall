@@ -7,9 +7,9 @@
         @mouseover="bgOver($refs.bg)" @mousemove="bgMove($refs.bg,$event)" @mouseout="bgOut($refs.bg)">
         <transition name="fade">
           <div v-for="(item, i) in banner" v-if="i===mark" :key="i" style="position:absolute" @click="linkTo(item)" @mouseover="stopTimer" @mouseout="startTimer">
-            <img v-if="item.picUrl" class="img1" :src="item.picUrl"/>
-            <img v-if="item.picUrl2"  class="img2 a" :src="item.picUrl2"/>
-            <img v-if="item.picUrl3"  class="img3 b" :src="item.picUrl3"/>
+            <img v-if="item.url" class="img1" :src="item.url"/>
+           <!-- <img v-if="item.picUrl2"  class="img2 a" :src="item.picUrl2"/>
+            <img v-if="item.picUrl3"  class="img3 b" :src="item.picUrl3"/>-->
           </div>
         </transition>
       </div>
@@ -21,36 +21,14 @@
     </div>
 
     <div v-for="(item,i) in home" :key="i">
-
-      <div class="activity-panel" v-if="item.type === 1">
-        <ul class="box">
-          <li class="content" v-for="(iitem,j) in item.panelContents" :key="j" @click="linkTo(iitem)">
-            <img class="i" :src="iitem.picUrl">
-            <a class="cover-link"></a>
-          </li>
-        </ul>
-      </div>
-
-      <section class="w mt30 clearfix" v-if="item.type === 2">
-        <y-shelf :title="item.name">
-          <div slot="content" class="hot">
-            <mall-goods :msg="iitem" v-for="(iitem,j) in item.panelContents" :key="j"></mall-goods>
-          </div>
-        </y-shelf>
-      </section>
-
-      <section class="w mt30 clearfix" v-if="item.type === 3">
-        <y-shelf :title="item.name">
+      <section class="w mt30 clearfix" v-if="item.panelType == 3">
+        <y-shelf :title="item.panelName">
           <div slot="content" class="floors" >
-            <div class="imgbanner" v-for="(iitem,j) in item.panelContents" :key="j" v-if="iitem.type === 2 || iitem.type === 3" @click="linkTo(iitem)">
-              <img v-lazy="iitem.picUrl">
-              <a class="cover-link"></a>
-            </div>
-            <mall-goods :msg="iitem" v-for="(iitem,j) in item.panelContents" :key="j" v-if="iitem.type != 2"></mall-goods>
+           <mall-goods :msg="iitem" v-for="(iitem,j) in item.panelDtosSkuList" :key="j" ></mall-goods>
+           <!-- <mall-goods :msg="iitem" v-for="(iitem,j) in item.panelContents" :key="j" ></mall-goods>-->
           </div>
         </y-shelf>
       </section>
-
       </div>
     </div>
 
@@ -60,7 +38,7 @@
         <br> 抱歉！出错了...
       </div>
     </div>
-
+<!--
     <el-dialog
       title="通知"
       :visible.sync="dialogVisible"
@@ -70,11 +48,11 @@
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false">知道了</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
   </div>
 </template>
 <script>
-  import { productHome } from '/api/index.js'
+  import { productHome,goodsDetails,getBanner,getPanel } from '/api/index.js'
   import YShelf from '/components/shelf'
   import product from '/components/product'
   import mallGoods from '/components/mallGoods'
@@ -120,17 +98,17 @@
         clearInterval(this.timer)
       },
       linkTo (item) {
-        if (item.type === 0 || item.type === 2) {
+        if (item.materialType =="1") {
           // 关联商品
           this.$router.push({
             path: '/goodsDetails',
             query: {
-              productId: item.productId
+              productId: item.skuId
             }
           })
         } else {
           // 完整链接
-          window.location.href = item.fullUrl
+         // window.location.href = item.fullUrl
         }
       },
       bgOver (e) {
@@ -170,7 +148,7 @@
       }
     },
     mounted () {
-      productHome().then(res => {
+/*     productHome().then(res => {
         if (res.success === false) {
           this.error = true
           return
@@ -183,6 +161,36 @@
             this.banner = data[i].panelContents
           }
         }
+      })*/
+      let params = {
+        materialDto :{
+          materialType: "1"
+        }
+      }
+      let panelParams = {
+        panelDto :{
+          orgCode: getStore('orgCode')
+        }
+      }
+
+      getBanner(params).then(res => {
+       if (res.code !== "success") {
+          this.error = true
+          return
+        }
+        let data = res
+        this.loading = false
+         this.banner = data.materialDtoList
+      })
+      getPanel(panelParams).then(res => {
+        if (res.success === false) {
+          this.error = true
+          return
+        }
+        let panelData = res.panelDtoList
+        //let panelData = res.result.data
+        this.home = panelData
+
       })
       this.showNotify()
     },
@@ -220,27 +228,27 @@
     opacity: 0;
   }
 
-  .page { 
-    position: absolute; 
+  .page {
+    position: absolute;
     width: 100%;
     top: 470px;
-    z-index: 30; 
+    z-index: 30;
     .dots {
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      .dot-active { 
-        display: inline-block; 
-        width: 15px; 
-        height: 15px; 
-        background-color: whitesmoke; 
-        border-radius: 8px; 
-        margin-right: 10px; 
-        cursor: pointer; 
+      .dot-active {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        background-color: whitesmoke;
+        border-radius: 8px;
+        margin-right: 10px;
+        cursor: pointer;
       }
-      .dot { 
-        opacity: 0.2; 
+      .dot {
+        opacity: 0.2;
       }
     }
   }
@@ -477,7 +485,7 @@
     align-items: center;
     .imgbanner {
       width: 50%;
-      height: 430px; 
+      height: 430px;
       .cover-link {
         cursor: pointer;
         display: block;
@@ -485,7 +493,7 @@
         top: 60px;
         left: 0;
         width: 50%;
-        height: 430px; 
+        height: 430px;
         z-index: 4;
         background: url(data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEHAAEALAAAAAABAAEAAAICTAEAOw==) repeat;
       }

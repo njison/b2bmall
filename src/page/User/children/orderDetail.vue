@@ -2,65 +2,57 @@
   <div>
     <y-shelf v-bind:title="orderTitle">
       <div slot="content">
-        <div v-loading="loading" element-loading-text="加载中..." style="min-height: 10vw;" v-if="orderList.length">
-          <div class="orderStatus" v-if="orderStatus !== -1 && orderStatus !== 6">
-            <el-steps :space="200" :active="orderStatus">
+        <div v-loading="loading" element-loading-text="加载中..." style="min-height: 10vw;position: static;" v-if="orderList.length">
+          <div class="orderStatus"  v-if="orderStatus !== -1 && orderStatus !== 6">
+           <el-steps :active="orderStatus" style="width:80%">
               <el-step title="下单" v-bind:description="createTime"></el-step>
-              <el-step title="付款" v-bind:description="payTime"></el-step>
-              <el-step title="配货" description=""></el-step>
-              <el-step title="出库" description=""></el-step>
+              <el-step title="供货商确认" v-bind:description="payTime"></el-step>
+              <el-step title="供货商发货" description=""></el-step>
+              <el-step title="收货" description=""></el-step>
               <el-step title="交易成功" v-bind:description="finishTime"></el-step>
             </el-steps>
           </div>
           <div class="orderStatus-close" v-if="orderStatus === -1">
-            <el-steps :space="780" :active="2">
+            <el-steps :space="780" :active="2" style="width:80%">
               <el-step title="下单" v-bind:description="createTime"></el-step>
               <el-step title="交易关闭" v-bind:description="closeTime"></el-step>
             </el-steps>
           </div>
           <div class="orderStatus-close" v-if="orderStatus === 6">
-            <el-steps :space="780" :active="2">
+            <el-steps :space="780" :active="2" style="width:80%">
               <el-step title="下单" v-bind:description="createTime"></el-step>
               <el-step title="交易关闭" v-bind:description="closeTime"></el-step>
             </el-steps>
           </div>
           <div class="status-now" v-if="orderStatus === 1">
             <ul>
-              <li class="status-title"><h3>订单状态：待付款</h3></li>
+              <li class="status-title"><h3>订单状态：供货商待确认</h3></li>
               <li class="button">
-                <el-button @click="orderPayment(orderId)" type="primary" size="small">现在付款</el-button>
-                <el-button @click="_cancelOrder()" size="small">取消订单</el-button>
+               <!-- <el-button @click="orderPayment(orderId)" type="primary" size="small">现在付款</el-button>
+               --> <el-button @click="_cancelOrder()" size="small">取消订单</el-button>
               </li>
             </ul>
-            <p class="realtime">
-              <span>您的付款时间还有 </span>
-              <span class="red"><countDown v-bind:endTime="countTime" endText="已结束"></countDown></span>
-              <span>，超时后订单将自动取消。</span>
-            </p>
           </div>
           <div class="status-now" v-if="orderStatus === 2">
             <ul>
-              <li class="status-title"><h3>订单状态：已支付，待系统审核确认</h3></li>
+              <li class="status-title"><h3>订单状态：供货商待发货</h3></li>
             </ul>
-            <p class="realtime">
-              <span>请耐心等待审核，审核结果将发送到您的邮箱，并且您所填写的捐赠数据将显示在捐赠表中。</span>
-            </p>
           </div>
           <div class="status-now" v-if="orderStatus === -1 || orderStatus === 6">
             <ul>
               <li class="status-title"><h3>订单状态：已关闭</h3></li>
             </ul>
-            <p class="realtime">
+           <!-- <p class="realtime">
               <span>您的订单已关闭。</span>
-            </p>
+            </p>-->
           </div>
           <div class="status-now" v-if="orderStatus === 5">
             <ul>
               <li class="status-title"><h3>订单状态：已完成</h3></li>
             </ul>
-            <p class="realtime">
+           <!-- <p class="realtime">
               <span>您的订单已交易成功，感谢您的惠顾！</span>
-            </p>
+            </p>-->
           </div>
           <div class="gray-sub-title cart-title">
             <div class="first">
@@ -110,6 +102,19 @@
             <p class="address">联系电话：{{ tel }}</p>
             <p class="address">详细地址：{{ streetName }}</p>
           </div>
+
+          <div class="gray-sub-title cart-title">
+            <div class="first">
+              <div>
+                <span class="order-id">供货商信息</span>
+              </div>
+            </div>
+          </div>
+          <div style="height: 155px;padding: 20px 30px;">
+            <p class="address">供货商名称：{{ userName }}</p>
+          </div>
+
+
         </div>
         <div v-loading="loading" element-loading-text="加载中..." v-else>
           <div style="padding: 100px 0;text-align: center">
@@ -165,29 +170,29 @@
           }
         }
         getOrderDet(params).then(res => {
-          if (res.result.orderStatus === '0') {
-            this.orderStatus = 1
-          } else if (res.result.orderStatus === '1') {
-            this.orderStatus = 2
-          } else if (res.result.orderStatus === '4') {
-            this.orderStatus = 5
-          } else if (res.result.orderStatus === '5') {
-            this.orderStatus = -1
-          } else if (res.result.orderStatus === '6') {
-            this.orderStatus = 6
+          if (res.result.data.orderStatus === '0') {
+            this.orderStatus = 1 //下单状态
+          } else if (res.result.data.orderStatus === '1') {
+            this.orderStatus = 2 //供货商确认状态
+          } else if (res.result.data.orderStatus === '4') {
+            this.orderStatus = 5 //供货商发货
+          } else if (res.result.data.orderStatus === '5') {
+            this.orderStatus = -1 //收货
+          } else if (res.result.data.orderStatus === '6') {
+            this.orderStatus = 6  //交易完成
           }
-          this.orderList = res.result.goodsList
-          this.orderTotal = res.result.orderTotal
-          this.userName = res.result.addressInfo.userName
-          this.tel = res.result.addressInfo.tel
-          this.streetName = res.result.addressInfo.streetName
-          this.createTime = res.result.createDate
-          this.closeTime = res.result.closeDate
-          this.payTime = res.result.payDate
+          this.orderList = res.result.data.goodsList
+          this.orderTotal = res.result.data.orderTotal
+          this.userName = res.result.data.addressInfo.userName
+          this.tel = res.result.data.addressInfo.tel
+          this.streetName = res.result.data.addressInfo.streetName
+          this.createTime = res.result.data.createDate
+          this.closeTime = res.result.data.closeDate
+          this.payTime = res.result.data.payDate
           if (this.orderStatus === 5) {
-            this.finishTime = res.result.finishDate
+            this.finishTime = res.result.data.finishDate
           } else {
-            this.countTime = res.result.finishDate
+            this.countTime = res.result.data.finishDate
           }
           this.loading = false
         })
@@ -272,7 +277,7 @@
     border: 1px solid #EBEBEB;
     margin-left: -80px;
   }
-  
+
   img {
     display: block;
     @include wh(80px);

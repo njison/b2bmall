@@ -1,4 +1,8 @@
 <template>
+  <div>
+    <y-header>
+      <div slot="nav"></div>
+    </y-header>
   <div class="goods">
     <div class="nav-subs">
       <div class="nav-sub-bgs"></div>
@@ -23,6 +27,41 @@
       </div>
     </div>
 
+    <div >
+      <div class="nav-subs-brand">
+        <div class="nav-sub-bgs"></div>
+        <div class="nav-sub-wrappers">
+          <div class="w">
+            <ul class="nav-lists">
+              <li> 品牌：</li>
+              <div  >
+                <li v-for="(item,i) in brandList" :key="i" style="margin-left: 20px"  @click="selectByBrand(item.brandId)">
+                  <a v-bind:class="{ selectedBrand: item.brandId == selectedBrandId }"> {{ item.brandName }}</a>
+                </li>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div style="border-bottom:#999999 1px dashed; width: 90%;margin: auto"></div>
+      <div class="nav-subs-brand">
+        <div class="nav-sub-bgs"></div>
+        <div class="nav-sub-wrappers">
+          <div class="w">
+            <ul class="nav-lists">
+              <li> 供货商：</li>
+              <div >
+                <li v-for="(item,i) in vendorList" :key="i"  style="margin-left: 20px"  @click="selectByVendor(item.vendorId)">
+                  <a  v-bind:class="{ selected: item.vendorId == selectedVendorId }">{{ item.vendorName }} </a>
+                </li>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div style="border-bottom:#999999 1px dashed; width: 90%;margin: auto"></div>
+    </div>
+
     <div class="nav">
       <div class="w">
         <a href="javascript:;" :class="{active:sortType===1}" @click="reset()">综合排序</a>
@@ -36,7 +75,7 @@
         </div>
       </div>
     </div>
-    
+
     <div v-loading="loading" element-loading-text="加载中..." style="min-height: 35vw;">
       <div  class="img-item" v-if="!noResult" >
         <!--商品-->
@@ -54,21 +93,15 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
+
       </div>
       <div class="no-info" v-if="noResult" >
         <div class="no-data">
           <img src="/static/images/no-search.png">
           <br> 抱歉！没有为您找到相关的商品
         </div>
-        <section class="section">
-          <y-shelf :title="recommendPanel.name">
-            <div slot="content" class="recommend">
-              <mall-goods :msg="item" v-for="(item,i) in recommendPanel.panelContents" :key="i"></mall-goods>
-            </div>
-          </y-shelf>
-        </section>
       </div>
-      <div class="no-info" v-if="error">
+     <!-- <div class="no-info" v-if="error">
         <div class="no-data">
           <img src="/static/images/error.png">
           <br> 抱歉！出错了...
@@ -80,13 +113,14 @@
             </div>
           </y-shelf>
         </section>
-      </div>
+      </div>-->
     </div>
+  </div>
+ <y-footer></y-footer>
   </div>
 </template>
 <script>
-  import { getSearch } from '/api/goods.js'
-  import { recommend } from '/api/index.js'
+  import { getSearch,getVendor,getBrand } from '/api/goods.js'
   import mallGoods from '/components/mallGoods'
   import YButton from '/components/YButton'
   import YShelf from '/components/shelf'
@@ -96,6 +130,7 @@
     data () {
       return {
         goods: [],
+        isclick: false,
         noResult: false,
         error: false,
         min: '',
@@ -107,14 +142,23 @@
         windowHeight: null,
         windowWidth: null,
         sort: '',
-        recommendPanel: [],
         currentPage: 1,
         pageSize: 20,
         total: 0,
-        key: ''
+        key: '',
+        brandList:[],
+        vendorList:[],
+        brandId: '',
+        vendorId: '',
+        skuType:'',
+        orgId:'',
+        selectedVendorId:'0',
+        selectedBrandId:'0'
       }
     },
     methods: {
+
+
       handleSizeChange (val) {
         this.pageSize = val
         this._getSearch()
@@ -128,18 +172,22 @@
       _getSearch () {
         let params = {
           params: {
-            key: this.key,
+             key: this.key,
             size: this.pageSize,
             page: this.currentPage,
             sort: this.sort,
             priceGt: this.min,
-            priceLte: this.max
+            priceLte: this.max,
+            brandId:this.brandId,
+            vendorId:this.vendorId,
+            skuType:this.skuType,
+            orgId:this.orgId
           }
         }
         getSearch(params).then(res => {
-          if (res.success === true) {
-            this.goods = res.result.itemList
-            this.total = res.result.recordCount
+          if (res.result.resultCode === 200) {
+            this.goods = res.result.data.itemList
+            this.total = res.result.data.recordCount
             this.noResult = false
             if (this.total === 0) {
               this.noResult = true
@@ -167,19 +215,63 @@
         this.currentPage = 1
         this.loading = true
         this._getSearch()
+      },
+
+      // 按品牌查询
+      selectByBrand (brandId) {
+        this.selectedBrandId=brandId
+        this.sortType = 1
+        this.sort = ''
+        this.currentPage = 1
+        this.brandId = brandId
+        this.loading = true
+        this._getSearch()
+      },
+      // 按供货商查询
+      selectByVendor (vendorId) {
+        this.selectedVendorId=vendorId
+        this.sortType = 1
+        this.sort = ''
+        this.currentPage = 1
+        this.vendorId = vendorId
+        this.loading = true
+        this._getSearch()
+      },
+      _getBrand () {
+        getBrand().then(res => {
+          if (res.result.resultCode === 200) {
+            this.brandList = res.result.data
+          }
+        })
+      },
+      _getVendor () {
+        getVendor().then(res => {
+          if (res.result.resultCode === 200) {
+            this.vendorList = res.result.data
+          }
+        })
       }
+
+
     },
     created () {
     },
     mounted () {
       this.windowHeight = window.innerHeight
-      this.windowWidth = window.innerWidth
+      this.windowWidth = window.innerWidthcartList
       this.key = this.$route.query.key
-      this._getSearch()
-      recommend().then(res => {
-        let data = res.result
-        this.recommendPanel = data[0]
+
+      this.$nextTick(function () {
+        this._getSearch()
+        this._getBrand()
+        this._getVendor()
+/*        recommend().then(res => {
+          let data = res.result
+          this.recommendPanel = data[0]
+        })*/
       })
+
+
     },
     components: {
       mallGoods,
@@ -193,7 +285,16 @@
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "../../assets/style/mixin";
   @import "../../assets/style/theme";
-
+  .selected
+  {
+    background-color: #5683EA;
+    color:white;
+  }
+  .selectedBrand
+  {
+    background-color: #5683EA;
+    color:white;
+  }
   .nav {
     height: 60px;
     line-height: 60px;
@@ -242,7 +343,8 @@
 
   .nav-subs {
     position: relative;
-    margin-top: -40px;
+   //margin-top: -40px;
+    margin-top: 0px;
     z-index: 20;
     height: 90px;
     background: #f7f7f7;
@@ -297,6 +399,10 @@
     }
   }
 
+
+
+
+
   .no-info {
     padding: 100px 0;
     text-align: center;
@@ -340,4 +446,73 @@
   }
 
 
+
+  .nav-subs-brand {
+    position: relative;
+    //margin-top: -40px;
+    margin-top: 0px;
+    z-index: 20;
+    height: 50px;
+    background: #ededed;
+
+    .nav-sub-wrappers {
+      padding: 10px 0;
+      height: 50px;
+      position: relative;
+    }
+    .w {
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav-lists {
+      height: 28px;
+      line-height: 28px;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      li:first-child {
+        padding-left: 0;
+        a {
+          padding-left: 10px;
+        }
+
+      }
+      li {
+        position: relative;
+        float: left;
+        padding-left: 2px;
+        list-style-type:none;
+        a {
+          display: block;
+          // cursor: default;
+          padding: 0 10px;
+          color: #666;
+          &.active {
+            font-weight: bold;
+          }
+          isclick-style {
+            background-color: #5683EA;
+            color:white;
+          }
+          noclick {
+            color:#5683EA;
+          }
+        }
+        a:hover {
+          background-color: #5683EA;
+          color:white;
+        }
+
+      }
+      li:before {
+        content: ' ';
+        position: absolute;
+        left: 0;
+        top: 13px;
+        width: 2px;
+        height: 2px;
+        background: #bdbdbd;
+      }
+    }
+  }
 </style>

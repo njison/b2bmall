@@ -31,10 +31,10 @@
                   <div class="cart-l-r">
                     <div>¥ {{good.salePrice.toFixed(2)}}</div>
                     <div class="num">{{good.productNum}}</div>
-                    <div class="type">
+                  <!--  <div class="type">
                       <el-button style="margin-left:20px" @click="_delOrder(item.orderId,i)" type="danger" size="small" v-if="j<1" class="del-order">删除此订单</el-button>
-                      <!-- <a @click="_delOrder(item.orderId,i)" href="javascript:;" v-if="j<1" class="del-order">删除此订单</a> -->
-                    </div>
+                      &lt;!&ndash; <a @click="_delOrder(item.orderId,i)" href="javascript:;" v-if="j<1" class="del-order">删除此订单</a> &ndash;&gt;
+                    </div>-->
                   </div>
                 </div>
                 <div class="cart-r">
@@ -45,7 +45,8 @@
               <div class="prod-operation pa" style="right: 0;top: 0;">
                 <div class="total">¥ {{item.orderTotal}}</div>
                 <div v-if="item.orderStatus === '0'">
-                  <el-button @click="orderPayment(item.orderId)" type="primary" size="small">现在付款</el-button>
+                 <!-- <el-button @click="orderPayment(item.orderId)" type="primary" size="small">待供货商确认</el-button>-->
+                  <el-button  type="primary" size="small">供货商待确认</el-button>
                 </div>
                 <div class="status" v-if="item.orderStatus !== '0'"> {{getOrderStatus(item.orderStatus)}}  </div>
               </div>
@@ -118,18 +119,21 @@
       },
       getOrderStatus (status) {
         if (status === '1') {
-          return '支付审核中'
+          return '供货商确认中'
         } else if (status === '2') {
-          return '待发货'
+          return '供货商待发货'
         } else if (status === '3') {
           return '待收货'
         } else if (status === '4') {
           return '交易成功'
-        } else if (status === '5') {
+        } else if (status === '-1') {
+          return '取消订单'
+        }
+        /*else if (status === '5') {
           return '交易关闭'
         } else if (status === '6') {
           return '支付失败'
-        }
+        }*/
       },
       _orderList () {
         let params = {
@@ -140,8 +144,10 @@
           }
         }
         orderList(params).then(res => {
-          this.orderList = res.result.data
-          this.total = res.result.total
+          /*this.orderList = res.result.data
+          this.total = res.result.total*/
+          this.orderList = res.result.data.data
+          this.total = res.result.data.total
           this.loading = false
         })
       },

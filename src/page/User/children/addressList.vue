@@ -19,8 +19,8 @@
                  :class="{'defalut-address':item.isDefault}"></a>
             </div>
             <div class="operation">
-              <el-button type="primary" icon="edit" size="small"  @click="update(item)"></el-button>
-              <el-button type="danger" icon="delete" size="small" :data-id="item.addressId" @click="del(item.addressId,i)"></el-button>
+              <el-button type="primary" icon="el-icon-edit" size="small"  @click="update(item)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="small" :data-id="item.addressId" @click="del(item.addressId,i)"></el-button>
             </div>
           </div>
         </div>
@@ -93,10 +93,10 @@
       },
       _addressList () {
         addressList({userId: this.userId}).then(res => {
-          let data = res.result
+          let data = res.result.data
           if (data.length) {
-            this.addList = res.result
-            this.addressId = res.result[0].addressId || '1'
+            this.addList = res.result.data
+            this.addressId = res.result.data[0].addressId || '1'
           } else {
             this.addList = []
           }
@@ -196,10 +196,10 @@
       color: #838383;
     }
     .address {
-      margin-left: 115px; 
+      margin-left: 115px;
     }
     .tel {
-      margin-left: 195px; 
+      margin-left: 195px;
     }
   }
 

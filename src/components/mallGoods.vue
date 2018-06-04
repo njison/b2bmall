@@ -2,24 +2,27 @@
   <div class="good-item">
     <div style="">
       <div class="good-img">
-        <a target="_blank" :href="'http://xmall.exrick.cn/#/goodsDetails?productId='+msg.productId">
-          <img v-lazy="msg.productImageBig" :alt="msg.productName">
+        <a target="_blank" :href="'/#/goodsDetails?productId='+msg.productId">
+          <img v-lazy="msg.url" :alt="msg.productName">
         </a>
       </div>
       <h6 class="good-title" v-html="msg.productName">{{msg.productName}}</h6>
       <h3 class="sub-title ellipsis">{{msg.subTitle}}</h3>
       <div class="good-price pr">
         <div class="ds pa">
-          <a target="_blank" :href="'http://xmall.exrick.cn/#/goodsDetails?productId='+msg.productId">
+          <!--<a target="_blank" :href="'http://xmall.exrick.cn/#/goodsDetails?productId='+msg.productId">
+            <y-button text="查看详情" style="margin: 0 5px"></y-button>
+          </a>-->
+          <a target="_blank" :href="'/#/goodsDetails?productId='+msg.productId">
             <y-button text="查看详情" style="margin: 0 5px"></y-button>
           </a>
           <y-button text="加入购物车"
                     style="margin: 0 5px"
-                    @btnClick="addCart(msg.productId,msg.salePrice,msg.productName,msg.productImageBig)"
+                    @btnClick="addCart(msg.productId,msg.price,msg.productName,msg.url)"
                     classStyle="main-btn"
           ></y-button>
         </div>
-        <p><span style="font-size:14px">￥</span>{{msg.salePrice.toFixed(2)}}</p>
+        <p><span style="font-size:14px">￥</span>{{msg.price.toFixed(2)}}</p>
       </div>
     </div>
   </div>
@@ -45,14 +48,21 @@
       },
       addCart (id, price, name, img) {
         if (!this.showMoveImg) {     // 动画是否在运动
-          if (this.login) { // 登录了 直接存在用户名下
+/*          if (this.login) { // 登录了 直接存在用户名下
             addCart({userId: getStore('userId'), productId: id, productNum: 1}).then(res => {
               // 并不重新请求数据
               this.ADD_CART({productId: id, salePrice: price, productName: name, productImg: img})
             })
           } else { // 未登录 vuex
             this.ADD_CART({productId: id, salePrice: price, productName: name, productImg: img})
-          }
+          }*/
+          // 登录了 直接存在用户名下
+            /*addCart({userId: getStore('userId'), productId: id, productNum: 1}).then(res => {*/
+          addCart({userId: '1', productId: id, productNum: 1}).then(res => {
+              // 并不重新请求数据
+              this.ADD_CART({productId: id, salePrice: price, productName: name, productImg: img})
+            })
+
           // 加入购物车动画
           var dom = event.target
           // 获取点击的坐标

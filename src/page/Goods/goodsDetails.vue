@@ -23,10 +23,25 @@
         <div class="sku-custom-title">
           <h4>{{product.productName}}</h4>
           <h6>
-            <span>{{product.subTitle}}</span>
+            <span><!--{{product.subTitle}}-->
+            采购价：</span>
             <span class="price">
               <em>¥</em><i>{{product.salePrice.toFixed(2)}}</i></span>
           </h6>
+
+          <div class="height-range">
+            <span >月销量：{{product.monthNum}}台</span>
+          </div>
+          <div class="height-range">
+            <span >供应商名称：{{product.vendorName}}</span>
+          </div>
+          <div class="height-range">
+            <span >产品等级：{{product.productLevel}}</span>
+          </div>
+          <div class="height-range height-range-bottom">
+            <span >促销活动：{{product.salesActivity}}</span>
+          </div>
+
         </div>
         <div class="num">
           <span class="params-name">数量</span>
@@ -45,18 +60,8 @@
     </div>
     <!--产品信息-->
     <div class="item-info">
-      <y-shelf title="产品信息">
-        <div slot="content">
-          <div class="img-item" v-if="productMsg">
-            <div v-html="productMsg">{{ productMsg }}</div>
-          </div>
-          <div class="no-info" v-else>
-            <img src="/static/images/no-data.png">
-            <br>
-            该商品暂无内容数据
-          </div>
-        </div>
-      </y-shelf>
+      <detail-info >
+      </detail-info>
     </div>
   </div>
 </template>
@@ -64,6 +69,7 @@
   import { productDet, addCart } from '/api/goods'
   import { mapMutations, mapState } from 'vuex'
   import YShelf from '/components/shelf'
+  import DetailInfo from '/components/detailInfo'
   import BuyNum from '/components/buynum'
   import YButton from '/components/YButton'
   import { getStore } from '/utils/storage'
@@ -87,9 +93,9 @@
       ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART']),
       _productDet (productId) {
         productDet({params: {productId}}).then(res => {
-          let result = res.result
+          let result = res.result.data
           this.product = result
-          this.productMsg = result.detail || ''
+         // this.productMsg = result.detail || ''
           this.small = result.productImageSmall
           this.big = this.small[0]
         })
@@ -136,7 +142,7 @@
       }
     },
     components: {
-      YShelf, BuyNum, YButton
+      YShelf, BuyNum, YButton, DetailInfo
     },
     created () {
       let id = this.$route.query.productId
@@ -154,6 +160,12 @@
     min-height: 600px;
     padding: 0 0 25px;
     margin: 0 auto;
+  }
+  .height-range{
+    margin-top: 15px;
+  }
+  .height-range-bottom{
+    margin-bottom: 15px;
   }
 
   .gray-box {
@@ -266,6 +278,19 @@
   }
 
   .price {
+    display: block;
+    color: #d44d44;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 20px;
+    text-align: right;
+    i {
+      padding-left: 2px;
+      font-size: 24px;
+    }
+  }
+
+  .font-right {
     display: block;
     color: #d44d44;
     font-weight: 700;

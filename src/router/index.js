@@ -38,14 +38,18 @@ export default new Router({
         {path: 'home', component: Home},
         {path: 'goods', component: GoodS},
         {path: 'goodsDetails', name: 'goodsDetails', component: goodsDetails},
-        {path: 'thanks', name: 'thanks', component: Thanks},
-        {path: '/refreshgoods', name: 'refreshgoods', component: RefreshGoods}
+        {path: 'thanks', name: 'thanks', component: Thanks}
+        //{path: 'refreshgoods', name: 'refreshgoods', component: RefreshGoods},
+        //{path: 'search', name: 'search', component: Search}
+        //{path: 'cart', name: 'cart', component: Cart}
       ]
     },
     {path: '/login', name: 'login', component: Login},
     {path: '/register', name: 'register', component: Register},
     {path: '/cart', name: 'cart', component: Cart},
-    {path: '/refreshsearch', name: 'refreshsearch', component: RefreshSearch},
+    //{path: '/refreshsearch', name: 'refreshsearch', component: RefreshSearch},
+    {path: '/search', name: 'search', component: Search},
+    //{path: 'goodsDetails', name: 'goodsDetails', component: goodsDetails},
     {
       path: '/order',
       name: 'order',
@@ -53,7 +57,7 @@ export default new Router({
       children: [
         {path: 'paysuccess', name: 'paysuccess', component: paysuccess},
         {path: 'payment', name: 'payment', component: payment},
-        {path: '/search', name: 'search', component: Search},
+        // {path: '/search', name: 'search', component: Search},
         {path: 'alipay', name: 'alipay', component: Alipay},
         {path: 'wechat', name: 'wechat', component: Wechat},
         {path: 'qqpay', name: 'qqpay', component: QQpay}

@@ -196,12 +196,12 @@
       },
       _getCartList () {
         getCartList({userId: this.userId}).then(res => {
-          this.cartList = res.result
+          this.cartList = res.result.data
         })
       },
       _addressList () {
         addressList({userId: this.userId}).then(res => {
-          let data = res.result
+          let data = res.result.data
           if (data.length) {
             this.addList = data
             this.addressId = data[0].addressId || '1'
@@ -262,9 +262,18 @@
           goodsList: array,
           orderTotal: this.orderTotal
         }
-        submitOrder(params).then(res => {
+/*        submitOrder(params).then(res => {
           if (res.success === true) {
             this.payment(res.result)
+          } else {
+            this.message(res.message)
+            this.submitOrder = '提交订单'
+            this.submit = false
+          }
+        })*/
+        submitOrder(params).then(res => {
+          if (res.result.resultCode === 200) {
+            this.$router.push({path: '/user/orderList'})
           } else {
             this.message(res.message)
             this.submitOrder = '提交订单'
@@ -273,7 +282,7 @@
         })
       },
       // 付款
-      payment (orderId) {
+/*      payment (orderId) {
         // 需要拿到地址id
         this.$router.push({
           path: '/order/payment',
@@ -281,7 +290,7 @@
             'orderId': orderId
           }
         })
-      },
+      },*/
       // 选择地址
       chooseAddress (addressId, userName, tel, streetName) {
         this.addressId = addressId

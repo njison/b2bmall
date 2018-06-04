@@ -1,71 +1,865 @@
 {
   "checkLogin": {
-    "username": "yudongdong",
+    "userName": "admin",
     "userId": 123123,
-    "result":{"state":0}
-
-  },
-  "getNewsList": [
-    {
-      "id": 1,
-      "title": "新闻条目1新闻条目1新闻条目1新闻条目1",
-      "url": "http://starcraft.com"
-    },
-    {
-      "id": 2,
-      "title": "新闻条目2新闻条目2新闻条目2新闻条目2",
-      "url": "http://warcraft.com"
-    },
-    {
-      "id": 3,
-      "title": "新闻条3新闻条3新闻条3",
-      "url": "http://overwatch.com"
-    },
-    {
-      "id": 4,
-      "title": "新闻条4广告发布",
-      "url": "http://hearstone.com"
+    "result":{
+      "state":1
     }
-  ],
-  "login": {
-    "username": "yudongdong",
-    "userId": 123123
   },
-  "getPrice": {
-    "amount": 678
-  },
-  "createOrder": {
-    "orderId": "6djk979"
-  },
-  "getOrderList": {
-    "list": [
-      {
-        "orderId": "ddj123",
-        "product": "数据统计",
-        "version": "高级版",
-        "period": "1年",
-        "buyNum": 2,
-        "date": "2016-10-10",
-        "amount": "500元"
-      },
-      {
-        "orderId": "yuj583",
-        "product": "流量分析",
-        "version": "户外版",
-        "period": "3个月",
-        "buyNum": 1,
-        "date": "2016-5-2",
-        "amount": "2200元"
-      },
-      {
-        "orderId": "pmd201",
-        "product": "广告发布",
-        "version": "商铺版",
-        "period": "3年",
-        "buyNum": 12,
-        "date": "2016-8-3",
-        "amount": "7890元"
+  "login":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526623548737,
+      "data": {
+        "userId": 370,
+        "userName": "lixiujun",
+        "userState": 1,
+        "token": "dcd73440-2418-46e6-b290-3d1820485b23",
+        "orgId": "400",
+        "orgName":"社会渠道",
+        "orgType":"1"
       }
-    ]
+    }
+  },
+
+  "addressList":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526623548737,
+      "data": [{
+        "addressId": 277,
+        "userId": 370,
+        "userName": "李秀君",
+        "tel": "15140298791",
+        "streetName": "沈阳",
+        "isDefault": true
+      }]
+    }
+  },
+  "addOrder":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526623548737,
+      "data":"152715084881412"
+    }
+  },
+  "orderList": {
+    "result": {
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526623548737,
+      "data": {
+        "total": 2,
+        "data": [{
+          "orderId": 152715084881412,
+          "orderTotal": 1.00,
+          "addressInfo": {
+            "addressId": null,
+            "userId": null,
+            "userName": "李秀君",
+            "tel": "15140298791",
+            "streetName": "沈阳",
+            "isDefault": null
+          },
+          "goodsList": [{
+            "productId": 150642571432835,
+            "salePrice": 1,
+            "productNum": 1,
+            "limitNum": null,
+            "checked": null,
+            "productName": "捐赠商品",
+            "productImg": "http://ow2h3ee9w.bkt.clouddn.com/FgwHSk1Rnd-8FKqNJhFSSdcq2QVB"
+          }],
+          "orderStatus": "0",
+          "createDate": "2018-05-24 16:34",
+          "closeDate": null,
+          "finishDate": null,
+          "payDate": null
+        }, {
+          "orderId": 152712554080652,
+          "orderTotal": 90.00,
+          "addressInfo": {
+            "addressId": null,
+            "userId": null,
+            "userName": "李秀君",
+            "tel": "15140298791",
+            "streetName": "沈阳",
+            "isDefault": null
+          },
+          "goodsList": [{
+            "productId": 150642571432840,
+            "salePrice": 89,
+            "productNum": 1,
+            "limitNum": null,
+            "checked": null,
+            "productName": "Smartisan 半入耳式耳机",
+            "productImg": "https://resource.smartisan.com/resource/9c1d958f10a811df841298d50e1ca7c0.jpg"
+          }],
+          "orderStatus": "0",
+          "createDate": "2018-05-24 09:32",
+          "closeDate": null,
+          "finishDate": null,
+          "payDate": null
+        }]
+      }
+    }
+  },
+  "orderDetail":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526623548737,
+      "data": {
+        "orderId": 152715084881412,
+        "orderTotal": 1.00,
+        "addressInfo": {
+          "addressId": null,
+          "userId": null,
+          "userName": "李秀君",
+          "tel": "15140298791",
+          "streetName": "沈阳",
+          "isDefault": null
+        },
+        "goodsList": [{
+          "productId": 150642571432835,
+          "salePrice": 1,
+          "productNum": 1,
+          "limitNum": null,
+          "checked": null,
+          "productName": "捐赠商品",
+          "productImg": "http://ow2h3ee9w.bkt.clouddn.com/FgwHSk1Rnd-8FKqNJhFSSdcq2QVB"
+        }],
+        "orderStatus": "0",
+        "createDate": "2018-05-24 16:34",
+        "closeDate": null,
+        "finishDate": "1527237248000",
+        "payDate": null
+      }
+    }
+  },
+
+
+
+  "getBanner1":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526623548737,
+      "data":{
+        "panelId": 7,
+        "panelName": "轮播图",
+        "panelType": 0,
+        "limitNum": 5,
+        "status": 1,
+        "panelContents": [{
+          "id": 32,
+          "panelId": 7,
+          "panelType": 0,
+          "productId": 150635087972564,
+          "picUrl": "http://static.smartisanos.cn/index/img/store/home/banner-3d-item-1-box-1_61bdc2f4f9.png",
+          "picUrl2": "http://static.smartisanos.cn/index/img/store/home/banner-3d-item-1-box-3_8fa7866d59.png",
+          "picUrl3": "http://ow2h3ee9w.bkt.clouddn.com/banner-3d-item-1-box-33.png",
+          "created": 1523968862000,
+          "updated": 1523969921000,
+          "salePrice": 1.00,
+          "productName": "支付测试商品 IPhone X 全面屏 全面绽放",
+          "subTitle": "此仅为支付测试商品 拍下不会发货",
+          "productImageBig": "http://static.smartisanos.cn/index/img/store/home/banner-3d-item-1-box-1_61bdc2f4f9.png"
+        }, {
+          "id": 33,
+          "panelId": 7,
+          "panelType": 0,
+          "productId": 150642571432835,
+          "sortOrder": 2,
+          "picUrl": "http://oweupqzdv.bkt.clouddn.com/bg_left.png",
+          "picUrl2": "http://ow2h3ee9w.bkt.clouddn.com/phone_left2.png",
+          "picUrl3": "http://oweupqzdv.bkt.clouddn.com/erji_left.png",
+          "created": 1523970502000,
+          "updated": 1524192439000,
+          "salePrice": 1.00,
+          "productName": "捐赠商品",
+          "subTitle": "您的捐赠将用于本站维护 给您带来更好的体验",
+          "productImageBig": "http://oweupqzdv.bkt.clouddn.com/bg_left.png"
+        }, {
+          "id": 34,
+          "panelId": 7,
+          "panelType": 0,
+          "productId": 150635087972564,
+          "sortOrder": 3,
+          "picUrl": "http://oweupqzdv.bkt.clouddn.com/red-left.png",
+          "picUrl2": "http://oweupqzdv.bkt.clouddn.com/word-left.png",
+          "picUrl3": "http://oweupqzdv.bkt.clouddn.com/time-left.png",
+          "created": 1523970510000,
+          "updated": 1523970512000,
+          "salePrice": 1.00,
+          "productName": "支付测试商品 IPhone X 全面屏 全面绽放",
+          "subTitle": "此仅为支付测试商品 拍下不会发货",
+          "productImageBig": "http://oweupqzdv.bkt.clouddn.com/red-left.png"
+        }, {
+          "id": 35,
+          "panelId": 7,
+          "panelType": 0,
+          "productId": 150642571432843,
+          "sortOrder": 1,
+          "picUrl": "http://ow2h3ee9w.bkt.clouddn.com/24401108web1.png",
+          "created": 1524066288000,
+          "updated": 1524195706000,
+          "salePrice": 1999.00,
+          "productName": "坚果 3",
+          "subTitle": "漂亮得不像实力派",
+          "productImageBig": "http://ow2h3ee9w.bkt.clouddn.com/24401108web1.png"
+        }, {
+          "id": 51,
+          "panelId": 7,
+          "panelType": 0,
+          "productId": 150635087972564,
+          "sortOrder": 1,
+          "picUrl": "http://ow2h3ee9w.bkt.clouddn.com/417pcchunrihaolishouji.png",
+          "created": 1524121780000,
+          "updated": 1524143764000,
+          "salePrice": 1.00,
+          "productName": "支付测试商品 IPhone X 全面屏 全面绽放",
+          "subTitle": "此仅为支付测试商品 拍下不会发货",
+          "productImageBig": "http://ow2h3ee9w.bkt.clouddn.com/417pcchunrihaolishouji.png"
+        }]
+      }
+    }
+  },
+
+
+
+  "getBanner":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526623548737,
+      "data":{
+        "panelType": 0,
+        "status": 1,
+        "panelContents": [{
+          "productId": 150635087972564,
+          "picUrl": "http://static.smartisanos.cn/index/img/store/home/banner-3d-item-1-box-1_61bdc2f4f9.png"
+        }, {
+          "productId": 150642571432835,
+          "picUrl": "http://oweupqzdv.bkt.clouddn.com/bg_left.png"
+        }, {
+          "productId": 150635087972564,
+          "picUrl": "http://oweupqzdv.bkt.clouddn.com/red-left.png"
+        }, {
+          "productId": 150642571432843,
+          "picUrl": "http://ow2h3ee9w.bkt.clouddn.com/24401108web1.png"
+        }, {
+          "productId": 150635087972564,
+          "picUrl": "http://ow2h3ee9w.bkt.clouddn.com/417pcchunrihaolishouji.png"
+        }]
+      }
+    }
+  },
+
+  "getPanel":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1525856185558,
+      "data": [
+        {
+          "panelId": 2,
+          "panelName": "4G+机型专区",
+          "panelType": 3,
+          "sortOrder": 1,
+          "limitNum": 8,
+          "status": 1,
+          "panelContents": [
+            {
+              "id": 6,
+              "panelId": 2,
+              "panelType": 0,
+              "productId": 150642571432837,
+              "sortOrder": 10,
+              "picUrl": "http://img10.360buyimg.com/n1/s450x450_jfs/t3175/89/2690068639/114728/22c2edee/57e4a35bN230918c0.jpg",
+              "salePrice": 3188.00,
+              "productName": "iphone6S",
+              "subTitle": "超强iphone6S",
+              "productImageBig": "http://img10.360buyimg.com/n1/s450x450_jfs/t3175/89/2690068639/114728/22c2edee/57e4a35bN230918c0.jpg"
+            }, {
+              "id": 7,
+              "panelId": 2,
+              "panelType": 0,
+              "productId": 150642571432838,
+              "sortOrder": 6,
+              "picUrl": "https://resource.smartisan.com/resource/63ea40e5c64db1c6b1d480c48fe01272.jpg",
+              "salePrice": 79.00,
+              "productName": "坚果 3 绒布国旗保护套",
+              "subTitle": "质感精良、完美贴合、周到防护",
+              "productImageBig": "https://resource.smartisan.com/resource/63ea40e5c64db1c6b1d480c48fe01272.jpg"
+            },
+
+
+            {
+              "id": 8,
+              "panelId": 2,
+              "panelType": 0,
+              "productId": 150642571432837,
+              "sortOrder": 3,
+              "picUrl": "https://resource.smartisan.com/resource/3a7522290397a9444d7355298248f197.jpg",
+              "salePrice": 49.00,
+              "productName": "坚果 3 前屏钢化玻璃保护膜",
+              "subTitle": "超强透光率、耐刮花、防指纹",
+              "productImageBig": "https://resource.smartisan.com/resource/3a7522290397a9444d7355298248f197.jpg"
+            }, {
+              "id": 9,
+              "panelId": 2,
+              "panelType": 0,
+              "productId": 150642571432838,
+              "sortOrder": 2,
+              "picUrl": "https://resource.smartisan.com/resource/63ea40e5c64db1c6b1d480c48fe01272.jpg",
+              "salePrice": 79.00,
+              "productName": "坚果 3 绒布国旗保护套",
+              "subTitle": "质感精良、完美贴合、周到防护",
+              "productImageBig": "https://resource.smartisan.com/resource/63ea40e5c64db1c6b1d480c48fe01272.jpg"
+            }, {
+              "id": 14,
+              "panelId": 2,
+              "panelType": 0,
+              "productId": 150642571432839,
+              "sortOrder": 3,
+              "picUrl": "https://resource.smartisan.com/resource/5e4b1feddb13639550849f12f6b2e202.jpg",
+              "salePrice": 29.00,
+              "productName": "坚果 3 TPU 软胶透明保护套",
+              "subTitle": "轻薄透明、完美贴合、TPU 环保材质",
+              "productImageBig": "https://resource.smartisan.com/resource/5e4b1feddb13639550849f12f6b2e202.jpg"
+            }, {
+              "id": 15,
+              "panelId": 2,
+              "panelType": 0,
+              "productId": 150642571432840,
+              "sortOrder": 4,
+              "picUrl": "https://resource.smartisan.com/resource/10525c4b21f039fc8ccb42cd1586f5cd.jpg",
+              "salePrice": 89.00,
+              "productName": "IPHONE_6PLUS（16G）（灰色）（辽宁中邮普泰专供）",
+              "subTitle": "经典配色、专业调音、高品质麦克风",
+              "productImageBig": "https://resource.smartisan.com/resource/10525c4b21f039fc8ccb42cd1586f5cd.jpg",
+              "monthNum":"10",
+              "vendorName":"辽宁中邮普泰",
+              "productLevel":"【48】LTE-TD-深度合作型"
+            }, {
+              "id": 16,
+              "panelId": 2,
+              "panelType": 0,
+              "productId": 150642571432841,
+              "sortOrder": 5,
+              "picUrl": "https://resource.smartisan.com/resource/b899d9b82c4bc2710492a26af021d484.jpg",
+              "salePrice": 49.00,
+              "productName": "坚果 3 TPU 软胶保护套",
+              "subTitle": "TPU 环保材质、完美贴合、周到防护",
+              "productImageBig": "https://resource.smartisan.com/resource/b899d9b82c4bc2710492a26af021d484.jpg"
+            }, {
+              "id": 17,
+              "panelId": 2,
+              "panelType": 0,
+              "productId": 150642571432842,
+              "sortOrder": 6,
+              "picUrl": "https://resource.smartisan.com/resource/abb6986430536cd9365352b434f3c568.jpg",
+              "salePrice": 79.00,
+              "productName": "坚果 3 \"足迹\"背贴 乐高创始人出生",
+              "subTitle": "1891 年 4 月 7 日",
+              "productImageBig": "https://resource.smartisan.com/resource/abb6986430536cd9365352b434f3c568.jpg"
+            }]
+        },
+
+        {
+          "panelId": 10,
+          "panelName": "4G+热销机型",
+          "panelType": 3,
+          "sortOrder": 4,
+          "limitNum": 8,
+          "status": 1,
+          "panelContents": [
+            {
+              "id": 40,
+              "panelId": 10,
+              "panelType": 0,
+              "productId": 150642571432836,
+              "sortOrder": 2,
+              "picUrl": "https://resource.smartisan.com/resource/2b05dbca9f5a4d0c1270123f42fb834c.jpg",
+              "salePrice": 149.00,
+              "productName": "Smartisan T恤 伍迪·艾伦出生",
+              "subTitle": "一件内外兼修的舒适T恤",
+              "productImageBig": "https://resource.smartisan.com/resource/2b05dbca9f5a4d0c1270123f42fb834c.jpg"
+            }, {
+              "id": 41,
+              "panelId": 10,
+              "panelType": 0,
+              "productId": 150642571432846,
+              "sortOrder": 3,
+              "picUrl": "https://resource.smartisan.com/resource/804edf579887b3e1fae4e20a379be5b5.png",
+              "salePrice": 149.00,
+              "productName": "Smartisan T恤 任天堂发售“红白机”",
+              "subTitle": "100% 美国 SUPIMA 棉、舒适拉绒质地",
+              "productImageBig": "https://resource.smartisan.com/resource/804edf579887b3e1fae4e20a379be5b5.png"
+            },{
+              "id": 42,
+              "panelId": 10,
+              "panelType": 0,
+              "productId": 150642571432836,
+              "sortOrder": 2,
+              "picUrl": "https://resource.smartisan.com/resource/2b05dbca9f5a4d0c1270123f42fb834c.jpg",
+              "salePrice": 149.00,
+              "productName": "Smartisan T恤 伍迪·艾伦出生",
+              "subTitle": "一件内外兼修的舒适T恤",
+              "productImageBig": "https://resource.smartisan.com/resource/2b05dbca9f5a4d0c1270123f42fb834c.jpg"
+            }, {
+              "id": 43,
+              "panelId": 10,
+              "panelType": 0,
+              "productId": 150642571432846,
+              "sortOrder": 3,
+              "picUrl": "https://resource.smartisan.com/resource/804edf579887b3e1fae4e20a379be5b5.png",
+              "salePrice": 149.00,
+              "productName": "Smartisan T恤 任天堂发售“红白机”",
+              "subTitle": "100% 美国 SUPIMA 棉、舒适拉绒质地",
+              "productImageBig": "https://resource.smartisan.com/resource/804edf579887b3e1fae4e20a379be5b5.png"
+            }, {
+              "id": 44,
+              "panelId": 10,
+              "panelType": 0,
+              "productId": 150642571432848,
+              "sortOrder": 4,
+              "picUrl": "https://resource.smartisan.com/resource/a1c53b5f12dd7ef790cadec0eaeaf466.jpg",
+              "salePrice": 199.00,
+              "productName": "Smartisan 牛津纺衬衫",
+              "subTitle": "一件无拘无束的舒适衬衫",
+              "productImageBig": "https://resource.smartisan.com/resource/a1c53b5f12dd7ef790cadec0eaeaf466.jpg"
+            }, {
+              "id": 45,
+              "panelId": 10,
+              "panelType": 0,
+              "productId": 150642571432847,
+              "sortOrder": 5,
+              "picUrl": "https://resource.smartisan.com/resource/daa975651d6d700c0f886718c520ee19.jpg",
+              "salePrice": 249.00,
+              "productName": "Smartisan Polo衫 经典款",
+              "subTitle": "一件表里如一的舒适 POLO 衫",
+              "productImageBig": "https://resource.smartisan.com/resource/daa975651d6d700c0f886718c520ee19.jpg"
+            }, {
+              "id": 46,
+              "panelId": 10,
+              "panelType": 0,
+              "productId": 150642571432849,
+              "sortOrder": 6,
+              "picUrl": "https://resource.smartisan.com/resource/3973d009d182d8023bea6250b9a3959e.jpg",
+              "salePrice": 9.90,
+              "productName": "Smartisan 明信片",
+              "subTitle": "优质卡纸、包装精致、色彩饱满",
+              "productImageBig": "https://resource.smartisan.com/resource/3973d009d182d8023bea6250b9a3959e.jpg"
+            },
+            {
+              "id": 47,
+              "panelId": 10,
+              "panelType": 0,
+              "productId": 150642571432849,
+              "sortOrder": 6,
+              "picUrl": "https://resource.smartisan.com/resource/3973d009d182d8023bea6250b9a3959e.jpg",
+              "salePrice": 9.90,
+              "productName": "Smartisan 明信片",
+              "subTitle": "优质卡纸、包装精致、色彩饱满",
+              "productImageBig": "https://resource.smartisan.com/resource/3973d009d182d8023bea6250b9a3959e.jpg"
+            }]
+        },
+
+        {
+          "panelId": 3,
+          "panelName": "4G+热销品牌",
+          "panelType": 3,
+          "sortOrder": 5,
+          "limitNum": 8,
+          "status": 1,
+          "panelContents": [{
+            "id": 30,
+            "panelId": 3,
+            "panelType": 0,
+            "productId": 150642571432851,
+            "sortOrder": 1,
+            "picUrl": "https://resource.smartisan.com/resource/7ac3af5a92ad791c2b38bfe1e38ee334.jpg",
+            "salePrice": 2699.00,
+            "productName": "优点智能 E1 推拉式智能指纹密码锁",
+            "subTitle": "推拉一下，轻松开关",
+            "productImageBig": "https://resource.smartisan.com/resource/7ac3af5a92ad791c2b38bfe1e38ee334.jpg"
+          },
+            {
+            "id": 31,
+            "panelId": 3,
+            "panelType": 0,
+            "productId": 816448,
+            "sortOrder": 2,
+            "picUrl": "https://resource.smartisan.com/resource/41cb562a47d4831e199ed7e2057f3b61.jpg",
+            "salePrice": 2799.00,
+            "productName": "极米无屏电视 CC",
+            "subTitle": "720P 高清分辨率、JBL 音响、两万毫安续航力",
+            "productImageBig": "https://resource.smartisan.com/resource/41cb562a47d4831e199ed7e2057f3b61.jpg"
+          },
+            {
+            "id": 2,
+            "panelId": 3,
+            "panelType": 0,
+            "productId": 150642571432851,
+            "sortOrder": 1,
+            "picUrl": "https://resource.smartisan.com/resource/7ac3af5a92ad791c2b38bfe1e38ee334.jpg",
+            "salePrice": 2699.00,
+            "productName": "优点智能 E1 推拉式智能指纹密码锁",
+            "subTitle": "推拉一下，轻松开关",
+            "productImageBig": "https://resource.smartisan.com/resource/7ac3af5a92ad791c2b38bfe1e38ee334.jpg"
+          },
+            {
+            "id": 7,
+            "panelId": 3,
+            "panelType": 0,
+            "productId": 816448,
+            "sortOrder": 2,
+            "picUrl": "https://resource.smartisan.com/resource/41cb562a47d4831e199ed7e2057f3b61.jpg",
+            "salePrice": 2799.00,
+            "productName": "极米无屏电视 CC",
+            "subTitle": "720P 高清分辨率、JBL 音响、两万毫安续航力",
+            "productImageBig": "https://resource.smartisan.com/resource/41cb562a47d4831e199ed7e2057f3b61.jpg"
+          }, {
+            "id": 18,
+            "panelId": 3,
+            "panelType": 0,
+            "productId": 832739,
+            "sortOrder": 3,
+            "picUrl": "https://resource.smartisan.com/resource/99c548bfc9848a8c95f4e4f7f2bc1095.png",
+            "salePrice": 499.00,
+            "productName": "FIIL CARAT 蓝牙运动耳机",
+            "subTitle": "智能计步、磁吸项链式、佩戴舒适不易掉",
+            "productImageBig": "https://resource.smartisan.com/resource/99c548bfc9848a8c95f4e4f7f2bc1095.png"
+          }, {
+            "id": 19,
+            "panelId": 3,
+            "panelType": 0,
+            "productId": 150642571432844,
+            "sortOrder": 4,
+            "picUrl": "https://resource.smartisan.com/resource/71432ad30288fb860a4389881069b874.png",
+            "created": 1508682215000,
+            "updated": 1524194738000,
+            "salePrice": 2999.00,
+            "productName": "畅呼吸智能空气净化器超级除甲醛版",
+            "subTitle": "购新空净 赠价值 699 元活性炭滤芯",
+            "productImageBig": "https://resource.smartisan.com/resource/71432ad30288fb860a4389881069b874.png"
+          }, {
+            "id": 20,
+            "panelId": 3,
+            "panelType": 0,
+            "productId": 847276,
+            "sortOrder": 5,
+            "picUrl": "https://resource.smartisan.com/resource/804b82e4c05516e822667a23ee311f7c.jpg",
+            "created": 1508682294000,
+            "updated": 1524154503000,
+            "salePrice": 1499.00,
+            "productName": "FIIL Diva Pro 全场景无线降噪耳机",
+            "subTitle": "智能语音交互、高清无损本地存储播放",
+            "productImageBig": "https://resource.smartisan.com/resource/804b82e4c05516e822667a23ee311f7c.jpg"
+          }, {
+            "id": 21,
+            "panelId": 3,
+            "panelType": 0,
+            "productId": 150642571432852,
+            "sortOrder": 6,
+            "picUrl": "https://resource.smartisan.com/resource/367d93db1d58f9f3505bc0ec18efaa44.jpg",
+            "created": 1508682328000,
+            "updated": 1524720104000,
+            "salePrice": 499.00,
+            "productName": "FIIL Driifter 脖挂蓝牙耳机",
+            "subTitle": "全天佩戴 抬手就听 HEAC稳连技术",
+            "productImageBig": "https://resource.smartisan.com/resource/367d93db1d58f9f3505bc0ec18efaa44.jpg"
+          }]
+        },
+        {
+          "panelId": 1,
+          "panelName": "热门商品",
+          "panelType": 3,
+          "sortOrder": 2,
+          "position": 0,
+          "limitNum": 3,
+          "status": 1,
+          "remark": "",
+          "created": 1524066553000,
+          "updated": 1523790316000,
+          "panelContents": [{
+            "id": 22,
+            "panelId": 1,
+            "type": 0,
+            "productId": 150635087972564,
+            "sortOrder": 1,
+            "fullUrl": null,
+            "picUrl": "http://ow2h3ee9w.bkt.clouddn.com/FjvP4gBFeYGQoEtEX7dL3kbwJTDW",
+            "picUrl2": null,
+            "picUrl3": null,
+            "created": 1508682391000,
+            "updated": 1508682391000,
+            "salePrice": 1.00,
+            "productName": "支付测试商品 IPhone X 全面屏 全面绽放",
+            "subTitle": "此仅为支付测试商品 拍下不会发货",
+            "productImageBig": "http://ow2h3ee9w.bkt.clouddn.com/FjvP4gBFeYGQoEtEX7dL3kbwJTDW"
+          }, {
+            "id": 23,
+            "panelId": 1,
+            "type": 0,
+            "productId": 150642571432835,
+            "sortOrder": 2,
+            "fullUrl": "",
+            "picUrl": "http://ow2h3ee9w.bkt.clouddn.com/FgwHSk1Rnd-8FKqNJhFSSdcq2QVB",
+            "picUrl2": null,
+            "picUrl3": null,
+            "created": 1508682400000,
+            "updated": 1523969975000,
+            "salePrice": 1.00,
+            "productName": "捐赠商品",
+            "subTitle": "您的捐赠将用于本站维护 给您带来更好的体验",
+            "productImageBig": "http://ow2h3ee9w.bkt.clouddn.com/FgwHSk1Rnd-8FKqNJhFSSdcq2QVB"
+          }]
+        }
+      ]
+    }
+  },
+
+  "getBrand":{
+  "result":{
+    "resultCode": 200,
+    "resultMsg": "success",
+    "resultTimestamp": 1526871414314,
+    "data": [{
+      "brandId": 0,
+      "brandName": " 全部"
+    },{
+      "brandId": 1,
+      "brandName": " 华为"
+    },{
+      "brandId": 2,
+      "brandName": " 三星"
+    },{
+      "brandId": 3,
+      "brandName": " 小米"
+    }]
   }
+},
+  "getVendor":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526871414314,
+      "data": [{
+        "vendorId": 0,
+        "vendorName": " 全部"
+      },{
+        "vendorId": 1,
+        "vendorName": " 苏宁"
+      },{
+        "vendorId": 2,
+        "vendorName": " 国美"
+      },{
+        "vendorId": 3,
+        "vendorName": " 沈阳好迪"
+      }]
+    }
+  },
+  "productDet":{
+    "result": {
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526623548737,
+      "data": {
+        "productId": 150642571432840,
+        "salePrice": 89.00,
+        "productName": "iphone6s",
+        "subTitle": "经典配色、专业调音、高品质iPhone",
+        "limitNum": 5,
+        "productImageBig": "https://resource.smartisan.com/resource/9c1d958f10a811df841298d50e1ca7c0.jpg",
+        "productImageSmall": ["https://resource.smartisan.com/resource/9c1d958f10a811df841298d50e1ca7c0.jpg", "https://resource.smartisan.com/resource/afa4ecdb54d7f50d0b6265bbcf31d6c8.jpg", "https://resource.smartisan.com/resource/eb1bf1dee365c7855e6b047d8b9c5b1e.jpg", "https://resource.smartisan.com/resource/dfcc9fa16ab354a41683959398bff128.jpg"],
+        "monthNum":"10",
+        "vendorName":"辽宁中邮普泰",
+        "productLevel":"【48】LTE-TD-深度合作型",
+        "productData": [{
+          "attribute": "产品名称",
+          "dataInfo": "iphone6s"
+        }, {
+          "attribute": "品牌",
+          "dataInfo": "Apple"
+        }, {
+          "attribute": "CPU型号",
+          "dataInfo": ""
+        },{
+          "attribute": "机型档次",
+          "dataInfo": "高"
+        },{
+          "attribute": "售后服务",
+          "dataInfo": ""
+        },{
+          "attribute": "网络类型",
+          "dataInfo": ""
+        },{
+          "attribute": "是否智能机",
+          "dataInfo": "是"
+        },{
+          "attribute": "主屏大小",
+          "dataInfo": "4.7英寸"
+        },{
+          "attribute": "机身内存ROM",
+          "dataInfo": "128G"
+        },{
+          "attribute": "操作系统",
+          "dataInfo": "ios10"
+        },{
+          "attribute": "运行内存RAM",
+          "dataInfo": "4G"
+        },{
+          "attribute": "CPU主频",
+          "dataInfo": ""
+        },{
+          "attribute": "颜色",
+          "dataInfo": ""
+        },{
+          "attribute": "CPU核数",
+          "dataInfo": "4"
+        },{
+          "attribute": "支持定位类型",
+          "dataInfo": ""
+        },{
+          "attribute": "价格区间",
+          "dataInfo": ""
+        },{
+          "attribute": "上市时间",
+          "dataInfo": ""
+        },{
+          "attribute": "后置摄像头像素",
+          "dataInfo": "1300W"
+        },{
+          "attribute": "前置摄像头像素（万）",
+          "dataInfo": "500"
+        },{
+          "attribute": "终端款式",
+          "dataInfo": ""
+        },{
+          "attribute": "电池容量",
+          "dataInfo": ""
+        },{
+          "attribute": "主频分辨率",
+          "dataInfo": ""
+        },{
+          "attribute": "触摸屏",
+          "dataInfo": "是"
+        },{
+          "attribute": "是否有wifi",
+          "dataInfo": "是"
+        }],
+        "vendorData": [{
+          "attribute": "供货商名称",
+          "dataInfo": "中邮"
+        }, {
+          "attribute": "供货商联系信息",
+          "dataInfo": "无"
+        }, {
+          "attribute": "QQ",
+          "dataInfo": "1340400052"
+        }, {
+          "attribute": "开户人",
+          "dataInfo": "辽宁中邮普泰，开户银行：中信银行沈阳和平支行"
+        }, {
+          "attribute": "开户银行",
+          "dataInfo": "中信银行沈阳和平支行"
+        }, {
+          "attribute": "银行账号",
+          "dataInfo": "11112222"
+        }]
+      }
+    }
+  },
+
+  "search":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526364185019,
+      "data": {
+        "recordCount": 1,
+        "totalPages": 1,
+        "itemList": [{
+          "productId": 150635087972564,
+          "salePrice": 1.00,
+          "productName": "支付测试商品 <a style=\"color: #e4393c\">IPhone</a> <a style=\"color: #e4393c\">X</a> 全面屏 全面绽放",
+          "subTitle": "此仅为支付测试商品 拍下不会发货",
+          "productImageBig": "http://ow2h3ee9w.bkt.clouddn.com/FuMpJKl7eTLaSAZCY0wS_ZfA9nZu",
+          "categoryName": "手机",
+          "cid": 560
+        }]
+      }
+    }
+  },
+  "cartList1":{
+    "success": true,
+    "message": "success",
+    "code": 200,
+    "timestamp": 1526528279885,
+    "result": [{
+      "productId": 150642571432838,
+      "salePrice": 79.00,
+      "productNum": 1,
+      "limitNum": 100,
+      "checked": "1",
+      "productName": "坚果 3 绒布国旗保护套",
+      "productImg": "https://resource.smartisan.com/resource/63ea40e5c64db1c6b1d480c48fe01272.jpg"
+    }, {
+      "productId": 150642571432837,
+      "salePrice": 49.00,
+      "productNum": 1,
+      "limitNum": 100,
+      "checked": "1",
+      "productName": "坚果 3 前屏钢化玻璃保护膜",
+      "productImg": "https://resource.smartisan.com/resource/3a7522290397a9444d7355298248f197.jpg"
+    }, {
+      "productId": 150642571432840,
+      "salePrice": 89.00,
+      "productNum": 1,
+      "limitNum": 100,
+      "checked": "1",
+      "productName": "Smartisan 半入耳式耳机",
+      "productImg": "https://resource.smartisan.com/resource/9c1d958f10a811df841298d50e1ca7c0.jpg"
+    }]
+  },
+  "cartList":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526871414314,
+      "data": [{
+        "productId": 150642571432838,
+        "cartItem":"1",
+        "salePrice": 80.00,
+        "productNum": 1,
+        "limitNum": 100,
+        "checked": "1",
+        "productName": "坚果 3 绒布国旗保护套",
+        "productImg": "https://resource.smartisan.com/resource/63ea40e5c64db1c6b1d480c48fe01272.jpg"
+      }]
+    }
+  },
+
+  "cartEdit":{
+    "success": true,
+    "message": "success",
+    "code": 200,
+    "timestamp": 1526539202167,
+    "result": 1
+  },
+  "addCart":{
+    "result":{
+      "resultCode": 200,
+      "resultMsg": "success",
+      "resultTimestamp": 1526871414314,
+      "data": "1"
+    }
+  }
+
 }

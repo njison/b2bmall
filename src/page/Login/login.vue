@@ -17,11 +17,11 @@
                 <input type="password" v-model="ruleForm.userPwd" @keyup.enter="login" placeholder="密码">
               </div>
             </li>
-            <li>
+          <!--  <li>
               <div id="captcha">
                 <p id="wait">正在加载验证码...</p>
               </div>
-            </li>
+            </li>-->
             <li style="text-align: right" class="pr">
               <el-checkbox class="auto-login" v-model="autoLogin">记住密码</el-checkbox>
               <!-- <span class="pa" style="top: 0;left: 0;color: #d44d44">{{ruleForm.errMsg}}</span> -->
@@ -54,11 +54,13 @@
 </template>
 <script src="../../../static/geetest/gt.js"></script>
 <script>
+import store from '../../store/'
 import YFooter from '/common/footer'
 import YButton from '/components/YButton'
-import { userLogin, geetest } from '/api/index.js'
+import { userLogin, geetest ,userToken } from '/api/index.js'
 import { addCart } from '/api/goods.js'
 import { setStore, getStore, removeStore } from '/utils/storage.js'
+
 require('../../../static/geetest/gt.js')
 var captcha
 export default {
@@ -123,6 +125,16 @@ export default {
         removeStore('rpassword')
       }
     },
+    userToken () {
+
+      userToken().then(res1 => {
+        setStore('token', res1)
+        this.$router.push({
+          path: '/'
+        })
+      })
+
+    },
     toRegister () {
       this.$router.push({
         path: '/register'
@@ -147,31 +159,28 @@ export default {
       }
       this.cart = cartArr
     },
-    login () {
+    async  login () {
       this.logintxt = '登录中...'
-      this.rememberPass()
-      if (!this.ruleForm.userName || !this.ruleForm.userPwd) {
+      //this.rememberPass()
+/*      if (!this.ruleForm.userName || !this.ruleForm.userPwd) {
         // this.ruleForm.errMsg = '账号或者密码不能为空!'
         this.message('账号或者密码不能为空!')
         return false
-      }
-      var result = captcha.getValidate()
+      }*/
+/*      var result = captcha.getValidate()
       if (!result) {
         this.message('请完成验证')
         this.logintxt = '登录'
         return false
-      }
+      }*/
       var params = {
-        userName: this.ruleForm.userName,
-        userPwd: this.ruleForm.userPwd,
-        challenge: result.geetest_challenge,
-        validate: result.geetest_validate,
-        seccode: result.geetest_seccode
+        userName: "admin",
+        userPwd: "MTIzNDU2"
       }
-      userLogin(params).then(res => {
-        if (res.result.state === 1) {
-          setStore('token', res.result.token)
-          setStore('userId', res.result.id)
+      /*userLogin(params).then(res => {
+        if (res.result.resultCode === 200) {
+          setStore('token', res.result.data.token)
+          setStore('userId', res.result.data.userId)
           // 登录后添加当前缓存中的购物车
           if (this.cart.length) {
             for (var i = 0; i < this.cart.length; i++) {
@@ -192,12 +201,47 @@ export default {
         } else {
           this.logintxt = '登录'
           this.message(res.result.message)
-          captcha.reset()
+          //captcha.reset()
           return false
         }
+      })*/
+
+      userLogin(params).then(res => {
+        if (res.isSuccess == true) {
+          //this.userToken()
+          setStore('userId', res.userCode)
+          setStore('orgCode', res.STAFF_ORG_CODE)
+          // 登录后成功后存用户信息
+          store.commit('RECORD_USERINFO', {info: res})
+          this.userToken();
+          // 登录后添加当前缓存中的购物车
+          if (this.cart.length) {
+            for (var i = 0; i < this.cart.length; i++) {
+              addCart(this.cart[i]).then(res => {
+                if (res.success === true) {
+                }
+              })
+            }
+            removeStore('buyCart')
+            this.$router.push({
+              path: '/'
+            })
+          } else {
+           /* this.$router.push({
+              path: '/'
+            })*/
+          }
+        } else {
+          this.logintxt = '登录'
+        //  this.message(res.result.message)
+          //captcha.reset()
+          return false
+        }
+      }).then(res=>{
+        this.userToken();
       })
     },
-    init_geetest () {
+/*    init_geetest () {
       geetest().then(res => {
         window.initGeetest({
           gt: res.gt,
@@ -215,13 +259,13 @@ export default {
           this.login()
         })
       })
-    }
+    }*/
   },
   mounted () {
     this.getRemembered()
     this.login_addCart()
-    this.init_geetest()
-    this.open('登录提示', '测试体验账号密码：test | test')
+    //this.init_geetest()
+   /* this.open('登录提示', '测试体验账号密码：test | test')*/
   },
   components: {
     YFooter,
@@ -252,7 +296,8 @@ export default {
     }
   }
   .wrapper {
-    background: url(/static/images/bg_9b9dcb65ff.png) repeat;
+   background: url(/static/images/bg_9b9dcb65ff.png) repeat;
+   /*background: url(/static/images/main-background.png);*/
     background-size: 100px;
     min-height: 800px;
     min-width: 630px;

@@ -3,30 +3,23 @@
     <div>
       <header class="w">
         <div class="w-box">
-          <div class="nav-logo">
-            <h1 @click="changePage(1)">
-              <router-link to="/" title="XMall商城官网">XMall商城</router-link>
-            </h1>
+          <div>
+            <img src="../assets/b2blogo.png"/>
           </div>
           <div class="right-box">
             <div class="nav-list">
               <el-autocomplete
-                placeholder="请输入商品信息"
-                icon="search"
+                popper-class="my-autocomplete"
                 v-model="input"
-                minlength=1
-                maxlength=100
                 :fetch-suggestions="querySearchAsync"
-                @select="handleSelect"
-                :on-icon-click="handleIconClick">
+                placeholder="请输入内容"
+                @select="handleSelect">
+                <i
+                  class="el-icon-search el-input__icon"
+                  slot="suffix"
+                  @click="handleIconClick">
+                </i>
               </el-autocomplete>
-              <router-link to="/goods"><a @click="changePage(2)">全部商品</a></router-link>
-              <router-link to="/thanks"><a @click="changePage(4)">捐赠</a></router-link>
-              <!-- <router-link to="/">Smartisan M1 / M1L</router-link>
-              <router-link to="/">Smartisan OS</router-link>
-              <router-link to="/">欢喜云</router-link>
-              <router-link to="/">应用下载</router-link>
-              <router-link to="/">官方论坛</router-link> -->
             </div>
             <div class="nav-aside" ref="aside" :class="{fixed:st}">
               <div class="user pr">
@@ -37,27 +30,27 @@
                     <ul>
                       <!--头像-->
                       <li class="nav-user-avatar">
-                        <div>
+                      <!--  <div>
                           <span class="avatar" :style="{backgroundImage:'url('+userInfo.info.file+')'}">
                           </span>
-                        </div>
-                        <p class="name">{{userInfo.info.username}}</p>
+                        </div>-->
+                        <p class="name">{{userInfo.info.userCode}}</p>
                       </li>
                       <li>
                         <router-link to="/user/orderList">我的订单</router-link>
-                      </li>
+                      </li><!--
                       <li>
                         <router-link to="/user/information">账号资料</router-link>
-                      </li>
+                      </li>-->
                       <li>
                         <router-link to="/user/addressList">收货地址</router-link>
                       </li>
-                      <li>
+                      <!--<li>
                         <router-link to="/user/support">售后服务</router-link>
                       </li>
                       <li>
                         <router-link to="/user/coupon">我的优惠</router-link>
-                      </li>
+                      </li>-->
                       <li>
                         <a href="javascript:;" @click="_loginOut">退出</a>
                       </li>
@@ -67,7 +60,7 @@
               </div>
               <div class="shop pr" @mouseover="cartShowState(true)" @mouseout="cartShowState(false)"
                    ref="positionMsg">
-                <router-link to="/cart"></router-link>
+               <router-link to="/cart"></router-link>
                 <span class="cart-num">
                   <i class="num" :class="{no:totalNum <= 0,move_in_cart:receiveInCart}">{{totalNum}}</i></span>
                 <!--购物车显示块-->
@@ -132,22 +125,10 @@
                   <router-link to="/"><a @click="changePage(1)" :class="{active:choosePage===1}">首页</a></router-link>
                 </li>
                 <li>
-                  <a @click="changGoods(2)" :class="{active:choosePage===2}">全部商品</a>
+                  <a @click="changGoods(2)" :class="{active:choosePage===2}">手机</a>
                 </li>
                 <li>
-                  <a @click="changGoods(3)" :class="{active:choosePage===3}">品牌周边</a>
-                </li>
-                <li>
-                  <router-link to="/thanks"><a @click="changePage(4)" :class="{active:choosePage===4}">捐赠名单</a></router-link>
-                </li>
-                <li>
-                  <a href="http://xmadmin.exrick.cn" target="_blank">后台管理系统</a>
-                </li>
-		            <li>
-                  <a href="http://xpay.exrick.cn" target="_blank">XPay支付系统</a>
-                </li>
-                <li>
-                  <a href="https://github.com/Exrick/xmall" target="_blank">Github</a>
+                  <a @click="changGoods(3)" :class="{active:choosePage===3}">周边</a>
                 </li>
               </ul>
               <div></div>
@@ -164,8 +145,7 @@
   import { getCartList, cartDel, getQuickSearch } from '/api/goods'
   import { loginOut } from '/api/index'
   import { setStore, getStore, removeStore } from '/utils/storage'
-  // import store from '../store/'
-  import 'element-ui/lib/theme-default/index.css'
+  import 'element-ui/lib/theme-chalk/index.css'
   export default{
     data () {
       return {
@@ -181,7 +161,7 @@
         choosePage: 1,
         searchResults: [],
         timeout: null,
-        token: ''
+        token: '',
       }
     },
     computed: {
@@ -208,21 +188,12 @@
     methods: {
       ...mapMutations(['ADD_CART', 'INIT_BUYCART', 'ADD_ANIMATION', 'SHOW_CART', 'REDUCE_CART', 'RECORD_USERINFO', 'EDIT_CART']),
       handleIconClick (ev) {
-        if (this.$route.path === '/search') {
-          this.$router.push({
-            path: '/refreshsearch',
-            query: {
-              key: this.input
-            }
-          })
-        } else {
           this.$router.push({
             path: '/search',
             query: {
               key: this.input
             }
           })
-        }
       },
       // 导航栏文字样式改变
       changePage (v) {
@@ -286,11 +257,22 @@
       cartShowState (state) {
         this.SHOW_CART({showCart: state})
       },
+
+
       // 登陆时获取一次购物车商品
       _getCartList () {
-        getCartList({userId: getStore('userId')}).then(res => {
-          if (res.success === true) {
+
+        let cartParams = {
+          cartDto :{
+            userId: getStore('userId')
+          }
+        }
+        getCartList(cartParams).then(res => {
+       /*   if (res.success === true) {
             setStore('buyCart', res.result)
+          }*/
+          if (res.code === "success") {
+            setStore('buyCart', res.cartDtoList)
           }
           // 重新初始化一次本地数据
         }).then(this.INIT_BUYCART)
@@ -353,11 +335,12 @@
     },
     mounted () {
       this.token = getStore('token')
-      if (this.login) {
+/*      if (this.login) {
         this._getCartList()
       } else {
         this.INIT_BUYCART()
-      }
+      }*/
+      this._getCartList()
       this.navFixed()
       this.getPage()
       window.addEventListener('scroll', this.navFixed)
@@ -453,9 +436,12 @@
 
   .header-box {
     background: $head-bgc;
-    background-image: -webkit-linear-gradient(#000, #121212);
-    background-image: linear-gradient(#000, #121212);
+    /*background-image: -webkit-linear-gradient(#000, #121212);*/
+    /*background-image: linear-gradient(#000, #121212);*/
+    background-image: -webkit-linear-gradient(#FFFFFF, #FFFFFF);
+    background-image: linear-gradient(#FFFFFF, #FFFFFF);
     width: 100%;
+    /*box-shadow: 0px 5px 10px #f1f1f1;*/
 
   }
 
@@ -463,6 +449,8 @@
     height: 100px;
     z-index: 30;
     position: relative;
+    border-bottom: 1px solid #f1f1f1;
+
   }
 
   .w-box {
@@ -470,6 +458,7 @@
     justify-content: space-between;
     align-items: center;
     height: 100%;
+    background-color: white;
     // position: relative;
     h1 {
       height: 100%;
@@ -945,8 +934,10 @@
   .nav-sub {
     position: relative;
     z-index: 20;
-    height: 90px;
-    background: #f7f7f7;
+    height: 40px;
+    //background: #f7f7f7;
+    //background:#f3f3f3;
+    background:#3cb2f9;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .04);
     &.fixed {
       position: fixed;
@@ -960,9 +951,10 @@
       background-image: linear-gradient(#fff, #f1f1f1);
     }
     .nav-sub-wrapper {
-      padding: 31px 0;
-      height: 90px;
+      padding: 8px 0 10px 0;
+      height: 40px;
       position: relative;
+      background-color: white;
       &.fixed {
         padding: 0;
         height: 100%;
@@ -987,6 +979,7 @@
     .w {
       display: flex;
       justify-content: space-between;
+
     }
     .nav-list2 {
       height: 28px;
@@ -998,6 +991,7 @@
         padding-left: 0;
         a {
           padding-left: 10px;
+         color:#5079d9;
         }
       }
       li {

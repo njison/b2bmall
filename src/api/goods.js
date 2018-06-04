@@ -5,7 +5,9 @@ export const getAllGoods = (params) => {
 }
 // 获取购物车列表
 export const getCartList = (params) => {
-  return http.fetchPost('/member/cartList', params)
+  //return http.fetchPost('/member/cartList', params)
+  return http.fetchPost('http://192.168.1.193:8080/cart/queryCartList', params)
+
 }
 // 加入购物车
 export const addCart = (params) => {
@@ -71,6 +73,7 @@ export const cancelOrder = (params) => {
 export const productDet = (params) => {
   return http.fetchGet('/goods/productDet', params)
 }
+
 // 删除订单
 export const delOrder = (params) => {
   return http.fetchGet('/member/delOrder', params)
@@ -79,7 +82,18 @@ export const delOrder = (params) => {
 export const getSearch = (params) => {
   return http.fetchGet('/goods/search', params)
 }
+// 商品列表
+export const getBrand = (params) => {
+  return http.fetchGet('/goods/getBrand', params)
+}
+// 商品列表
+export const getVendor = (params) => {
+  return http.fetchGet('/goods/getVendor', params)
+}
+
+
 // 快速搜索
 export const getQuickSearch = (key) => {
-  return http.fetchQuickSearch(`http://127.0.0.1:9200/item/itemList/_search?q=productName: ${key}`)
+ //return http.fetchQuickSearch(`http://127.0.0.1:9200/item/itemList/_search?q=productName: ${key}`)
+ return http.fetchQuickSearch(`http://127.0.0.1:8080/item/itemList/_search?q=productName: ${key}`)
 }

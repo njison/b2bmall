@@ -6,25 +6,12 @@ import VueLazyload from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
 import VueCookie from 'vue-cookie'
 import { userInfo } from './api'
-import { Button, Pagination, Checkbox, Icon, Autocomplete, Loading, Message, Notification, Steps, Step, Table, TableColumn, Input, Dialog, Select, Option } from 'element-ui'
-import { getStore } from '/utils/storage'
-Vue.use(Button)
-Vue.use(Pagination)
-Vue.use(Checkbox)
-Vue.use(Icon)
-Vue.use(Autocomplete)
-Vue.use(Steps)
-Vue.use(Step)
-Vue.use(Table)
-Vue.use(TableColumn)
-Vue.use(Input)
-Vue.use(Dialog)
-Vue.use(Select)
-Vue.use(Option)
-Vue.use(Loading.directive)
-Vue.prototype.$loading = Loading.service
+import { getStore,removeStore } from '/utils/storage'
+import ElementUI from 'element-ui';
+/*Vue.prototype.$loading = Loading.service
 Vue.prototype.$notify = Notification
-Vue.prototype.$message = Message
+Vue.prototype.$message = Message*/
+Vue.use(ElementUI);
 Vue.use(infiniteScroll)
 Vue.use(VueCookie)
 Vue.use(VueLazyload, {
@@ -34,28 +21,48 @@ Vue.use(VueLazyload, {
   // attempt: 1
 })
 Vue.config.productionTip = false
-const whiteList = ['/home', '/goods', '/login', '/register', '/goodsDetails', '/thanks', '/search', '/refreshsearch', '/refreshgoods'] // 不需要登陆的页面
+const whiteList = ['/home','/getBanner','/getPanel', '/getBrand', '/getVendor','/goods', '/login', '/register', '/goodsDetails', '/thanks', '/search', '/refreshsearch', '/refreshgoods' , '/cart'] // 不需要登陆的页面
 router.beforeEach(function (to, from, next) {
   let params = {
-    params: {
-      token: getStore('token')
-    }
+
+      userToken: getStore('token')
+
   }
-  userInfo(params).then(res => {
+/*  userInfo(params).then(res => {
     if (res.result.state !== 1) { // 没登录
       if (whiteList.indexOf(to.path) !== -1) { // 白名单
         next()
       } else {
-        next('/login')
+        nxt('/login')
       }
     } else {
-      store.commit('RECORD_USERINFO', {info: res.result})
+      /!*store.commit('RECORD_USERINFO', {info: res.result})*!/
+      store.commit('RECORD_USERINFO', {info: res})
       if (to.path === '/login') { //  跳转到
         next({path: '/'})
       }
       next()
     }
+  })*/
+  userInfo(params).then(res => {
+    if (res.result.resultCode =="500") { // 没登录
+      removeStore('token')
+      removeStore('userId')
+      if (to.path == '/login') { //  跳转到
+        next();
+      }else{
+        next('/login');
+      }
+    } else {
+     // store.commit('RECORD_USERINFO', {info: res})
+      if (to.path == '/login') { //  跳转到
+        next({path: '/'})
+      }
+      next()
+    }
   })
+
+
 })
 /* eslint-disable no-new */
 new Vue({
