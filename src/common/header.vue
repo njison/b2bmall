@@ -38,19 +38,10 @@
                       </li>
                       <li>
                         <router-link to="/user/orderList">我的订单</router-link>
-                      </li><!--
-                      <li>
-                        <router-link to="/user/information">账号资料</router-link>
-                      </li>-->
+                      </li>
                       <li>
                         <router-link to="/user/addressList">收货地址</router-link>
                       </li>
-                      <!--<li>
-                        <router-link to="/user/support">售后服务</router-link>
-                      </li>
-                      <li>
-                        <router-link to="/user/coupon">我的优惠</router-link>
-                      </li>-->
                       <li>
                         <a href="javascript:;" @click="_loginOut">退出</a>
                       </li>
@@ -78,10 +69,10 @@
                                     <img :src="item.productImg">
                                   </div>
                                   <div class="item-desc">
-                                    <div class="cart-cell"><h4>
+                                    <div class="cart-cell">
+                                      <h4>
                                       <a href="" v-text="item.productName"></a>
                                     </h4>
-                                      <!-- <p class="attrs"><span>白色</span></p> -->
                                       <h6><span class="price-icon">¥</span><span
                                         class="price-num">{{item.salePrice}}</span><span
                                         class="item-num">x {{item.productNum}}</span>
@@ -264,13 +255,12 @@
 
         let cartParams = {
           cartDto :{
-            userId: getStore('userId')
+            /*userId: getStore('userId')*/
+            userId: '1'
           }
         }
         getCartList(cartParams).then(res => {
-       /*   if (res.success === true) {
-            setStore('buyCart', res.result)
-          }*/
+
           if (res.code === "success") {
             setStore('buyCart', res.cartDtoList)
           }
@@ -279,13 +269,24 @@
       },
       // 删除商品
       delGoods (productId) {
-        if (this.login) { // 登陆了
+/*        if (this.login) { // 登陆了
           cartDel({userId: getStore('userId'), productId}).then(res => {
             this.EDIT_CART({productId})
           })
         } else {
           this.EDIT_CART({productId})
+        }*/
+        let cartDelParams = {
+          cartDto :{
+            userId: '1',
+            goodsId:'2018060201'
+          }
         }
+
+        cartDel(cartDelParams).then(res => {
+          this.EDIT_CART({productId})
+        })
+
       },
       toCart () {
         this.$router.push({path: '/cart'})

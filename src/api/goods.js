@@ -20,7 +20,8 @@ export const delCart = (params) => {
 }
 // 编辑购物车
 export const cartEdit = (params) => {
-  return http.fetchPost('/member/cartEdit', params)
+  /*return http.fetchPost('/member/cartEdit', params)*/
+  return http.fetchPost('http://192.168.1.193:8080/cart/modifyCart', params)
 }
 // 全选
 export const editCheckAll = (params) => {
@@ -28,7 +29,8 @@ export const editCheckAll = (params) => {
 }
 // 删除整条购物车
 export const cartDel = (params) => {
-  return http.fetchPost('/member/cartDel', params)
+  //return http.fetchPost('/member/cartDel', params)
+  return http.fetchPost('http://192.168.1.193:8080/cart/deleteCart', params)
 }
 // 获取用户地址
 export const addressList = (params) => {
