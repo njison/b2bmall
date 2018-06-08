@@ -1,22 +1,19 @@
 import http from './public'
 // 登陆
 export const userLogin = (params) => {
- // return http.fetchPost('http://192.168.1.119:9999/rims/login', params)
-  return http.fetchPost('http://192.168.1.193:8080/login', params)
+  return http.fetchPost('/login', params)
 }
+// Token
 export const userToken = (params) => {
-  return http.fetchGet('http://192.168.1.193:8080/usertoken', params)
+  return http.fetchGet('/usertoken', params)
 }
-
 // 退出登陆
 export const loginOut = (params) => {
   return http.fetchGet('/member/loginOut', params)
 }
 // 用户信息
 export const userInfo = (params) => {
-  //return http.fetchGet('/member/checkLogin', params)
- return http.fetchPost('http://192.168.1.193:8080/checkUserToken', params)
-  //return http.fetchPost('http://192.168.1.193:8081/rims/checkUserToken', params)
+  return http.fetchPost('/checkUserToken', params)
 }
 // 注册账号
 export const register = (params) => {
@@ -41,16 +38,12 @@ export const productHome = (params) => {
 
 // 首页banner轮播图接口
 export const getBanner = (params) => {
-  return http.fetchPost('http://192.168.1.193:8080/material/queryMaterialMallList', params)
+  return http.fetchPost('/material/queryMaterialMallList', params)
 }
 // 首页panel接口
 export const getPanel = (params) => {
-  //return http.fetchGet('/goods/getPanel', params)
- return http.fetchPost('http://192.168.1.193:8080/panel/queryMallPanelList', params)
+  return http.fetchPost('/panel/queryMallPanelList', params)
 }
-
-
-
 // 推荐板块
 export const recommend = (params) => {
   return http.fetchGet('/goods/recommend', params)
@@ -66,10 +59,6 @@ export const geetest = (params) => {
 // 商品列表
 export const goodsDetails = (params) => {
   return http.fetchGet('/goods/goodsDetails', params)
-}
-// 图形验证码
-export const vcode = (params) => {
-  return http.fetchGet('http://192.168.1.193:8080/vcode', params)
 }
 
 

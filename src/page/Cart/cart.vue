@@ -16,8 +16,8 @@
                 class="subtotal">小计</span> <span class="num">数量</span> <span class="price1">单价</span>
               </div>
               <!--列表-->
-              <div class="cart-table" v-for="(item,i) in cartList" :key="i">
-                <div class="cart-group divide pr" :data-productid="item.productId">
+              <div class="cart-table" v-for="(item,i) in getcartList" :key="i">
+                <div class="cart-group divide pr" :data-productid="item.goodsId">
                   <div class="cart-top-items">
                     <div class="cart-items clearfix">
                       <!--勾选-->
@@ -27,15 +27,15 @@
                       </div>
                       <!--图片-->
                       <div class="items-thumb fl">
-                        <img :alt="item.productName"
-                             :src="item.productImg">
-                        <a @click="goodsDetails(item.productId)" :title="item.productName" target="_blank"></a>
+                        <img :alt="item.goodsName"
+                             :src="item.goodsImg">
+                        <a @click="goodsDetails(item.goodsId)" :title="item.goodsName" target="_blank"></a>
                       </div>
                       <!--信息-->
                       <div class="name hide-row fl">
                         <div class="name-table">
-                          <a @click="goodsDetails(item.productId)" :title="item.productName" target="_blank"
-                             v-text="item.productName"></a>
+                          <a @click="goodsDetails(item.goodsId)" :title="item.goodsName" target="_blank"
+                             v-text="item.goodsName"></a>
                           <!-- <ul class="attribute">
                             <li>白色</li>
                           </ul> -->
@@ -43,21 +43,21 @@
                       </div>
                       <!--删除按钮-->
                       <div class="operation">
-                        <a class="items-delete-btn" @click="cartdel(item.productId)"></a>
+                        <a class="items-delete-btn" @click="cartdel(item.goodsId)"></a>
                       </div>
                       <!--商品数量-->
                       <div>
                         <!--总价格-->
-                        <div class="subtotal" style="font-size: 14px">¥ {{item.salePrice * item.productNum}}</div>
+                        <div class="subtotal" style="font-size: 14px">¥ {{item.salePrice * item.goodsNum}}</div>
                         <!--数量-->
-                        <buy-num :num="item.productNum"
-                                 :id="item.productId"
+                        <buy-num :num="item.goodsNum"
+                                 :id="item.goodsId"
                                  :checked="item.checked"
                                  style="height: 140px;
                                    display: flex;
                                    align-items: center;
                                    justify-content: center;"
-                                 :limit="item.limitNum"
+                                 :limit="item.goodsNum"
                                  @edit-num="EditNum"
                         >
                         </buy-num>
@@ -120,7 +120,7 @@
   </div>
 </template>
 <script>
-  import { cartEdit, editCheckAll, cartDel } from '/api/goods'
+  import { cartEdit, editCheckAll, cartDel, getCartList } from '/api/goods'
   import { mapMutations, mapState } from 'vuex'
   import YButton from '/components/YButton'
   import YHeader from '/common/header'
@@ -132,7 +132,8 @@
       return {
         userId: 0,
         checkoutNow: '现在结算',
-        submit: true
+        submit: true,
+        getcartList: []
       }
     },
     computed: {
@@ -154,17 +155,17 @@
       // 计算总数量
       totalNum () {
         var totalNum = 0
-        this.cartList && this.cartList.forEach(item => {
-          totalNum += (item.productNum)
+        this.getcartList && this.getcartList.forEach(item => {
+          totalNum += (item.goodsNum)
         })
         return Number(totalNum)
       },
       // 选中的总价格
       checkPrice () {
         var totalPrice = 0
-        this.cartList && this.cartList.forEach(item => {
+        this.getcartList && this.getcartList.forEach(item => {
           if (item.checked === '1') {
-            totalPrice += (item.productNum * item.salePrice)
+            totalPrice += (item.goodsNum * item.salePrice)
           }
         })
         return totalPrice
@@ -172,9 +173,9 @@
       // 选中的商品数量
       checkNum () {
         var checkNum = 0
-        this.cartList && this.cartList.forEach(item => {
+        this.getcartList && this.getcartList.forEach(item => {
           if (item.checked == '1') {
-            checkNum += (item.productNum)
+            checkNum += (item.goodsNum)
           }
         })
         return checkNum
@@ -304,6 +305,14 @@
       }
     },
     mounted () {
+      getCartList().then(res => {
+        if (res.code !== "success") {
+          this.error = true
+          return
+        }
+        this.getcartList = res.cartDtoList
+      })
+
       this.userId = getStore('userId')
       this.INIT_BUYCART()
     },

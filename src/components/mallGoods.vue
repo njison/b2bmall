@@ -3,16 +3,16 @@
     <div style="">
       <div class="good-img">
         <a target="_blank" :href="'/#/goodsDetails?productId='+msg.productId">
-          <img v-lazy="msg.url" :alt="msg.productName">
+          <div class="imgBox">
+            <img v-lazy="msg.url" :alt="msg.productName" width="100%">
+          </div>
+
         </a>
       </div>
       <h6 class="good-title" v-html="msg.productName">{{msg.productName}}</h6>
       <h3 class="sub-title ellipsis">{{msg.subTitle}}</h3>
       <div class="good-price pr">
         <div class="ds pa">
-          <!--<a target="_blank" :href="'http://xmall.exrick.cn/#/goodsDetails?productId='+msg.productId">
-            <y-button text="查看详情" style="margin: 0 5px"></y-button>
-          </a>-->
           <a target="_blank" :href="'/#/goodsDetails?productId='+msg.productId">
             <y-button text="查看详情" style="margin: 0 5px"></y-button>
           </a>
@@ -42,31 +42,24 @@
       return {}
     },
     methods: {
-      ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART']),
+      ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART','GET_USERINFO']),
       goodsDetails (id) {
         this.$router.push({path: 'goodsDetails/productId=' + id})
       },
       addCart (id, price, name, img) {
+        let uId=getStore('userInfo.info.userId')
+        let uName=getStore('userInfo.info.userName')
+//        console.log(uId)
+//        console.log(uName)
         if (!this.showMoveImg) {     // 动画是否在运动
-/*          if (this.login) { // 登录了 直接存在用户名下
-            addCart({userId: getStore('userId'), productId: id, productNum: 1}).then(res => {
-              // 并不重新请求数据
-              this.ADD_CART({productId: id, salePrice: price, productName: name, productImg: img})
-            })
-          } else { // 未登录 vuex
-            this.ADD_CART({productId: id, salePrice: price, productName: name, productImg: img})
-          }*/
-          // 登录了 直接存在用户名下
-            /*addCart({userId: getStore('userId'), productId: id, productNum: 1}).then(res => {*/
           let cartAddParams = {
             cartDto :{
-              userId: '1',
-              userName: 'admin',
-              productNum: 1,
-              goodsId:'2018060201'
+              goodsNum: 1,
+              goodsId:'2018060201',
+              userId:'1',
+              userName:'admin'
             }
           }
-
 
           addCart(cartAddParams).then(res => {
               // 并不重新请求数据
@@ -122,11 +115,15 @@
     }
 
     .good-img {
-      img {
+      .imgBox {
         margin: 50px auto 10px;
         @include wh(206px);
         display: block;
+        overflow: hidden;
       }
+    }
+    .imgBox img{
+
     }
     .good-price {
       margin: 15px 0;

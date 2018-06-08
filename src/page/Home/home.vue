@@ -1,34 +1,34 @@
 <template>
   <div class="home">
 
-  <div v-loading="loading" element-loading-text="加载中..." style="min-height: 35vw;" v-if="!error">
-    <div class="banner" >
-      <div class="bg" ref="bg"
-        @mouseover="bgOver($refs.bg)" @mousemove="bgMove($refs.bg,$event)" @mouseout="bgOut($refs.bg)">
-        <transition name="fade">
-          <div v-for="(item, i) in banner" v-if="i===mark" :key="i" style="position:absolute" @click="linkTo(item)" @mouseover="stopTimer" @mouseout="startTimer">
-            <img v-if="item.url" class="img1" :src="item.url"/>
-           <!-- <img v-if="item.picUrl2"  class="img2 a" :src="item.picUrl2"/>
-            <img v-if="item.picUrl3"  class="img3 b" :src="item.picUrl3"/>-->
-          </div>
-        </transition>
+    <div v-loading="loading" element-loading-text="加载中..." style="min-height: 35vw;" v-if="!error">
+      <div class="banner" >
+        <div class="bg" ref="bg"
+             @mouseover="bgOver($refs.bg)" @mousemove="bgMove($refs.bg,$event)" @mouseout="bgOut($refs.bg)">
+          <transition name="fade">
+            <div v-for="(item, i) in banner" v-if="i===mark" :key="i" style="position:absolute" @click="linkTo(item)" @mouseover="stopTimer" @mouseout="startTimer">
+              <img v-if="item.url" class="img1" :src="item.url"/>
+              <!-- <img v-if="item.picUrl2"  class="img2 a" :src="item.picUrl2"/>
+               <img v-if="item.picUrl3"  class="img3 b" :src="item.picUrl3"/>-->
+            </div>
+          </transition>
+        </div>
+        <div class="page">
+          <ul class="dots">
+            <li class="dot-active" v-for="(item, i) in banner" :class="{ 'dot':i!=mark }" :key="i" @click="change(i)"></li>
+          </ul>
+        </div>
       </div>
-      <div class="page">
-        <ul class="dots">
-          <li class="dot-active" v-for="(item, i) in banner" :class="{ 'dot':i!=mark }" :key="i" @click="change(i)"></li>
-        </ul>
-      </div>
-    </div>
 
-    <div v-for="(item,i) in home" :key="i">
-      <section class="w mt30 clearfix" v-if="item.panelType == 3">
-        <y-shelf :title="item.panelName">
-          <div slot="content" class="floors" >
-           <mall-goods :msg="iitem" v-for="(iitem,j) in item.panelDtosSkuList" :key="j" ></mall-goods>
-           <!-- <mall-goods :msg="iitem" v-for="(iitem,j) in item.panelContents" :key="j" ></mall-goods>-->
-          </div>
-        </y-shelf>
-      </section>
+      <div v-for="(item,i) in home" :key="i">
+        <section class="w mt30 clearfix" v-if="item.panelType == 3">
+          <y-shelf :title="item.panelName">
+            <div slot="content" class="floors" >
+              <mall-goods :msg="iitem" v-for="(iitem,j) in item.panelDtosSkuList" :key="j" ></mall-goods>
+              <!-- <mall-goods :msg="iitem" v-for="(iitem,j) in item.panelContents" :key="j" ></mall-goods>-->
+            </div>
+          </y-shelf>
+        </section>
       </div>
     </div>
 
@@ -38,17 +38,17 @@
         <br> 抱歉！出错了...
       </div>
     </div>
-<!--
-    <el-dialog
-      title="通知"
-      :visible.sync="dialogVisible"
-      width="30%"
-      style="width:70%;margin:0 auto">
-      <span>首页已升级！XPay个人支付收款系统已上线，赶快去支付体验吧！</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">知道了</el-button>
-      </span>
-    </el-dialog>-->
+    <!--
+        <el-dialog
+          title="通知"
+          :visible.sync="dialogVisible"
+          width="30%"
+          style="width:70%;margin:0 auto">
+          <span>首页已升级！XPay个人支付收款系统已上线，赶快去支付体验吧！</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="dialogVisible = false">知道了</el-button>
+          </span>
+        </el-dialog>-->
   </div>
 </template>
 <script>
@@ -108,7 +108,7 @@
           })
         } else {
           // 完整链接
-         // window.location.href = item.fullUrl
+          // window.location.href = item.fullUrl
         }
       },
       bgOver (e) {
@@ -148,20 +148,20 @@
       }
     },
     mounted () {
-/*     productHome().then(res => {
-        if (res.success === false) {
-          this.error = true
-          return
-        }
-        let data = res.result
-        this.home = data
-        this.loading = false
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].type === 0) {
-            this.banner = data[i].panelContents
-          }
-        }
-      })*/
+      /*     productHome().then(res => {
+       if (res.success === false) {
+       this.error = true
+       return
+       }
+       let data = res.result
+       this.home = data
+       this.loading = false
+       for (let i = 0; i < data.length; i++) {
+       if (data[i].type === 0) {
+       this.banner = data[i].panelContents
+       }
+       }
+       })*/
       let params = {
         materialDto :{
           materialType: "1"
@@ -174,13 +174,13 @@
       }
 
       getBanner(params).then(res => {
-       if (res.code !== "success") {
+        if (res.code !== "success") {
           this.error = true
           return
         }
         let data = res
         this.loading = false
-         this.banner = data.materialDtoList
+        this.banner = data.materialDtoList
       })
       getPanel(panelParams).then(res => {
         if (res.success === false) {
@@ -190,6 +190,7 @@
         let panelData = res.panelDtoList
         //let panelData = res.result.data
         this.home = panelData
+        console.log(this.home )
 
       })
       this.showNotify()

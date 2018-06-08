@@ -1,67 +1,78 @@
 <template>
-  <div class="login v2">
-    <div class="wrapper">
-      <div class="dialog dialog-shadow" style="display: block; margin-top: -362px;">
-        <div class="title">
-          <h4>使用 XMall 账号 登录官网</h4>
-        </div>
-        <div v-if="loginPage" class="content">
-          <ul class="common-form">
-            <li class="username border-1p">
-              <div class="input">
-                <input type="text" v-model="ruleForm.userName" placeholder="账号">
-              </div>
-            </li>
-            <li>
-              <div class="input">
-                <input type="password" v-model="ruleForm.userPwd" @keyup.enter="login" placeholder="密码">
-              </div>
-            </li>
-          <!--  <li>
-              <div id="captcha">
-                <p id="wait">正在加载验证码...</p>
-              </div>
-            </li>-->
-            <li style="text-align: right" class="pr">
-              <el-checkbox class="auto-login" v-model="autoLogin">记住密码</el-checkbox>
-              <!-- <span class="pa" style="top: 0;left: 0;color: #d44d44">{{ruleForm.errMsg}}</span> -->
-              <a href="javascript:;" class="register" @click="toRegister">注册 XMall 账号</a>
-              <a style="padding: 1px 0 0 10px" @click="open('找回密码','请联系作者邮箱找回密码或使用测试账号登录：test | test')">忘记密码 ?</a>
-            </li>
-          </ul>
-          <!--登陆-->
+  <div class="wrap">
+    <div class="header clear-fix">
+      <div class="logo-box">
+        <img src="/static/images/CMlogo.png" alt="">
+      </div>
+      <!--<div class="space-line">-->
+        <!--<img src="/static/images/img-spaceLine.png" alt="">-->
+      <!--</div>-->
+      <div class="logo-text">
+        <h1> 辽宁移动零售库存系统</h1>
+
+    </div>
+    </div>
+    <div class="main">
+      <img :src="bgImg" class="rs_bg">
+      <div class="login-main">
+        <div class="l-m-title" >
+          欢迎登录
+      </div>
+        <form action="">
+          <div class="inp-box">
+            <input type="text" placeholder="用户名" class="inp-full" v-model="ruleForm.userName">
+          </div>
+          <div class="inp-box">
+            <input type="password" placeholder="密码" class="inp-full" v-model="ruleForm.userPwd">
+          </div>
+          <div class="inp-box">
+            <div style="float: left;">
+              <input type="text" placeholder="验证码" class="inp-part" v-model="ruleForm.checkCode">
+            </div>
+            <div class="checkCode" @click="getCheckCode">
+              <img :src="vercodeUrl" width="100%" alt="验证码" title="点击换一张"/>
+            </div>
+            <div style="clear: both"></div>
+          </div>
+
+          <div class="inp-box">
+            <div style="float: left;">
+              <input type="password" placeholder="短信验证码" class="inp-part">
+            </div>
+            <div style="float: right">
+              <div type="button" class="l-m-btn btn-part">发送</div>
+            </div>
+            <div style="clear: both"></div>
+          </div>
           <div style="margin-top: 25px">
             <y-button :text="logintxt"
-                      :classStyle="ruleForm.userPwd&& ruleForm.userName&& logintxt === '登录'?'main-btn':'disabled-btn'"
                       @btnClick="login"
-                      style="margin: 0;width: 100%;height: 48px;font-size: 18px;line-height: 48px"></y-button>
-          </div>
-          <!--返回-->
-          <div>
-            <y-button text="返回" @btnClick="login_back"
-              style="marginTop: 10px;marginBottom: 15px;width: 100%;height: 48px;font-size: 18px;line-height: 48px">
+                      style="margin: 0;width: 100%;height: 40px;font-size: 16px;line-height: 40px;background: #22a8f5;color: #fff"
+                      class="l-m-btn btn-full">
             </y-button>
-          </div>
-          <div class="border"></div>
-          <div class="footer">
-            <div class="other">其它账号登录：</div>
-            <a><img @click="open('待开发','此功能开发中...')" style="height: 15px; margin-top: 22px;" src="/static/images/other-login.png"></a>
-          </div>
-        </div>
+            </div>
+        </form>
       </div>
+    </div>
+    <div class="footer">
+      版权所有&nbsp;©&nbsp;2018 中国移动集团公司辽宁省公司
+
+        <!--Copyrihgt&nbsp;©&nbsp;1992-2014&nbsp;www.10086.cn&nbsp;All Right Reserved&nbsp;中国移动&nbsp;版权所有-->
     </div>
   </div>
 </template>
-<script src="../../../static/geetest/gt.js"></script>
+<!--<script src="../../../static/geetest/gt.js"></script>-->
 <script>
 import store from '../../store/'
 import YFooter from '/common/footer'
 import YButton from '/components/YButton'
-import { userLogin, geetest ,userToken } from '/api/index.js'
+import { userLogin, geetest ,userToken,vcode,getBanner } from '/api/index.js'
 import { addCart } from '/api/goods.js'
 import { setStore, getStore, removeStore } from '/utils/storage.js'
 
 require('../../../static/geetest/gt.js')
+let Base64 = require('js-base64').Base64;
+let checkCodeUrl='http://192.168.1.119:9999/rims/vcode'
 var captcha
 export default {
   data () {
@@ -71,7 +82,8 @@ export default {
       ruleForm: {
         userName: '',
         userPwd: '',
-        errMsg: ''
+        errMsg: '',
+        checkCode:''
       },
       registered: {
         userName: '',
@@ -80,7 +92,9 @@ export default {
         errMsg: ''
       },
       autoLogin: false,
-      logintxt: '登录'
+      logintxt: '登录',
+      vercodeUrl:checkCodeUrl,
+      bgImg:''
     }
   },
   computed: {
@@ -89,6 +103,9 @@ export default {
     }
   },
   methods: {
+    getCheckCode(){
+      this.vercodeUrl='http://192.168.1.119:9999/rims/vcode?'+Math.random()
+    },
     open (t, m) {
       this.$notify.info({
         title: t,
@@ -125,9 +142,8 @@ export default {
         removeStore('rpassword')
       }
     },
-    userToken () {
-
-      userToken().then(res1 => {
+    async  userToken () {
+      await  userToken().then(res1 => {
         setStore('token', res1)
         this.$router.push({
           path: '/'
@@ -161,85 +177,77 @@ export default {
     },
     async  login () {
       this.logintxt = '登录中...'
-      //this.rememberPass()
-/*      if (!this.ruleForm.userName || !this.ruleForm.userPwd) {
-        // this.ruleForm.errMsg = '账号或者密码不能为空!'
-        this.message('账号或者密码不能为空!')
-        return false
-      }*/
-/*      var result = captcha.getValidate()
-      if (!result) {
-        this.message('请完成验证')
+      this.rememberPass()
+      if (!this.ruleForm.userName || !this.ruleForm.userPwd || !this.ruleForm.checkCode) {
+        this.message('请填写完整!')
         this.logintxt = '登录'
-        return false
-      }*/
-      var params = {
-        userName: "admin",
-        userPwd: "MTIzNDU2"
-      }
-      /*userLogin(params).then(res => {
-        if (res.result.resultCode === 200) {
-          setStore('token', res.result.data.token)
-          setStore('userId', res.result.data.userId)
-          // 登录后添加当前缓存中的购物车
-          if (this.cart.length) {
-            for (var i = 0; i < this.cart.length; i++) {
-              addCart(this.cart[i]).then(res => {
-                if (res.success === true) {
-                }
-              })
-            }
-            removeStore('buyCart')
-            this.$router.push({
-              path: '/'
-            })
-          } else {
-            this.$router.push({
-              path: '/'
-            })
-          }
-        } else {
-          this.logintxt = '登录'
-          this.message(res.result.message)
-          //captcha.reset()
-          return false
-        }
-      })*/
 
-      userLogin(params).then(res => {
+        return false
+      }
+      let pwd=Base64.encode(this.ruleForm.userPwd);
+      var params = {
+        userName: this.ruleForm.userName,
+        userPwd: pwd,
+        verify:this.ruleForm.checkCode
+      }
+       userLogin(params).then(res => {
         if (res.isSuccess == true) {
-          setStore('userId', res.userCode)
-          setStore('orgCode', res.STAFF_ORG_CODE)
-          // 登录后成功后存用户信息
-          store.commit('RECORD_USERINFO', {info: res})
-          this.userToken();
-          // 登录后添加当前缓存中的购物车
-          if (this.cart.length) {
-            for (var i = 0; i < this.cart.length; i++) {
-              addCart(this.cart[i]).then(res => {
-                if (res.success === true) {
+            if(res.errorCode== 'P_LOGIN_PASSWORD_ERROR'){
+              this.message('密码错误')
+              this.logintxt = '登录'
+            }else if(res.errorCode== 'P_LOGIN_NOSTAFF'){
+              this.message('该用户不存在')
+              this.logintxt = '登录'
+          }else{
+              setStore('userId', res.userCode)
+              setStore('orgCode', res.STAFF_ORG_CODE)
+              setStore('token', res.userToken)
+              // 登录后成功后存用户信息
+              store.commit('RECORD_USERINFO', {info: res})
+//              this.userToken();
+              // 登录后添加当前缓存中的购物车
+              if (this.cart.length) {
+                for (var i = 0; i < this.cart.length; i++) {
+                  addCart(this.cart[i]).then(res => {
+                    if (res.success === true) {
+                    }
+                  })
                 }
-              })
+                removeStore('buyCart')
+                this.$router.push({
+                  path: '/'
+                })
+              } else {
+                /* this.$router.push({
+                 path: '/'
+                 })*/
+              }
             }
-            removeStore('buyCart')
-            this.$router.push({
-              path: '/'
-            })
-          } else {
-           /* this.$router.push({
-              path: '/'
-            })*/
-          }
+
         } else {
           this.logintxt = '登录'
-        //  this.message(res.result.message)
-          //captcha.reset()
           return false
         }
       })
     },
   },
   mounted () {
+    let params = {
+      materialDto :{
+        materialType: "4"
+      }
+    }
+
+    getBanner(params).then(res => {
+      if (res.code !== "success") {
+        this.error = true
+        return
+      }
+      let data = res
+      this.loading = false
+      this.bgImg = data.materialDtoList[0].url
+    })
+
     this.getRemembered()
     this.login_addCart()
     //this.init_geetest()
@@ -251,195 +259,303 @@ export default {
 }
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
-* {
-  box-sizing: content-box;
-}
-
-.login {
-  overflow-x: hidden;
-  overflow-y: hidden;
-  .input {
-    height: 50px;
-    display: flex;
-    align-items: center;
-    input {
-      font-size: 16px;
-      width: 100%;
-      height: 100%;
-      padding: 10px 15px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
+  *{
+    margin: 0;
+    padding: 0;
   }
-  .wrapper {
-   background: url(/static/images/bg_9b9dcb65ff.png) repeat;
-   /*background: url(/static/images/main-background.png);*/
-    background-size: 100px;
-    min-height: 800px;
-    min-width: 630px;
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
   }
-}
-
-.v2 .dialog {
-  width: 450px;
-  border: 1px solid #dadada;
-  border-radius: 10px;
-  top: 50%;
-  left: 50%;
-  margin-left: -225px;
-  position: absolute;
-  .title {
-    background: linear-gradient(#fff, #f5f5f5);
-    height: auto;
-    overflow: visible;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  fieldset,
+  img {
+    border: 0;
+  }
+  address,
+  caption,
+  cite,
+  code,
+  dfn,
+  em,
+  i,
+  strong,
+  th,
+  var {
+    font-style: normal;
+    font-weight: normal;
+  }
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+  ol,
+  ul,
+  li {
+    list-style: none;
+  }
+  hr {
+    height: 0;
+    border: none;
+  }
+  caption,
+  th {
+    text-align: left;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: 100%;
+    font-weight: normal;
+  }
+  a,
+  a:hover,
+  a:active,
+  a:link {
+    text-decoration: none;
+    color: #333;
+  }
+  html,
+  body {
+    font-family: "microsoft yahei", "Droid Sans", "Helvetica Neue", "Droid Sans Fallback", "Heiti SC", "Hiragino Sans GB", Simsun, Tahoma, Arial, Roboto, sans-self;
+    height: 100%;
+  }
+  body {
+    font-weight: normal;
+    background: #fff;
+    color: #333;
     position: relative;
-    background-image: url(/static/images/smartisan_4ada7fecea.png);
-    background-size: 140px;
-    background-position: top center;
-    background-repeat: no-repeat;
-    height: 92px;
-    margin: 23px 0 50px;
-    padding: 75px 0 0;
-    box-shadow: none;
-    h4 {
-      padding: 0;
-      text-align: center;
-      color: #666;
-      border-bottom: 1px solid #dcdcdc;
-      -webkit-box-shadow: none;
-      -moz-box-shadow: none;
-      box-shadow: none;
-      font-weight: 700;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      text-align: center;
+  }
+  body,
+  button,
+  input,
+  textarea {
+    font-family: "microsoft yahei", "Droid Sans", "Helvetica Neue", "Droid Sans Fallback", "Heiti SC", "Hiragino Sans GB", Simsun, Tahoma, Arial, Roboto, sans-self;
+    font-size: 14px;
+  }
+  strong {
+    font-weight: bold;
+  }
+  button,
+  input,
+  textarea {
+    outline: none;
+  }
+  div {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  .clear-fix:after {
+    display: block;
+    clear: both;
+    content: "";
+    visibility: hidden;
+    height: 0;
+  }
+  .clear-fix {
+    zoom: 1;
+  }
+  .clear {
+    clear: both;
+  }
+  .fl {
+    float: left;
+  }
+  .fr {
+    float: right;
+  }
+  .ml10 {
+    margin-left: 10px;
+  }
+  .ml20 {
+    margin-left: 20px;
+  }
+  .mr10 {
+    margin-right: 10px;
+  }
+  .mr20 {
+    margin-right: 20px;
+  }
+  .mb10 {
+    margin-bottom: 10px;
+  }
+  .mb20 {
+    margin-bottom: 20px;
+  }
+  .mlr10 {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .mlr20 {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-left {
+    text-align: left;
+  }
+  .text-right {
+    text-align: right;
+  }
+  .box-sizing {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+  }
+  .wrap {
+    /*position: absolute;*/
+    width: 100%;
+    min-height: 100%;
+    /*background: url('../images/main-background.png') no-repeat center center #0a4cd7;*/
+    background-size: cover;
+  }
+  .f12 {
+    font-size: 12px;
+  }
+  .fwb {
+    font-weight: bold;
+  }
+  .header {
+    height: 80px;
+    border-bottom: 1px solid #d4d5d6;
+    padding: 22px 56px;
+    background: #fff;
+  }
+  .header .logo-box {
+    float: left;
+  }
+  .header .space-line {
+    float: left;
+    margin: 0 15px;
+  }
+  .logo-text h1{
+      color: #2d4664;
+      font-size: 24px;
+      display: inline-block;
+      vertical-align: middle;
       margin: 0;
       padding: 0;
-      border-bottom: 0;
-      -webkit-box-shadow: none;
-      -moz-box-shadow: none;
-      box-shadow: none;
-      line-height: 1em;
-      height: auto;
-      color: #333;
-      font-weight: 400;
-    }
+      font-weight: 700;
+      margin-left: 10px;
   }
-  .content {
-    padding: 0 40px 22px;
-    height: auto;
-    .common-form {
-      li {
-        clear: both;
-        margin-bottom: 15px;
-        position: relative;
-      }
-    }
-  }
-}
-
-.dialog-shadow,
-.v2 .bbs .dialog-shadow,
-.v2 .dialog-shadow {
-  -webkit-box-shadow: 0 9px 30px -6px rgba(0, 0, 0, 0.2),
-    0 18px 20px -10px rgba(0, 0, 0, 0.04), 0 18px 20px -10px rgba(0, 0, 0, 0.04),
-    0 10px 20px -10px rgba(0, 0, 0, 0.04);
-  -moz-box-shadow: 0 9px 30px -6px rgba(0, 0, 0, 0.2),
-    0 18px 20px -10px rgba(0, 0, 0, 0.04), 0 18px 20px -10px rgba(0, 0, 0, 0.04),
-    0 10px 20px -10px rgba(0, 0, 0, 0.04);
-  box-shadow: 0 9px 30px -6px rgba(0, 0, 0, 0.2),
-    0 18px 20px -10px rgba(0, 0, 0, 0.04), 0 18px 20px -10px rgba(0, 0, 0, 0.04),
-    0 10px 20px -10px rgba(0, 0, 0, 0.04);
-}
-
-@media screen and (min-width: 737px),
-  screen and (-webkit-max-device-pixel-ratio: 1.9) and (max-width: 736px) and (min-device-width: 737px) {
-  .wrapper {
-    background: url(/static/images/con-bg_04f25dbf8e.jpg) repeat-x;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
-  .dialog {
-    background: url(/static/images/dialog-gray-bg.png) #fff bottom repeat-x;
-    border-radius: 12px;
-    display: none;
-    margin: -163px 0 0 -218px;
-    width: 436px;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-  }
-  .dialog .title h4 {
-    border-bottom: #d1d1d1 solid 1px;
-    box-shadow: 0 2px 6px #d1d1d1;
-    color: #666;
-    font-size: 20px;
-    height: 61px;
-    line-height: 61px;
-    padding: 0 0 0 35px;
-  }
-  .common-form li {
-    clear: both;
-    margin-bottom: 15px;
-    position: relative;
-  }
-  .auto-login {
-    position: absolute;
-    top: 0px;
-    left: 2px;
-    color: #999;
-  }
-  .register {
-    padding: 1px 10px 0;
-    border-right: 1px solid #ccc;
-  }
-  .border {
-    margin-top: 10px;
-    border-bottom: 1px solid #ccc;
-  }
-  .other {
-    margin: 20px 5px 0 0;
-    width: auto;
-    color: #bbb;
-    font-size: 12px;
-    cursor: default;
-    color: #999;
+  .header .logo-text {
+    /*float: left;*/
+    /*color: #22a8f5;*/
+    /*font-size: 26px;*/
+    /*vertical-align: bottom;*/
+    /*!*<!--margin-top: -4px;-->*!*/
   }
   .footer {
-    display: flex;
-    flex-direction: row;
-  }
-  .agree {
-    margin-bottom: 30px;
-    color: #999;
-  }
-}
-
-.registered {
-  h4 {
-    padding: 0;
+    border-top: 1px solid #d4d5d6;
+    height: 40px;
     text-align: center;
-    color: #666;
-    border-bottom: 1px solid #dcdcdc;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    font-weight: 700;
-    font-size: 20px;
-    height: 60px;
-    line-height: 60px;
+    line-height: 40px;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 12px;
   }
-}
-
-#wait {
-  text-align: left;
-  color: #999;
-  margin: 0;
-}
+  .login-main {
+    border: 1px solid #d4d5d6;
+    border-radius: 5px;
+    position: absolute;
+    right: 45%;
+    margin-right: -450px;
+    width:320px;
+    padding: 33px 50px;
+    background: #fff;
+    top: 20%;
+    z-index: 201;
+    -webkit-box-shadow: 0 9px 30px -6px rgba(0, 0, 0, 0.2),
+    0 18px 20px -10px rgba(0, 0, 0, 0.04), 0 18px 20px -10px rgba(0, 0, 0, 0.04),
+    0 10px 20px -10px rgba(0, 0, 0, 0.04);
+    -moz-box-shadow: 0 9px 30px -6px rgba(0, 0, 0, 0.2),
+    0 18px 20px -10px rgba(0, 0, 0, 0.04), 0 18px 20px -10px rgba(0, 0, 0, 0.04),
+    0 10px 20px -10px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 9px 30px -6px rgba(0, 0, 0, 0.2),
+    0 18px 20px -10px rgba(0, 0, 0, 0.04), 0 18px 20px -10px rgba(0, 0, 0, 0.04),
+    0 10px 20px -10px rgba(0, 0, 0, 0.04);
+  }
+  .login-main .l-m-title {
+    text-align: center;
+    color: #22a8f5;
+    margin-bottom: 30px;
+    font-size: 28px;
+  }
+  .login-main .inp-box {
+    margin-bottom: 20px;
+  }
+  .login-main .inp-box .inp-full,
+  .login-main .inp-box .inp-part {
+    height: 40px;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #bfbfbf;
+  }
+  .login-main .inp-box .inp-full {
+    width: 100%;
+  }
+  .login-main .inp-box .inp-part {
+    width: 108px;
+    margin-right: 5px;
+  }
+  .login-main .inp-box img {
+    vertical-align: middle;
+    /*<!--margin-top: -3px;-->*/
+  }
+  .l-m-btn {
+    background: #22a8f5;
+    color: #fff;
+    border-radius: 5px;
+    text-align: center;
+  }
+  .l-m-btn:hover {
+    background: #0186d1;
+  }
+  .btn-part {
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    /*<!--margin-top: -3px;-->*/
+  }
+  .btn-full {
+    width: 100%;
+    line-height: 40px;
+    height: 40px;
+    font-size: 16px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  .main {
+    height: 450px;
+    border-top: #e6e7e7 solid 1px;
+    border-bottom: #A0A0A0 1px solid;
+    background-sizing: 100%;
+    /*position: relative;*/
+  }
+  .rs_bg {
+    position: relative;
+    width: 100%;
+    height: 450px;
+    z-index: 100;
+  }
+  .checkCode {
+    float: right;
+    width: 100px;
+    height: 40px;
+  }
+  /*# sourceMappingURL=./style.css.map */
 </style>

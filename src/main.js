@@ -24,9 +24,7 @@ Vue.config.productionTip = false
 const whiteList = ['/home','/getBanner','/getPanel', '/getBrand', '/getVendor','/goods', '/login', '/register', '/goodsDetails', '/thanks', '/search', '/refreshsearch', '/refreshgoods' , '/cart'] // 不需要登陆的页面
 router.beforeEach(function (to, from, next) {
   let params = {
-
       userToken: getStore('token')
-
   }
 /*  userInfo(params).then(res => {
     if (res.result.state !== 1) { // 没登录
@@ -46,23 +44,19 @@ router.beforeEach(function (to, from, next) {
   })*/
   userInfo(params).then(res => {
     if (res.result.resultCode =="500") { // 没登录
-      removeStore('token')
-      removeStore('userId')
       if (to.path == '/login') { //  跳转到
-        next();
-      }else{
-        next('/login');
+        next()
+      } else {
+        next('/login')
       }
     } else {
-     // store.commit('RECORD_USERINFO', {info: res})
+      store.commit('RECORD_USERINFO', {info: res.result})
       if (to.path == '/login') { //  跳转到
         next({path: '/'})
       }
       next()
     }
   })
-
-
 })
 /* eslint-disable no-new */
 new Vue({

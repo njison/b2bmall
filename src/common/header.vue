@@ -3,8 +3,13 @@
     <div>
       <header class="w">
         <div class="w-box">
-          <div>
-            <img src="../assets/b2blogo.png"/>
+          <div class="headerLeft clear-fix">
+            <div class="logo-box">
+              <img src="/static/images/CMlogo.png" alt="">
+            </div>
+            <div class="logo-text">
+              <h1> 辽宁移动零售库存系统</h1>
+            </div>
           </div>
           <div class="right-box">
             <div class="nav-list">
@@ -25,16 +30,12 @@
               <div class="user pr">
                 <router-link to="/user">个人中心</router-link>
                 <!--用户信息显示-->
-                <div class="nav-user-wrapper pa" v-if="login">
+                <div class="nav-user-wrapper pa" >
                   <div class="nav-user-list">
                     <ul>
                       <!--头像-->
                       <li class="nav-user-avatar">
-                      <!--  <div>
-                          <span class="avatar" :style="{backgroundImage:'url('+userInfo.info.file+')'}">
-                          </span>
-                        </div>-->
-                        <p class="name">{{userInfo.info.userCode}}</p>
+                        <p class="name"></p>
                       </li>
                       <li>
                         <router-link to="/user/orderList">我的订单</router-link>
@@ -49,6 +50,8 @@
                   </div>
                 </div>
               </div>
+              <div class="nav-user-wrapper pa" v-if="login">
+              </div>
               <div class="shop pr" @mouseover="cartShowState(true)" @mouseout="cartShowState(false)"
                    ref="positionMsg">
                <router-link to="/cart"></router-link>
@@ -61,25 +64,25 @@
                       <!--购物列表-->
                       <div class="nav-cart-items">
                         <ul>
-                          <li class="clearfix" v-for="(item,i) in cartList" :key="i">
+                          <li class="clearfix" v-for="(item,i) in getcartList" :key="i">
                             <div class="cart-item">
                               <div class="cart-item-inner">
-                                <router-link :to="'goodsDetails?productId='+item.productId">
+                                <router-link :to="'goodsDetails?goodsId='+item.goodsId">
                                   <div class="item-thumb">
-                                    <img :src="item.productImg">
+                                    <img :src="item.goodsImg">
                                   </div>
                                   <div class="item-desc">
                                     <div class="cart-cell">
                                       <h4>
-                                      <a href="" v-text="item.productName"></a>
+                                      <a href="" v-text="item.goodsName"></a>
                                     </h4>
                                       <h6><span class="price-icon">¥</span><span
                                         class="price-num">{{item.salePrice}}</span><span
-                                        class="item-num">x {{item.productNum}}</span>
+                                        class="item-num">x {{item.goodsNum}}</span>
                                       </h6></div>
                                   </div>
                                 </router-link>
-                                <div class="del-btn del" @click="delGoods(item.productId)">删除</div>
+                                <div class="del-btn del" @click="delGoods(item.goodsId)">删除</div>
                               </div>
                             </div>
                           </li>
@@ -153,6 +156,7 @@
         searchResults: [],
         timeout: null,
         token: '',
+        getcartList: []
       }
     },
     computed: {
@@ -162,16 +166,16 @@
       // 计算价格
       totalPrice () {
         var totalPrice = 0
-        this.cartList && this.cartList.forEach(item => {
-          totalPrice += (item.productNum * item.salePrice)
+        this.getCartList && this.getCartList.forEach(item => {
+          totalPrice += (item.goodsNum * item.salePrice)
         })
         return totalPrice
       },
       // 计算数量
       totalNum () {
         var totalNum = 0
-        this.cartList && this.cartList.forEach(item => {
-          totalNum += (item.productNum)
+        this.getCartList && this.getCartList.forEach(item => {
+          totalNum += (item.goodsNum)
         })
         return totalNum
       }
@@ -278,7 +282,6 @@
         }*/
         let cartDelParams = {
           cartDto :{
-            userId: '1',
             goodsId:'2018060201'
           }
         }
@@ -335,6 +338,13 @@
       }
     },
     mounted () {
+      getCartList().then(res => {
+        if (res.code !== "success") {
+          this.error = true
+          return
+        }
+        this.getcartList = res.cartDtoList
+      })
       this.token = getStore('token')
 /*      if (this.login) {
         this._getCartList()
@@ -453,7 +463,32 @@
     border-bottom: 1px solid #f1f1f1;
 
   }
-
+  .headerLeft {
+    height: 80px;
+    /*border-bottom: 1px solid #d4d5d6;*/
+    padding: 22px 0;
+    background: #fff;
+  }
+  .headerLeft .logo-box {
+    float: left;
+  }
+  .headerLeft .space-line {
+    float: left;
+    margin: 0 15px;
+  }
+  .logo-text{
+    float: left;
+  }
+  .logo-text h1{
+    color: #2d4664;
+    font-size: 24px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+    font-weight: 700;
+    margin-left: 10px;
+  }
   .w-box {
     display: flex;
     justify-content: space-between;
@@ -463,9 +498,9 @@
     // position: relative;
     h1 {
       height: 100%;
-      display: flex;
+      /*display: flex;*/
       align-items: center;
-      > a {
+       a {
         background: url(/static/images/global-logo-red@2x.png) no-repeat 50%;
         background-size: cover;
         display: block;
