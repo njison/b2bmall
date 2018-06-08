@@ -61,9 +61,9 @@
           let cartAddParams = {
             cartDto :{
               userId: '1',
-              productId: id,
+              userName: 'admin',
               productNum: 1,
-              goodsId:''
+              goodsId:'2018060201'
             }
           }
 

@@ -195,8 +195,17 @@
         window.open(window.location.origin + '#/goodsDetails?productId=' + id)
       },
       _getCartList () {
-        getCartList({userId: this.userId}).then(res => {
-          this.cartList = res.result.data
+
+        let cartParams = {
+          cartDto :{
+            /*userId: getStore('userId')*/
+            userId: '1'
+          }
+        }
+
+        getCartList(cartParams).then(res => {
+          /*this.cartList = res.result.data*/
+          this.cartList =  res.cartDtoList
         })
       },
       _addressList () {

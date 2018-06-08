@@ -173,7 +173,7 @@
       checkNum () {
         var checkNum = 0
         this.cartList && this.cartList.forEach(item => {
-          if (item.checked === '1') {
+          if (item.checked == '1') {
             checkNum += (item.productNum)
           }
         })
@@ -195,7 +195,7 @@
         })
       },
       // 修改购物车
-      _cartEdit (userId, productId, productNum, checked) {
+/*    _cartEdit (userId, productId, productNum, checked) {
         cartEdit(
           {
             userId,
@@ -214,7 +214,22 @@
             )
           }
         })
+      },*/
+
+      _cartEdit (cartParams) {
+        cartEdit(cartParams).then(res => {
+          if (res.success === true) {
+            this.EDIT_CART(
+              {
+                productId,
+                checked,
+                productNum
+              }
+            )
+          }
+        })
       },
+
       // 修改购物车
       editCart (type, item) {
         if (type && item) {
@@ -223,19 +238,62 @@
           let productNum = item.productNum
           // 勾选
           if (type === 'check') {
+
+
             let newChecked = checked === '1' ? '0' : '1'
-            this._cartEdit(this.userId, productId, productNum, newChecked)
+
+            let cartParams = {
+              cartDto :{
+                userId: '1',
+                goodsId:'2018060202',
+                productNum:productNum,
+                checked:newChecked
+              }
+            }
+
+
+            /*this._cartEdit(this.userId, productId, productNum, newChecked)*/
+            this._cartEdit(cartParams)
+            // cartEdit(cartParams).then(res => {
+            //   if (res.code === "success") {
+            //     this.EDIT_CART(
+            //       {
+            //         productId,
+            //         checked,
+            //         productNum
+            //       }
+            //     )
+            //   }
+            // })
           }
         } else {
           console.log('缺少所需参数')
         }
       },
       EditNum (productNum, productId, checked) { // 数量
-        this._cartEdit(this.userId, productId, productNum, checked)
+
+        let cartParams = {
+          cartDto :{
+           /* userId: getStore('orgCode')*/
+            userId: '1',
+            goodsId:'2018060202',
+            productNum:productNum,
+            checked:checked
+          }
+        }
+        this._cartEdit(cartParams)
+       /* this._cartEdit(this.userId, productId, productNum, checked)*/
+
       },
       // 删除整条购物车
       cartdel (productId) {
-        cartDel({userId: this.userId, productId}).then(res => {
+        let cartDelParams = {
+          cartDto :{
+            userId: '1',
+            goodsId:'2018060201'
+          }
+        }
+        cartDel(cartDelParams).then(res => {
           this.EDIT_CART({productId})
         })
       },

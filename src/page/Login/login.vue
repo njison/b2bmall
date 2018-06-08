@@ -208,7 +208,6 @@ export default {
 
       userLogin(params).then(res => {
         if (res.isSuccess == true) {
-          //this.userToken()
           setStore('userId', res.userCode)
           setStore('orgCode', res.STAFF_ORG_CODE)
           // 登录后成功后存用户信息
@@ -237,35 +236,13 @@ export default {
           //captcha.reset()
           return false
         }
-      }).then(res=>{
-        this.userToken();
       })
     },
-/*    init_geetest () {
-      geetest().then(res => {
-        window.initGeetest({
-          gt: res.gt,
-          challenge: res.challenge,
-          new_captcha: res.new_captcha,
-          offline: !res.success,
-          product: 'popup',
-          width: '100%'
-        }, function (captchaObj) {
-          captcha = captchaObj
-          captchaObj.appendTo('#captcha')
-          captchaObj.onReady(function () {
-            document.getElementById('wait').style.display = 'none'
-          })
-          this.login()
-        })
-      })
-    }*/
   },
   mounted () {
     this.getRemembered()
     this.login_addCart()
     //this.init_geetest()
-   /* this.open('登录提示', '测试体验账号密码：test | test')*/
   },
   components: {
     YFooter,

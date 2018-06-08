@@ -67,4 +67,9 @@ export const geetest = (params) => {
 export const goodsDetails = (params) => {
   return http.fetchGet('/goods/goodsDetails', params)
 }
+// 图形验证码
+export const vcode = (params) => {
+  return http.fetchGet('http://192.168.1.193:8080/vcode', params)
+}
+
 
