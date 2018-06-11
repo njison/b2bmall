@@ -8,7 +8,7 @@
       <y-shelf title="收货信息">
         <div slot="content">
           <ul class="address-item-list clearfix">
-            <li v-for="(item,i) in addList"
+            <li v-for="(item,i) in getAddress"
                 :key="i"
                 class="address pr"
                 :class="{checked:addressId === item.addressId}"
@@ -21,9 +21,10 @@
                </path>
              </svg>
              </span>
-              <p>收货人: {{item.userName}} {{item.isDefault ? '(默认地址)' : ''}}</p>
-              <p class="street-name ellipsis">收货地址: {{item.streetName}}</p>
-              <p>手机号码: {{item.tel}}</p>
+              <p v-if="item.isDefault=='true'">收货人: {{item.addressName}} (默认地址)</p>
+              <p v-if="item.isDefault=='false'">收货人: {{item.addressName}}</p>
+              <p class="street-name ellipsis">收货地址: {{item.addressDetail}}</p>
+              <p>手机号码: {{item.addressPhone}}</p>
               <div class="operation-section">
                 <span class="update-btn" style="font-size:12px" @click="update(item)">修改</span>
                 <span class="delete-btn" style="font-size:12px" :data-id="item.addressId" @click="del(item.addressId)">删除</span>
@@ -51,20 +52,20 @@
               </div>
               <!--列表-->
               <div class="cart-table" v-for="(item,i) in cartList" :key="i" v-if="item.checked === '1'">
-                <div class="cart-group divide pr" :data-productid="item.productId">
+                <div class="cart-group divide pr" :data-goodsid="item.goodsId">
                   <div class="cart-top-items">
                     <div class="cart-items clearfix">
                       <!--图片-->
                       <div class="items-thumb fl">
-                        <img :alt="item.productName"
-                             :src="item.productImg">
-                        <a @click="goodsDetails(item.productId)" :title="item.productName" target="_blank"></a>
+                        <img :alt="item.goodsName"
+                             :src="item.goodsImg">
+                        <a @click="goodsDetails(item.goodsId)" :title="item.goodsName" target="_blank"></a>
                       </div>
                       <!--信息-->
                       <div class="name hide-row fl">
                         <div class="name-table">
-                          <a @click="goodsDetails(item.productId)" :title="item.productName" target="_blank"
-                             v-text="item.productName"></a>
+                          <a @click="goodsDetails(item.goodsId)" :title="item.goodsName" target="_blank"
+                             v-text="item.goodsName"></a>
                           <!-- <ul class="attribute">
                             <li>白色</li>
                           </ul> -->
@@ -73,10 +74,10 @@
                       <!--商品数量-->
                       <div>
                         <!--总价格-->
-                        <div class="subtotal" style="font-size: 14px">¥ {{item.salePrice * item.productNum}}</div>
+                        <div class="subtotal" style="font-size: 14px">¥ {{item.salePrice * item.goodsNum}}</div>
                         <!--数量-->
                         <div class="item-cols-num">
-                          <span v-text="item.productNum"></span>
+                          <span v-text="item.goodsNum"></span>
                         </div>
                         <!--价格-->
                         <div class="price">¥ {{item.salePrice}}</div>
@@ -126,7 +127,7 @@
           <y-button text='保存'
                     class="btn"
                     :classStyle="btnHighlight?'main-btn':'disabled-btn'"
-                    @btnClick="save({userId:userId,addressId:msg.addressId,userName:msg.userName,tel:msg.tel,streetName:msg.streetName,isDefault:msg.isDefault})">
+                    @btnClick="saveAddress({userId:userId,userName:msg.userName,tel:msg.tel,streetName:msg.streetName,isDefault:msg.isDefault})">
           </y-button>
         </div>
       </y-popup>
@@ -135,7 +136,7 @@
   </div>
 </template>
 <script>
-  import { getCartList, addressList, addressUpdate, addressAdd, addressDel, productDet, submitOrder } from '/api/goods'
+  import { getCartList, productDet, submitOrder, addAddress, getAddressList } from '/api/goods'
   import YShelf from '/components/shelf'
   import YButton from '/components/YButton'
   import YPopup from '/components/popup'
@@ -165,7 +166,8 @@
         userId: '',
         orderTotal: 0,
         submit: false,
-        submitOrder: '提交订单'
+        submitOrder: '提交订单',
+        getAddress: []
       }
     },
     computed: {
@@ -178,7 +180,7 @@
         let totalPrice = 0
         this.cartList && this.cartList.forEach(item => {
           if (item.checked === '1') {
-            totalPrice += (item.productNum * item.salePrice)
+            totalPrice += (item.goodsNum * item.salePrice)
           }
         })
         this.orderTotal = totalPrice
@@ -209,18 +211,18 @@
         })
       },
       _addressList () {
-        addressList({userId: this.userId}).then(res => {
-          let data = res.result.data
-          if (data.length) {
-            this.addList = data
-            this.addressId = data[0].addressId || '1'
-            this.userName = data[0].userName
-            this.tel = data[0].tel
-            this.streetName = data[0].streetName
-          } else {
-            this.addList = []
-          }
-        })
+//        addressList({userId: this.userId}).then(res => {
+//          let data = res.result.data
+//          if (data.length) {
+//            this.addList = data
+//            this.addressId = data[0].addressId || '1'
+//            this.userName = data[0].userName
+//            this.tel = data[0].tel
+//            this.streetName = data[0].streetName
+//          } else {
+//            this.addList = []
+//          }
+//        })
       },
       _addressUpdate (params) {
         addressUpdate(params).then(res => {
@@ -327,14 +329,30 @@
         }
       },
       // 保存
-      save (p) {
+      saveAddress (add) {
+          let params={
+            addressDto:{
+              isDefault:add.isDefault,
+              addressDetail:add.streetName,
+              addressPhone:add.tel,
+              userId:add.userId,
+              addressName:add.userName
+            }
+          }
+        addAddress(params).then(res => {
+            if(res.code='"success"'){
+                this.message('添加成功')
+                this.getAddressList()
+            }
+            console.log(res)
+        })
         this.popupOpen = false
-        if (p.addressId) {
-          this._addressUpdate(p)
-        } else {
-          delete p.addressId
-          this._addressAdd(p)
-        }
+//        if (p.addressId) {
+//          this._addressUpdate(p)
+//        } else {
+//          delete p.addressId
+//          this._addressAdd(p)
+//        }
       },
       // 删除
       del (addressId) {
@@ -349,19 +367,38 @@
           item.productPrice = item.salePrice
           this.cartList.push(item)
         })
+      },
+      getAddressList(){
+        let params={
+          addressDto:{
+            userId: this.userId
+          }
+        }
+        getAddressList(params).then(res => {
+          if (res.code !== "success") {
+            this.error = true
+            return
+          }
+          this.getAddress=res.addressDtoList
+        })
       }
     },
     created () {
       this.userId = getStore('userId')
       let query = this.$route.query
-      if (query.productId && query.num) {
-        this.productId = query.productId
+      if (query.goodsId && query.num) {
+        this.goosdId = query.goodsId
         this.num = query.num
-        this._productDet(this.productId)
+        this._goodsDet(this.goodsId)
       } else {
         this._getCartList()
       }
       this._addressList()
+    },
+    mounted () {
+        this.getAddressList()
+
+
     },
     components: {
       YShelf,

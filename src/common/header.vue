@@ -64,7 +64,7 @@
                       <!--购物列表-->
                       <div class="nav-cart-items">
                         <ul>
-                          <li class="clearfix" v-for="(item,i) in getcartList" :key="i">
+                          <li class="clearfix" v-for="(item,i) in cartList" :key="i">
                             <div class="cart-item">
                               <div class="cart-item-inner">
                                 <router-link :to="'goodsDetails?goodsId='+item.goodsId">
@@ -166,7 +166,7 @@
       // 计算价格
       totalPrice () {
         var totalPrice = 0
-        this.getCartList && this.getCartList.forEach(item => {
+        this.cartList && this.cartList.forEach(item => {
           totalPrice += (item.goodsNum * item.salePrice)
         })
         return totalPrice
@@ -174,7 +174,7 @@
       // 计算数量
       totalNum () {
         var totalNum = 0
-        this.getCartList && this.getCartList.forEach(item => {
+        this.cartList && this.cartList.forEach(item => {
           totalNum += (item.goodsNum)
         })
         return totalNum

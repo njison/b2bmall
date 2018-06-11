@@ -93,3 +93,11 @@ export const getVendor = (params) => {
 export const getQuickSearch = (key) => {
   return http.fetchQuickSearch(`http://127.0.0.1:8080/item/itemList/_search?q=productName: ${key}`)
 }
+// 获取用户地址
+export const getAddressList = (params) => {
+  return http.fetchPost('/address/queryAddressList', params)
+}
+// 添加地址
+export const addAddress = (params) => {
+  return http.fetchPost('/address/addAddress', params)
+}

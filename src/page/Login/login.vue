@@ -72,7 +72,7 @@ import { setStore, getStore, removeStore } from '/utils/storage.js'
 
 require('../../../static/geetest/gt.js')
 let Base64 = require('js-base64').Base64;
-let checkCodeUrl='http://192.168.1.119:9999/rims/vcode'
+let checkCodeUrl='http://192.168.1.163:8080/rims/vcode'
 var captcha
 export default {
   data () {
@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     getCheckCode(){
-      this.vercodeUrl='http://192.168.1.119:9999/rims/vcode?'+Math.random()
+      this.vercodeUrl='http://192.168.1.163:8080/rims/vcode?'+Math.random()
     },
     open (t, m) {
       this.$notify.info({
@@ -199,29 +199,29 @@ export default {
               this.message('该用户不存在')
               this.logintxt = '登录'
           }else{
-              setStore('userId', res.userCode)
+              setStore('userId', res.userId)
               setStore('orgCode', res.STAFF_ORG_CODE)
               setStore('token', res.userToken)
               // 登录后成功后存用户信息
               store.commit('RECORD_USERINFO', {info: res})
 //              this.userToken();
               // 登录后添加当前缓存中的购物车
-              if (this.cart.length) {
-                for (var i = 0; i < this.cart.length; i++) {
-                  addCart(this.cart[i]).then(res => {
-                    if (res.success === true) {
-                    }
-                  })
-                }
+//              if (this.cart.length) {
+//                for (var i = 0; i < this.cart.length; i++) {
+//                  addCart(this.cart[i]).then(res => {
+//                    if (res.success === true) {
+//                    }
+//                  })
+//                }
                 removeStore('buyCart')
                 this.$router.push({
                   path: '/'
                 })
-              } else {
+//              } else {
                 /* this.$router.push({
                  path: '/'
                  })*/
-              }
+//              }
             }
 
         } else {

@@ -188,10 +188,7 @@
           return
         }
         let panelData = res.panelDtoList
-        //let panelData = res.result.data
         this.home = panelData
-        console.log(this.home )
-
       })
       this.showNotify()
     },

@@ -16,14 +16,14 @@
                 class="subtotal">小计</span> <span class="num">数量</span> <span class="price1">单价</span>
               </div>
               <!--列表-->
-              <div class="cart-table" v-for="(item,i) in getcartList" :key="i">
-                <div class="cart-group divide pr" :data-productid="item.goodsId">
+              <div class="cart-table" v-for="(item,i) in cartList" :key="i">
+                <div class="cart-group divide pr" :data-goodsid="item.goodsId">
                   <div class="cart-top-items">
                     <div class="cart-items clearfix">
                       <!--勾选-->
-                      <div class="items-choose">
-                      <span class="blue-checkbox-new " :class="{'checkbox-on':item.checked === '1'}"
-                            @click="editCart('check',item)"></span>
+                      <div class="items-choose" @click="editCart('check',item)">
+                        <span class="blue-checkbox-new " v-if="item.checked==0"></span>
+                        <span class="blue-checkbox-new checkbox-on" v-if="item.checked==1"></span>
                       </div>
                       <!--图片-->
                       <div class="items-thumb fl">
@@ -57,7 +57,8 @@
                                    display: flex;
                                    align-items: center;
                                    justify-content: center;"
-                                 :limit="item.goodsNum"
+                                 :limit="100"
+                                 v-on:edit-num="ani"
                                  @edit-num="EditNum"
                         >
                         </buy-num>
@@ -133,7 +134,9 @@
         userId: 0,
         checkoutNow: '现在结算',
         submit: true,
-        getcartList: []
+        getcartList: [],
+        checkStatus: false,
+        getNum: ''
       }
     },
     computed: {
@@ -155,7 +158,7 @@
       // 计算总数量
       totalNum () {
         var totalNum = 0
-        this.getcartList && this.getcartList.forEach(item => {
+        this.cartList && this.cartList.forEach(item => {
           totalNum += (item.goodsNum)
         })
         return Number(totalNum)
@@ -163,8 +166,8 @@
       // 选中的总价格
       checkPrice () {
         var totalPrice = 0
-        this.getcartList && this.getcartList.forEach(item => {
-          if (item.checked === '1') {
+        this.cartList && this.cartList.forEach(item => {
+          if (item.checked == '1') {
             totalPrice += (item.goodsNum * item.salePrice)
           }
         })
@@ -173,7 +176,7 @@
       // 选中的商品数量
       checkNum () {
         var checkNum = 0
-        this.getcartList && this.getcartList.forEach(item => {
+        this.cartList && this.cartList.forEach(item => {
           if (item.checked == '1') {
             checkNum += (item.goodsNum)
           }
@@ -186,7 +189,7 @@
         'INIT_BUYCART', 'EDIT_CART'
       ]),
       goodsDetails (id) {
-        window.open(window.location.origin + '#/goodsDetails?productId=' + id)
+        window.open(window.location.origin + '#/goodsDetails?goodsId=' + id)
       },
       // 全选
       editCheckAll () {
@@ -196,35 +199,14 @@
         })
       },
       // 修改购物车
-/*    _cartEdit (userId, productId, productNum, checked) {
-        cartEdit(
-          {
-            userId,
-            productId,
-            productNum,
-            checked
-          }
-        ).then(res => {
-          if (res.success === true) {
-            this.EDIT_CART(
-              {
-                productId,
-                checked,
-                productNum
-              }
-            )
-          }
-        })
-      },*/
-
-      _cartEdit (cartParams) {
+      _cartEdit (cartParams,goodsId,goodsNum,checked) {
         cartEdit(cartParams).then(res => {
-          if (res.success === true) {
+          if (res.code === 'success') {
             this.EDIT_CART(
               {
-                productId,
-                checked,
-                productNum
+                goodsId,
+                goodsNum,
+                checked
               }
             )
           }
@@ -233,75 +215,60 @@
 
       // 修改购物车
       editCart (type, item) {
+        item.checked=!item.checked
         if (type && item) {
           let checked = item.checked
-          let productId = item.productId
-          let productNum = item.productNum
+          let goodsId = item.goodsId
+          let goodsNum = item.goodsNum
           // 勾选
           if (type === 'check') {
-
-
             let newChecked = checked === '1' ? '0' : '1'
-
             let cartParams = {
-              cartDto :{
+              cartDto : {
                 userId: '1',
-                goodsId:'2018060202',
-                productNum:productNum,
-                checked:newChecked
+                goodsId: '2018060202',
+                goodsNum: goodsNum,
+                checked: newChecked
               }
             }
-
-
-            /*this._cartEdit(this.userId, productId, productNum, newChecked)*/
-            this._cartEdit(cartParams)
-            // cartEdit(cartParams).then(res => {
-            //   if (res.code === "success") {
-            //     this.EDIT_CART(
-            //       {
-            //         productId,
-            //         checked,
-            //         productNum
-            //       }
-            //     )
-            //   }
-            // })
+            this._cartEdit(cartParams, goodsId, goodsNum, checked)
           }
         } else {
           console.log('缺少所需参数')
         }
       },
-      EditNum (productNum, productId, checked) { // 数量
+      EditNum (goodsNum, goodsId, checked) { // 数量
 
         let cartParams = {
-          cartDto :{
+          cartDto : {
            /* userId: getStore('orgCode')*/
             userId: '1',
-            goodsId:'2018060202',
-            productNum:productNum,
-            checked:checked
+            goodsId: '2018060202',
+            goodsNum: goodsNum,
+            checked: checked
           }
         }
-        this._cartEdit(cartParams)
-       /* this._cartEdit(this.userId, productId, productNum, checked)*/
-
+        this._cartEdit(cartParams, goodsId, goodsNum, checked)
       },
       // 删除整条购物车
-      cartdel (productId) {
+      cartdel (goodsId) {
         let cartDelParams = {
-          cartDto :{
+          cartDto : {
             userId: '1',
-            goodsId:'2018060201'
+            goodsId: '2018060201'
           }
         }
         cartDel(cartDelParams).then(res => {
-          this.EDIT_CART({productId})
+          this.EDIT_CART({goodsId})
         })
       },
-      checkout () {
+      checkout (id) {
         this.checkoutNow = '结算中...'
         this.submit = false
         this.$router.push({path: 'checkout'})
+      },
+      ani(data){
+          this.getNum=data
       }
     },
     mounted () {
@@ -311,6 +278,7 @@
           return
         }
         this.getcartList = res.cartDtoList
+//        console.log(this.getcartList)
       })
 
       this.userId = getStore('userId')

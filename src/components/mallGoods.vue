@@ -35,7 +35,7 @@
   export default {
     props: {
       msg: {
-        salePrice: 0
+        salePrice: 0,
       }
     },
     data () {
@@ -47,17 +47,13 @@
         this.$router.push({path: 'goodsDetails/productId=' + id})
       },
       addCart (id, price, name, img) {
-        let uId=getStore('userInfo.info.userId')
-        let uName=getStore('userInfo.info.userName')
-//        console.log(uId)
-//        console.log(uName)
         if (!this.showMoveImg) {     // 动画是否在运动
           let cartAddParams = {
             cartDto :{
               goodsNum: 1,
               goodsId:'2018060201',
               userId:'1',
-              userName:'admin'
+              userName:getStore('userId')
             }
           }
 
@@ -80,7 +76,8 @@
       }
     },
     computed: {
-      ...mapState(['login', 'showMoveImg', 'showCart'])
+      ...mapState(['login', 'showMoveImg', 'showCart','userInfo'])
+
     },
     mounted () {
     },
