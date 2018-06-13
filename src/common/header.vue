@@ -259,8 +259,7 @@
 
         let cartParams = {
           cartDto :{
-            /*userId: getStore('userId')*/
-            userId: '1'
+            userId: getStore('userId')
           }
         }
         getCartList(cartParams).then(res => {

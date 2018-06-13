@@ -13,7 +13,7 @@
                 <div class="f-bc">
                   <span class="price">单价</span>
                   <span class="num">数量</span>
-                  <span class="operation">商品操作</span>
+                  <!--<span class="operation">商品操作</span>-->
                 </div>
               </div>
               <div class="last">
@@ -25,12 +25,12 @@
               <div class="cart" v-for="(good,j) in item.goodsList" :key="j">
                 <div class="cart-l" :class="{bt:j>0}">
                   <div class="car-l-l">
-                    <div class="img-box"><a @click="goodsDetails(good.productId)"><img :src="good.productImg" alt=""></a></div>
-                    <div class="ellipsis"><a style="color: #626262;" @click="goodsDetails(good.productId)">{{good.productName}}</a></div>
+                    <div class="img-box"><a @click="goodsDetails(good.goodsId)"><img :src="good.goodsImg" alt=""></a></div>
+                    <div class="ellipsis"><a style="color: #626262;" @click="goodsDetails(good.goodsId)">{{good.goodsName}}</a></div>
                   </div>
                   <div class="cart-l-r">
                     <div>¥ {{good.salePrice.toFixed(2)}}</div>
-                    <div class="num">{{good.productNum}}</div>
+                    <div class="num">{{good.goodsNum}}</div>
                   <!--  <div class="type">
                       <el-button style="margin-left:20px" @click="_delOrder(item.orderId,i)" type="danger" size="small" v-if="j<1" class="del-order">删除此订单</el-button>
                       &lt;!&ndash; <a @click="_delOrder(item.orderId,i)" href="javascript:;" v-if="j<1" class="del-order">删除此订单</a> &ndash;&gt;
@@ -74,7 +74,7 @@
   </div>
 </template>
 <script>
-  import { orderList, delOrder } from '/api/goods'
+  import { getOrderList, delOrder } from '/api/goods'
   import YShelf from '/components/shelf'
   import { getStore } from '/utils/storage'
   export default {
@@ -83,7 +83,7 @@
         orderList: [0],
         userId: '',
         orderStatus: '',
-        loading: true,
+        loading: false,
         currentPage: 1,
         pageSize: 5,
         total: 0
@@ -137,18 +137,17 @@
       },
       _orderList () {
         let params = {
-          params: {
-            userId: this.userId,
-            size: this.pageSize,
-            page: this.currentPage
+          orderDto: {
+            userId: this.userId
           }
         }
-        orderList(params).then(res => {
+        getOrderList(params).then(res => {
+            console.log(res)
           /*this.orderList = res.result.data
           this.total = res.result.total*/
-          this.orderList = res.result.data.data
-          this.total = res.result.data.total
-          this.loading = false
+          this.orderList = res.orderDtoList
+//          this.total = res.result.data.total
+//          this.loading = false
         })
       },
       _delOrder (orderId, i) {

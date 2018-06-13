@@ -50,7 +50,7 @@ export const addressDel = (params) => {
 }
 // 生成订单
 export const submitOrder = (params) => {
-  return http.fetchPost('/member/addOrder', params)
+  return http.fetchPost('/terminalStatusMgr/addOrderAndOrderItem', params)
 }
 // 支付
 export const payMent = (params) => {
@@ -100,4 +100,16 @@ export const getAddressList = (params) => {
 // 添加地址
 export const addAddress = (params) => {
   return http.fetchPost('/address/addAddress', params)
+}
+// 修改收货地址
+export const modifyAddress = (params) => {
+  return http.fetchPost('/address/modifyAddress', params)
+}
+// 删除收货地址
+export const deleteAddress = (params) => {
+  return http.fetchPost('/address/deleteAddress', params)
+}
+// 获取订单列表
+export const getOrderList = (params) => {
+  return http.fetchPost('/terminalStatusMgr/queryOrderList', params)
 }

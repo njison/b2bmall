@@ -12,7 +12,7 @@
                 :key="i"
                 class="address pr"
                 :class="{checked:addressId === item.addressId}"
-                @click="chooseAddress(item.addressId, item.userName, item.tel, item.streetName)">
+                @click="chooseAddress(item.addressId, item.addressName, item.addressPhone, item.addressDetail)">
            <span v-if="addressId === item.addressId" class="pa">
              <svg viewBox="0 0 1473 1024" width="17.34375" height="12">
              <path
@@ -27,7 +27,7 @@
               <p>手机号码: {{item.addressPhone}}</p>
               <div class="operation-section">
                 <span class="update-btn" style="font-size:12px" @click="update(item)">修改</span>
-                <span class="delete-btn" style="font-size:12px" :data-id="item.addressId" @click="del(item.addressId)">删除</span>
+                <span class="delete-btn" style="font-size:12px" :data-id="item.addressId" @click="del(item)">删除</span>
               </div>
             </li>
 
@@ -101,7 +101,7 @@
                             :classStyle="submit?'disabled-btn':'main-btn'"
                             style="margin: 0;width: 130px;height: 50px;line-height: 50px;font-size: 16px"
                             :text="submitOrder"
-                            @btnClick="_submitOrder">
+                            @btnClick="_submitOrder()">
                   </y-button>
                 </div>
               </div>
@@ -127,7 +127,7 @@
           <y-button text='保存'
                     class="btn"
                     :classStyle="btnHighlight?'main-btn':'disabled-btn'"
-                    @btnClick="saveAddress({userId:userId,userName:msg.userName,tel:msg.tel,streetName:msg.streetName,isDefault:msg.isDefault})">
+                    @btnClick="saveAddress({addressId:msg.addressId,userId:userId,userName:msg.userName,tel:msg.tel,streetName:msg.streetName,isDefault:msg.isDefault})">
           </y-button>
         </div>
       </y-popup>
@@ -136,7 +136,7 @@
   </div>
 </template>
 <script>
-  import { getCartList, productDet, submitOrder, addAddress, getAddressList } from '/api/goods'
+  import { getCartList, productDet, submitOrder, addAddress, getAddressList, modifyAddress, deleteAddress } from '/api/goods'
   import YShelf from '/components/shelf'
   import YButton from '/components/YButton'
   import YPopup from '/components/popup'
@@ -247,7 +247,7 @@
       _submitOrder () {
         this.submitOrder = '提交订单中...'
         this.submit = true
-        var array = []
+
         if (this.addressId === '0') {
           this.message('请选择收货地址')
           this.submitOrder = '提交订单'
@@ -260,40 +260,57 @@
           this.submit = false
           return
         }
+        var orderItems = []
         for (var i = 0; i < this.cartList.length; i++) {
-          if (this.cartList[i].checked === '1') {
-            array.push(this.cartList[i])
-          }
+            var orderItem = new Object();
+            if (this.cartList[i].checked === '1') {
+              orderItem.goodsId = this.cartList[i].goodsId;
+              orderItem.goodsNum = this.cartList[i].goodsNum;
+              orderItem.goodsPrice = this.cartList[i].salePrice;
+              orderItem.totalPrice = this.cartList[i].salePrice * this.cartList[i].goodsNum;
+//              orderItem.venderId = this.cartList[i].venderId;
+//              orderItem.venderName = this.cartList[i].venderName;
+              orderItem.venderId =i
+              orderItem.venderName=i
+              orderItems.push(orderItem)
+            }
         }
         let params = {
-          userId: this.userId,
-          tel: this.tel,
-          userName: this.userName,
-          streetName: this.streetName,
-          goodsList: array,
-          orderTotal: this.orderTotal
+          orderDto:{
+            userId: this.userId,
+            addressId:this.addressId,
+            paymentMethod:'1',
+            buyOrgId:getStore('orgCode'),
+            comments:'',
+            linkPerson:this.userName,
+            linkPersonTelephone:this.tel,
+          },
+          orderItemDtos:orderItems
+
         }
-/*        submitOrder(params).then(res => {
-          if (res.success === true) {
-            this.payment(res.result)
-          } else {
-            this.message(res.message)
-            this.submitOrder = '提交订单'
-            this.submit = false
-          }
-        })*/
         submitOrder(params).then(res => {
-          if (res.result.resultCode === 200) {
+          if (res.code =='success' ) {
+            this.message('操作成功')
             this.$router.push({path: '/user/orderList'})
+//            this.payment(res.result)
           } else {
-            this.message(res.message)
+            this.message('操作失败')
             this.submitOrder = '提交订单'
             this.submit = false
           }
         })
+//        submitOrder(params).then(res => {
+//          if (res.result.resultCode === 200) {
+//            this.$router.push({path: '/user/orderList'})
+//          } else {
+//            this.message(res.message)
+//            this.submitOrder = '提交订单'
+//            this.submit = false
+//          }
+//        })
       },
       // 付款
-/*      payment (orderId) {
+     payment (orderId) {
         // 需要拿到地址id
         this.$router.push({
           path: '/order/payment',
@@ -301,7 +318,7 @@
             'orderId': orderId
           }
         })
-      },*/
+      },
       // 选择地址
       chooseAddress (addressId, userName, tel, streetName) {
         this.addressId = addressId
@@ -314,9 +331,9 @@
         this.popupOpen = true
         if (item) {
           this.popupTitle = '管理收货地址'
-          this.msg.userName = item.userName
-          this.msg.tel = item.tel
-          this.msg.streetName = item.streetName
+          this.msg.userName = item.addressName
+          this.msg.tel = item.addressPhone
+          this.msg.streetName = item.addressDetail
           this.msg.isDefault = item.isDefault
           this.msg.addressId = item.addressId
         } else {
@@ -330,6 +347,26 @@
       },
       // 保存
       saveAddress (add) {
+        this.popupOpen = false
+        if (add.addressId) {
+          console.log(add.addressId)
+          let params={
+            addressDto:{
+              isDefault:add.isDefault,
+              addressDetail:add.streetName,
+              addressPhone:add.tel,
+              userId:add.userId,
+              addressName:add.userName,
+              addressId:add.addressId
+            }
+          }
+          modifyAddress(params).then(res => {
+            if(res.code='"success"'){
+              this.message('修改成功')
+              this.getAddressList()
+            }
+          })
+        } else {
           let params={
             addressDto:{
               isDefault:add.isDefault,
@@ -339,24 +376,30 @@
               addressName:add.userName
             }
           }
-        addAddress(params).then(res => {
+          addAddress(params).then(res => {
             if(res.code='"success"'){
-                this.message('添加成功')
-                this.getAddressList()
+              this.message('添加成功')
+              this.getAddressList()
             }
-            console.log(res)
-        })
-        this.popupOpen = false
-//        if (p.addressId) {
-//          this._addressUpdate(p)
-//        } else {
-//          delete p.addressId
-//          this._addressAdd(p)
-//        }
+          })
+//          delete add.addressId
+//          this._addressAdd(add)
+        }
       },
       // 删除
-      del (addressId) {
-        this._addressDel({addressId})
+      del (item) {
+        let params={
+          addressDto:{
+            userId:item.userId,
+            addressId:item.addressId
+          }
+        }
+        deleteAddress(params).then(res => {
+          if(res.code='"success"'){
+            this.message('删除成功')
+            this.getAddressList()
+          }
+        })
       },
       _productDet (productId) {
         productDet({params: {productId}}).then(res => {

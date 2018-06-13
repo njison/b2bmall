@@ -52,7 +52,7 @@
   </div>
 </template>
 <script>
-  import { productHome,goodsDetails,getBanner,getPanel } from '/api/index.js'
+  import { productHome, goodsDetails, getBanner, getPanel } from '/api/index.js'
   import YShelf from '/components/shelf'
   import product from '/components/product'
   import mallGoods from '/components/mallGoods'

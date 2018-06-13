@@ -200,6 +200,7 @@ export default {
               this.logintxt = '登录'
           }else{
               setStore('userId', res.userId)
+              setStore('userName', res.userName)
               setStore('orgCode', res.STAFF_ORG_CODE)
               setStore('token', res.userToken)
               // 登录后成功后存用户信息

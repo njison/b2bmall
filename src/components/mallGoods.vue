@@ -52,8 +52,8 @@
             cartDto :{
               goodsNum: 1,
               goodsId:'2018060201',
-              userId:'1',
-              userName:getStore('userId')
+              userId:getStore('userId'),
+              userName:getStore('userName')
             }
           }
 

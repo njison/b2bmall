@@ -225,7 +225,7 @@
             let newChecked = checked === '1' ? '0' : '1'
             let cartParams = {
               cartDto : {
-                userId: '1',
+                userId:  getStore('userId'),
                 goodsId: '2018060202',
                 goodsNum: goodsNum,
                 checked: newChecked
@@ -241,8 +241,7 @@
 
         let cartParams = {
           cartDto : {
-           /* userId: getStore('orgCode')*/
-            userId: '1',
+            userId:  getStore('userId'),
             goodsId: '2018060202',
             goodsNum: goodsNum,
             checked: checked
@@ -254,8 +253,8 @@
       cartdel (goodsId) {
         let cartDelParams = {
           cartDto : {
-            userId: '1',
-            goodsId: '2018060201'
+            userId:  getStore('userId'),
+            goodsId: goodsId
           }
         }
         cartDel(cartDelParams).then(res => {
