@@ -7,20 +7,18 @@
         <div class="table-title">
           <span class="name">姓名</span> <span class="address">详细地址</span> <span class="tel">电话</span>
         </div>
-        <div v-if="addList.length">
-          <div class="address-item" v-for="(item,i) in addList" :key="i">
-            <div class="name">{{item.userName}}</div>
-            <div class="address-msg">{{item.streetName}}</div>
-            <div class="telephone">{{item.tel}}</div>
-            <div class="defalut">
-              <a @click="changeDef(item)"
-                 href="javascript:;"
-                 v-text="item.isDefault?'( 默认地址 )':'设为默认'"
-                 :class="{'defalut-address':item.isDefault}"></a>
+        <div v-if="getAddress.length">
+          <div class="address-item" v-for="(item,i) in getAddress" :key="i">
+            <div class="name">{{item.addressName}}</div>
+            <div class="address-msg">{{item.addressDetail}}</div>
+            <div class="telephone">{{item.addressPhone}}</div>
+            <div class="defalut" >
+              <p v-if="item.isDefault=='false'" @click="changeDef(item)" class="defalut-address"></p>
+              <p v-if="item.isDefault=='true'">( 默认地址 )</p>
             </div>
             <div class="operation">
               <el-button type="primary" icon="el-icon-edit" size="small"  @click="update(item)"></el-button>
-              <el-button type="danger" icon="el-icon-delete" size="small" :data-id="item.addressId" @click="del(item.addressId,i)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="small" :data-id="item.addressId" @click="del(item)"></el-button>
             </div>
           </div>
         </div>
@@ -51,14 +49,14 @@
         <y-button text='保存'
                   class="btn"
                   :classStyle="btnHighlight?'main-btn':'disabled-btn'"
-                  @btnClick="save({userId:userId,addressId:msg.addressId,userName:msg.userName,tel:msg.tel,streetName:msg.streetName,isDefault:msg.isDefault})">
+                  @btnClick="saveAddress({userId:userId,addressId:msg.addressId,userName:msg.userName,tel:msg.tel,streetName:msg.streetName,isDefault:msg.isDefault})">
         </y-button>
       </div>
     </y-popup>
   </div>
 </template>
 <script>
-  import { addressList, addressUpdate, addressAdd, addressDel } from '/api/goods'
+  import { addAddress, getAddressList, modifyAddress, deleteAddress } from '/api/goods'
   import YButton from '/components/YButton'
   import YPopup from '/components/popup'
   import YShelf from '/components/shelf'
@@ -76,7 +74,8 @@
           streetName: '',
           isDefault: false
         },
-        userId: ''
+        userId: '',
+        getAddress:[]
       }
     },
     computed: {
@@ -91,55 +90,81 @@
           message: m
         })
       },
-      _addressList () {
-        addressList({userId: this.userId}).then(res => {
-          let data = res.result.data
-          if (data.length) {
-            this.addList = res.result.data
-            this.addressId = res.result.data[0].addressId || '1'
-          } else {
-            this.addList = []
+      getAddressList(){
+        let params = {
+          addressDto: {
+            userId: this.userId
           }
-        })
-      },
-      _addressUpdate (params) {
-        addressUpdate(params).then(res => {
-          this._addressList()
-        })
-      },
-      _addressAdd (params) {
-        addressAdd(params).then(res => {
-          if (res.success === true) {
-            this._addressList()
-          } else {
-            this.message(res.message)
+        }
+        getAddressList(params).then(res => {
+          if (res.code !== "success") {
+            this.error = true
+            return
           }
+          this.getAddress = res.addressDtoList
         })
       },
       changeDef (item) {
         if (!item.isDefault) {
           item.isDefault = true
-          this._addressUpdate(item)
+          this.getAddressList()
         }
         return false
       },
       // 保存
-      save (p) {
+      saveAddress (add) {
         this.popupOpen = false
-        if (p.addressId) {
-          this._addressUpdate(p)
+        if (add.addressId) {
+          let params = {
+            addressDto: {
+              isDefault: add.isDefault,
+              addressDetail: add.streetName,
+              addressPhone: add.tel,
+              userId: add.userId,
+              addressName: add.userName,
+              addressId: add.addressId
+            }
+          }
+          modifyAddress(params).then(res => {
+            if (res.code = '"success"') {
+              this.message('修改成功')
+              this.getAddressList()
+            }else{
+              this.message('修改失败')
+            }
+          })
         } else {
-          delete p.addressId
-          this._addressAdd(p)
+          let params = {
+            addressDto: {
+              isDefault: add.isDefault,
+              addressDetail: add.streetName,
+              addressPhone: add.tel,
+              userId: add.userId,
+              addressName: add.userName
+            }
+          }
+          addAddress(params).then(res => {
+            if (res.code = '"success"') {
+              this.message('添加成功')
+              this.getAddressList()
+            }else{
+              this.message('修改失败')
+            }
+          })
         }
       },
       // 删除
-      del (addressId, i) {
-        addressDel({addressId: addressId}).then(res => {
-          if (res.success === true) {
-            this.addList.splice(i, 1)
-          } else {
-            this.message('删除失败')
+      del (item) {
+        let params = {
+          addressDto: {
+            userId: item.userId,
+            addressId: item.addressId
+          }
+        }
+        deleteAddress(params).then(res => {
+          if (res.code = '"success"') {
+            this.message('删除成功')
+            this.getAddressList()
           }
         })
       },
@@ -148,9 +173,9 @@
         this.popupOpen = true
         if (item) {
           this.popupTitle = '管理收货地址'
-          this.msg.userName = item.userName
-          this.msg.tel = item.tel
-          this.msg.streetName = item.streetName
+          this.msg.userName = item.addressName
+          this.msg.tel = item.addressPhone
+          this.msg.streetName = item.addressDetail
           this.msg.isDefault = item.isDefault
           this.msg.addressId = item.addressId
         } else {
@@ -161,11 +186,11 @@
           this.msg.isDefault = false
           this.msg.addressId = ''
         }
-      }
+      },
     },
     created () {
       this.userId = getStore('userId')
-      this._addressList()
+      this.getAddressList()
     },
     components: {
       YButton,

@@ -271,14 +271,7 @@
         }).then(this.INIT_BUYCART)
       },
       // 删除商品
-      delGoods (productId) {
-/*        if (this.login) { // 登陆了
-          cartDel({userId: getStore('userId'), productId}).then(res => {
-            this.EDIT_CART({productId})
-          })
-        } else {
-          this.EDIT_CART({productId})
-        }*/
+      delGoods (goodsId) {
         let cartDelParams = {
           cartDto :{
             goodsId:'2018060201'
@@ -286,7 +279,7 @@
         }
 
         cartDel(cartDelParams).then(res => {
-          this.EDIT_CART({productId})
+          this.EDIT_CART({goodsId})
         })
 
       },

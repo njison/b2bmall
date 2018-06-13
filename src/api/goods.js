@@ -113,3 +113,11 @@ export const deleteAddress = (params) => {
 export const getOrderList = (params) => {
   return http.fetchPost('/terminalStatusMgr/queryOrderList', params)
 }
+// 取消订单
+export const orderCancel = (params) => {
+  return http.fetchPost('/terminalStatusMgr/orderCancel', params)
+}
+// 获取订单日志
+export const getOrderLogList = (params) => {
+  return http.fetchPost('/terminalStatusMgr/queryOrderLogList', params)
+}
