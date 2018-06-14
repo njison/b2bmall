@@ -13,7 +13,8 @@
     </div>
     </div>
     <div class="main">
-      <img :src="bgImg" class="rs_bg">
+      <img src="/static/images/main-background.png" class="rs_bg" v-if="!bgImg">
+      <img :src="bgImg" class="rs_bg" v-else>
       <div class="login-main">
         <div class="l-m-title" >
           欢迎登录
@@ -30,7 +31,8 @@
               <input type="text" placeholder="验证码" class="inp-part" v-model="ruleForm.checkCode">
             </div>
             <div class="checkCode" @click="getCheckCode">
-              <img :src="vercodeUrl" width="100%" alt="验证码" title="点击换一张"/>
+              <img v-if="!vercodeUrl" src="/static/images/main-img-ewm.png" width="100%" alt="验证码" title="点击换一张"/>
+              <img v-else :src="vercodeUrl" width="100%" alt="验证码" title="点击换一张"/>
             </div>
             <div style="clear: both"></div>
           </div>

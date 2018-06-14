@@ -6,12 +6,12 @@ import VueLazyload from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
 import VueCookie from 'vue-cookie'
 import { userInfo } from './api'
-import { getStore,removeStore } from '/utils/storage'
-import ElementUI from 'element-ui';
+import { getStore, removeStore } from '/utils/storage'
+import ElementUI from 'element-ui'
 /*Vue.prototype.$loading = Loading.service
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message*/
-Vue.use(ElementUI);
+Vue.use(ElementUI)
 Vue.use(infiniteScroll)
 Vue.use(VueCookie)
 Vue.use(VueLazyload, {
@@ -21,40 +21,23 @@ Vue.use(VueLazyload, {
   // attempt: 1
 })
 Vue.config.productionTip = false
-const whiteList = ['/home','/getBanner','/getPanel', '/getBrand', '/getVendor','/goods', '/login', '/register', '/goodsDetails', '/thanks', '/search', '/refreshsearch', '/refreshgoods' , '/cart'] // 不需要登陆的页面
 router.beforeEach(function (to, from, next) {
   let params = {
       userToken: getStore('token')
   }
-/*  userInfo(params).then(res => {
-    if (res.result.state !== 1) { // 没登录
-      if (whiteList.indexOf(to.path) !== -1) { // 白名单
-        next()
-      } else {
-        nxt('/login')
-      }
-    } else {
-      /!*store.commit('RECORD_USERINFO', {info: res.result})*!/
-      store.commit('RECORD_USERINFO', {info: res})
-      if (to.path === '/login') { //  跳转到
-        next({path: '/'})
-      }
-      next()
-    }
-  })*/
   userInfo(params).then(res => {
-    if (res.result.resultCode =="500") { // 没登录
-      if (to.path == '/login') { //  跳转到
-        next()
-      } else {
-        next({path: '/login'})
-      }
-    } else {
+    if (res && res.result.resultCode =="200") { // 登录了
       store.commit('RECORD_USERINFO', {info: res.result})
       if (to.path == '/login') { //  跳转到
         next({path: '/'})
       }
       next()
+    } else {
+      if (to.path == '/login') { //  跳转到
+        next()
+      } else {
+        next('/login')
+      }
     }
   })
 })

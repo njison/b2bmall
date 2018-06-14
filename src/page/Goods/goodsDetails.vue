@@ -7,13 +7,13 @@
           <div class="thumbnail">
             <ul>
               <li v-for="(item,i) in small" :key="i" :class="{on:big===item}" @click="big=item">
-                <img v-lazy="item" :alt="product.productName">
+                <img v-lazy="item" :alt="product.goodsName">
               </li>
             </ul>
           </div>
           <div class="thumb">
             <div class="big">
-              <img :src="big" :alt="product.productName">
+              <img :src="product.url" :alt="product.goodsName">
             </div>
           </div>
         </div>
@@ -21,39 +21,36 @@
       <!--右边-->
       <div class="banner">
         <div class="sku-custom-title">
-          <h4>{{product.productName}}</h4>
+          <h4>{{product.goodsName}}</h4>
           <h6>
             <span><!--{{product.subTitle}}-->
             采购价：</span>
             <span class="price">
-              <em>¥</em><i>{{product.salePrice.toFixed(2)}}</i></span>
+              <em>¥</em><i>{{product.price}}</i></span>
           </h6>
 
+          <!--<div class="height-range">-->
+            <!--<span >月销量：{{product.monthNum}}台</span>-->
+          <!--</div>-->
           <div class="height-range">
-            <span >月销量：{{product.monthNum}}台</span>
+            <span >供应商名称：{{product.venderName}}</span>
           </div>
           <div class="height-range">
-            <span >供应商名称：{{product.vendorName}}</span>
-          </div>
-          <div class="height-range">
-            <span >产品等级：{{product.productLevel}}</span>
-          </div>
-          <div class="height-range height-range-bottom">
-            <span >促销活动：{{product.salesActivity}}</span>
+            <span >产品简介：{{product.goodsTitle}}</span>
           </div>
 
         </div>
         <div class="num">
           <span class="params-name">数量</span>
-          <buy-num @edit-num="editNum" :limit="Number(product.limitNum)"></buy-num>
+          <buy-num @edit-num="editNum" :limit="100"></buy-num>
         </div>
         <div class="buy">
           <y-button text="加入购物车"
-                    @btnClick="addCart(product.productId,product.salePrice,product.productName,product.productImageBig)"
+                    @btnClick="addCart(product.goodsId,product.price,product.goodsName,product.url)"
                     classStyle="main-btn"
                     style="width: 145px;height: 50px;line-height: 48px"></y-button>
           <y-button text="现在购买"
-                    @btnClick="checkout(product.productId)"
+                    @btnClick="checkout(product.goodsId)"
                     style="width: 145px;height: 50px;line-height: 48px;margin-left: 10px"></y-button>
         </div>
       </div>
@@ -66,7 +63,7 @@
   </div>
 </template>
 <script>
-  import { productDet, addCart } from '/api/goods'
+  import { goodsDetail, addCart } from '/api/goods'
   import { mapMutations, mapState } from 'vuex'
   import YShelf from '/components/shelf'
   import DetailInfo from '/components/detailInfo'
@@ -76,13 +73,11 @@
   export default {
     data () {
       return {
-        productMsg: {},
+        goodsMsg: {},
         small: [],
         big: '',
-        product: {
-          salePrice: 0
-        },
-        productNum: 1,
+        product: [],
+        goodsNum: 1,
         userId: ''
       }
     },
@@ -91,13 +86,22 @@
     },
     methods: {
       ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART']),
-      _productDet (productId) {
-        productDet({params: {productId}}).then(res => {
-          let result = res.result.data
-          this.product = result
-         // this.productMsg = result.detail || ''
-          this.small = result.productImageSmall
-          this.big = this.small[0]
+      _productDet (goodsId) {
+          let params={
+            goodsDto:{
+                  goodsId:'180000614162259268000010'
+              }
+          }
+        goodsDetail(params).then(res => {
+            if(res.code=='success'){
+
+              this.product = res.goodsDto
+//              console.log(this.product)
+            }
+
+//         // this.productMsg = result.detail || ''
+//          this.small = result.productImageSmall
+//          this.big = this.small[0]
         })
       },
       addCart (id, price, name, img) {
@@ -134,18 +138,19 @@
           }
         }
       },
-      checkout (productId) {
-        this.$router.push({path: '/checkout', query: {productId, num: this.productNum}})
+      checkout (goodsId) {
+        this.$router.push({path: '/checkout', query: {goodsId, num: this.goodsNum}})
       },
       editNum (num) {
-        this.productNum = num
+        this.goodsNum = num
       }
     },
     components: {
       YShelf, BuyNum, YButton, DetailInfo
     },
     created () {
-      let id = this.$route.query.productId
+//        let id=180000613194510824000124
+      let id = this.$route.query.goodsId
       this._productDet(id)
       this.userId = getStore('userId')
     }

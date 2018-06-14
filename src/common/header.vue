@@ -3,14 +3,14 @@
     <div>
       <header class="w">
         <div class="w-box">
-          <div class="headerLeft clear-fix">
-            <div class="logo-box">
-              <img src="/static/images/CMlogo.png" alt="">
+            <div class="headerLeft clear-fix">
+              <div class="logo-box">
+                <img src="/static/images/CMlogo.png" alt="">
+              </div>
+              <div class="logo-text">
+                <h1> 辽宁移动零售库存系统</h1>
+              </div>
             </div>
-            <div class="logo-text">
-              <h1> 辽宁移动零售库存系统</h1>
-            </div>
-          </div>
           <div class="right-box">
             <div class="nav-list">
               <el-autocomplete

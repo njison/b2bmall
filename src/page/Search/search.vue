@@ -157,8 +157,6 @@
       }
     },
     methods: {
-
-
       handleSizeChange (val) {
         this.pageSize = val
         this._getSearch()

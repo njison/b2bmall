@@ -97,7 +97,9 @@
                 <y-button :classStyle="checkNum > 0 && submit?'main-btn':'disabled-btn'"
                           class="big-main-btn"
                           style="margin: 0;width: 130px;height: 50px;line-height: 50px;font-size: 16px"
-                          :text="checkoutNow" @btnClick="checkout"></y-button>
+                          :text="checkoutNow" @btnClick="checkout">
+
+                </y-button>
               </div>
             </div>
           </div>

@@ -69,8 +69,8 @@ export const cancelOrder = (params) => {
   return http.fetchPost('/member/cancelOrder', params)
 }
 // 商品详情
-export const productDet = (params) => {
-  return http.fetchGet('/goods/productDet', params)
+export const goodsDetail = (params) => {
+  return http.fetchPost('/goods/querySCGoodsInfo', params)
 }
 
 // 删除订单
@@ -89,9 +89,13 @@ export const getBrand = (params) => {
 export const getVendor = (params) => {
   return http.fetchGet('/goods/getVendor', params)
 }
-// 快速搜索
-export const getQuickSearch = (key) => {
-  return http.fetchQuickSearch(`http://127.0.0.1:8080/item/itemList/_search?q=productName: ${key}`)
+// // 快速搜索
+// export const getQuickSearch = (key) => {
+//   return http.fetchQuickSearch(`http://127.0.0.1:8080/item/itemList/_search?q=productName: ${key}`)
+// }
+// 模糊查询
+export const getQuickSearch = (params) => {
+  return http.fetchPost('/address/queryAddressList', params)
 }
 // 获取用户地址
 export const getAddressList = (params) => {

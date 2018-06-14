@@ -1,51 +1,52 @@
 <template>
   <div class="gray-box">
-   <el-tabs type="border-card">
-  <el-tab-pane label="商品信息">
-
-   <el-table  :data="productData" border style="width: 100%">
-      <el-table-column prop="attribute" label="属性" width="300">
-      </el-table-column>
-      <el-table-column prop="dataInfo" label="参数" width="886">
-      </el-table-column>
-    </el-table>
-  </el-tab-pane>
-  <el-tab-pane label="供货商信息">
-    <el-table :data="vendorData" border style="width: 100%">
-      <el-table-column prop="attribute" label="属性" width="300">
-      </el-table-column>
-      <el-table-column prop="dataInfo" label="参数" width="886">
-      </el-table-column>
-    </el-table>
-  </el-tab-pane>
-</el-tabs>
+    <el-tabs type="border-card">
+      <el-tab-pane label="商品信息">
+        <el-table  :data="product.skuAttrValDtos" border style="width: 100%">
+        <el-table-column prop="attrName" label="属性" width="300">
+        </el-table-column>
+        <el-table-column prop="attrValueName" label="参数" width="886">
+        </el-table-column>
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane label="供货商信息">
+        <div class="tableStyle" style="width: 300px;">供货商</div>
+        <div class="tableStyle" style="width: 886px;">{{product.venderName}}</div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 <script>
-  import { productDet, addCart } from '/api/goods'
+  import { goodsDetail, addCart } from '/api/goods'
   import { getStore } from '/utils/storage'
   export default {
     data() {
       return {
         vendorData: [],
         productData:[],
-        userId: ''
+        userId: '',
+        product: []
       }
     },
 
     methods: {
-      _productDet (productId) {
-        productDet({params: {productId}}).then(res => {
-          let result = res.result.data
-          this.productData = result.productData
-          this.vendorData = result.vendorData
+      _productDet (goodsId) {
+        let params={
+          goodsDto:{
+            goodsId:'180000614162259268000010'
+          }
+        }
+        goodsDetail(params).then(res => {
+          if(res.code=='success'){
+            this.product = res.goodsDto
+          }
         })
       }
     },
     components: {
     },
     created () {
-      let id = this.$route.query.productId
+      let id = this.$route.query.goodsId
       this._productDet(id)
       this.userId = getStore('userId')
     }
@@ -58,5 +59,10 @@
     margin: 20px 0;
     border:0px;
     border-radius:8px;
+  }
+  .tableStyle{
+    float:left;
+    border: 1px solid #ebeef5;
+    padding: 10px;
   }
 </style>

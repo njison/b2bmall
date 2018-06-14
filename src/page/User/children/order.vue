@@ -22,12 +22,20 @@
                 <span class="order-detail"> <a @click="orderDetail(item.orderId)">查看详情 ><em class="icon-font"></em></a> </span>
               </div>
             </div>
-            <div class="pr">
-              <div class="cart" v-for="(good,j) in item.orderItemDtoList" :key="j">
+            <div class="pr" v-if="item.orderItemDtoList.length==0" style="height:110px;text-align: center;line-height: 110px; ">此订单无商品</div>
+
+            <div class="pr" v-else>
+              <div  class="cart" v-for="(good,j) in item.orderItemDtoList" :key="j">
                 <div class="cart-l" :class="{bt:j>0}">
                   <div class="car-l-l">
-                    <div class="img-box"><a @click="goodsDetails(good.goodsId)"><img :src="good.url" alt=""></a></div>
-                    <div class="ellipsis"><a style="color: #626262;" @click="goodsDetails(good.goodsId)">{{good.goodsName}}</a></div>
+                    <div class="img-box">
+                      <a @click="goodsDetails(good.goodsId)">
+                        <img :src="good.url" alt="">
+                      </a>
+                    </div>
+                    <div class="ellipsis">
+                      <a style="color: #626262;" @click="goodsDetails(good.goodsId)">{{good.goodsName}}</a>
+                    </div>
                   </div>
                   <div class="cart-l-r">
                     <div>¥ {{good.goodsPrice}}</div>
@@ -112,7 +120,7 @@
         window.open(window.location.origin + '#/order/payment?orderId=' + orderId)
       },
       goodsDetails (id) {
-        window.open(window.location.origin + '#/goodsDetails?productId=' + id)
+        window.open(window.location.origin + '#/goodsDetails?goodsId=' + id)
       },
       orderDetail (orderId) {
         this.$router.push({
