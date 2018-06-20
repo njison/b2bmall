@@ -4,15 +4,24 @@
       <div class="logo-box">
         <img src="/static/images/CMlogo.png" alt="">
       </div>
-      <!--<div class="space-line">-->
-        <!--<img src="/static/images/img-spaceLine.png" alt="">-->
-      <!--</div>-->
       <div class="logo-text">
         <h1> 辽宁移动零售库存系统</h1>
-
+      </div>
     </div>
+    <div class="error_content" v-if="checkStatus==false">
+      <div class="error_left">
+        <span class="sp_con">赶紧修，大家等着呢。</span>
+      </div>
+      <div class="error_right">
+        <div class="error_detail">
+          <p class="error_p_title">哎呦~ 服务器居然累倒了!</p>
+          <p class="error_p_con">●别急，工程师正在紧急处理，马上就好。</p>
+          <p class="error_p_con">●您可致电010-*****转8169,***通知***开发人员!</p>
+          <p class="error_p_con">●***的进步需要您的反馈,感谢您对***的使用,请您耐心等待!</p>
+        </div>
+      </div>
     </div>
-    <div class="main">
+    <div class="main" v-else="checkStatus==true">
       <img src="/static/images/main-background.png" class="rs_bg" v-if="!bgImg">
       <img :src="bgImg" class="rs_bg" v-else>
       <div class="login-main">
@@ -58,8 +67,6 @@
     </div>
     <div class="footer">
       版权所有&nbsp;©&nbsp;2018 中国移动集团公司辽宁省公司
-
-        <!--Copyrihgt&nbsp;©&nbsp;1992-2014&nbsp;www.10086.cn&nbsp;All Right Reserved&nbsp;中国移动&nbsp;版权所有-->
     </div>
   </div>
 </template>
@@ -68,7 +75,7 @@
 import store from '../../store/'
 import YFooter from '/common/footer'
 import YButton from '/components/YButton'
-import { userLogin, geetest ,userToken,vcode,getBanner } from '/api/index.js'
+import { userLogin, geetest ,userToken,vcode,getBanner,userInfo } from '/api/index.js'
 import { addCart } from '/api/goods.js'
 import { setStore, getStore, removeStore } from '/utils/storage.js'
 
@@ -96,7 +103,8 @@ export default {
       autoLogin: false,
       logintxt: '登录',
       vercodeUrl:checkCodeUrl,
-      bgImg:''
+      bgImg:'',
+      checkStatus:true
     }
   },
   computed: {
@@ -202,6 +210,7 @@ export default {
               this.logintxt = '登录'
           }else{
               setStore('userId', res.userId)
+              setStore('vendorType', res.vendorType)
               setStore('userName', res.userName)
               setStore('orgCode', res.STAFF_ORG_CODE)
               setStore('token', res.userToken)
@@ -233,6 +242,20 @@ export default {
         }
       })
     },
+    checkUser(){
+      let params = {
+        userToken: getStore('token')
+      }
+      userInfo(params).then(res => {
+        if (res) {
+          this.checkStatus=true
+          console.log(this.checkStatus)
+        } else {
+          this.checkStatus=false
+          console.log(this.checkStatus)
+        }
+      })
+    }
   },
   mounted () {
     let params = {
@@ -254,6 +277,7 @@ export default {
     this.getRemembered()
     this.login_addCart()
     //this.init_geetest()
+    this. checkUser()
   },
   components: {
     YFooter,
@@ -262,158 +286,45 @@ export default {
 }
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
-  *{
-    margin: 0;
-    padding: 0;
-  }
-  table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-  }
-  fieldset,
-  img {
-    border: 0;
-  }
-  address,
-  caption,
-  cite,
-  code,
-  dfn,
-  em,
-  i,
-  strong,
-  th,
-  var {
-    font-style: normal;
-    font-weight: normal;
-  }
-  button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 14px;
-    vertical-align: middle;
-  }
-  ol,
-  ul,
-  li {
-    list-style: none;
-  }
-  hr {
-    height: 0;
-    border: none;
-  }
-  caption,
-  th {
-    text-align: left;
-  }
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-size: 100%;
-    font-weight: normal;
-  }
-  a,
-  a:hover,
-  a:active,
-  a:link {
-    text-decoration: none;
-    color: #333;
-  }
-  html,
-  body {
+  *{  margin: 0;padding: 0;  }
+  table {  border-collapse: collapse;  border-spacing: 0;  width: 100%;  }
+  fieldset, img {  border: 0;  }
+  address, caption, cite, code, dfn, em, i, strong, th, var {  font-style: normal;  font-weight: normal;  }
+  button {  background: none;  border: none;  cursor: pointer;  display: inline-block;  font-size: 14px;  vertical-align: middle;  }
+  ol, ul, li {  list-style: none;  }
+  hr {  height: 0;  border: none;  }
+  caption, th {  text-align: left;  }
+  h1, h2, h3, h4, h5, h6 {  font-size: 100%;  font-weight: normal;  }
+  a, a:hover, a:active, a:link {  text-decoration: none;  color: #333;  }
+  html, body {
     font-family: "microsoft yahei", "Droid Sans", "Helvetica Neue", "Droid Sans Fallback", "Heiti SC", "Hiragino Sans GB", Simsun, Tahoma, Arial, Roboto, sans-self;
     height: 100%;
   }
-  body {
-    font-weight: normal;
-    background: #fff;
-    color: #333;
-    position: relative;
-  }
-  body,
-  button,
-  input,
-  textarea {
+  body {  font-weight: normal;  background: #fff;  color: #333;  position: relative;  }
+  body, button, input, textarea {
     font-family: "microsoft yahei", "Droid Sans", "Helvetica Neue", "Droid Sans Fallback", "Heiti SC", "Hiragino Sans GB", Simsun, Tahoma, Arial, Roboto, sans-self;
     font-size: 14px;
   }
-  strong {
-    font-weight: bold;
-  }
-  button,
-  input,
-  textarea {
-    outline: none;
-  }
-  div {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-  }
-  .clear-fix:after {
-    display: block;
-    clear: both;
-    content: "";
-    visibility: hidden;
-    height: 0;
-  }
-  .clear-fix {
-    zoom: 1;
-  }
-  .clear {
-    clear: both;
-  }
-  .fl {
-    float: left;
-  }
-  .fr {
-    float: right;
-  }
-  .ml10 {
-    margin-left: 10px;
-  }
-  .ml20 {
-    margin-left: 20px;
-  }
-  .mr10 {
-    margin-right: 10px;
-  }
-  .mr20 {
-    margin-right: 20px;
-  }
-  .mb10 {
-    margin-bottom: 10px;
-  }
-  .mb20 {
-    margin-bottom: 20px;
-  }
-  .mlr10 {
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-  .mlr20 {
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-  .text-center {
-    text-align: center;
-  }
-  .text-left {
-    text-align: left;
-  }
-  .text-right {
-    text-align: right;
-  }
-  .box-sizing {
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-  }
+  strong {  font-weight: bold;  }
+  button, input, textarea {  outline: none;  }
+  div {  -webkit-box-sizing: border-box;  box-sizing: border-box;  }
+  .clear-fix:after {  display: block;  clear: both;  content: "";  visibility: hidden;  height: 0;  }
+  .clear-fix {  zoom: 1;  }
+  .clear {  clear: both;  }
+  .fl {  float: left;  }
+  .fr {  float: right;  }
+  .ml10 {  margin-left: 10px;  }
+  .ml20 {  margin-left: 20px;  }
+  .mr10 {  margin-right: 10px;  }
+  .mr20 {  margin-right: 20px;  }
+  .mb10 {  margin-bottom: 10px;  }
+  .mb20 {  margin-bottom: 20px;  }
+  .mlr10 {  margin-left: 10px;  margin-right: 10px;  }
+  .mlr20 {  margin-left: 20px;  margin-right: 20px;  }
+  .text-center {  text-align: center;  }
+  .text-left {  text-align: left;  }
+  .text-right {  text-align: right;  }
+  .box-sizing {  box-sizing: border-box;  -moz-box-sizing: border-box;  -webkit-box-sizing: border-box;  }
   .wrap {
     /*position: absolute;*/
     width: 100%;
@@ -421,12 +332,8 @@ export default {
     /*background: url('../images/main-background.png') no-repeat center center #0a4cd7;*/
     background-size: cover;
   }
-  .f12 {
-    font-size: 12px;
-  }
-  .fwb {
-    font-weight: bold;
-  }
+  .f12 {  font-size: 12px;  }
+  .fwb {  font-weight: bold;  }
   .header {
     height: 80px;
     border-bottom: 1px solid #d4d5d6;
@@ -449,13 +356,6 @@ export default {
       padding: 0;
       font-weight: 700;
       margin-left: 10px;
-  }
-  .header .logo-text {
-    /*float: left;*/
-    /*color: #22a8f5;*/
-    /*font-size: 26px;*/
-    /*vertical-align: bottom;*/
-    /*!*<!--margin-top: -4px;-->*!*/
   }
   .footer {
     border-top: 1px solid #d4d5d6;
@@ -545,7 +445,7 @@ export default {
   .main {
     height: 450px;
     border-top: #e6e7e7 solid 1px;
-    border-bottom: #A0A0A0 1px solid;
+    /*border-bottom: #A0A0A0 1px solid;*/
     background-sizing: 100%;
     /*position: relative;*/
   }
@@ -559,6 +459,29 @@ export default {
     float: right;
     width: 100px;
     height: 40px;
+  }
+  .error_content{ margin: 0 auto; width: 1000px;}
+  .error_left{ margin: 20px 0 0 50px; width: 330px ; height: 345px; background: url(/static/images/timg.png) no-repeat;background-size: 100%;float: left;}
+  .error_right{ width: 450px; float: left; }
+  .error_detail { margin: 180px 0 0 120px;     width: 400px; height: auto; }
+  .error_detail .error_p_title{ font-size: 28px; color: #eb8531;}
+  .error_detail .error_p_con{ font-size:14px; margin-top: 10px; line-height: 20px;}
+  .sp_con{ margin-left: 128px; color:#1A4EC0;margin-top: 39px;position: absolute;font-size: 18px; }
+  .btn_error { margin: 80px 0 0 160px;}
+  .btn_error a{  padding: 5px; border: 1px solid  #CCCCCC; }
+  .btn_back1{background: dodgerblue; color: #ffffff;}
+  .btn_back2{ margin-left:25px;background: #CCCCCC;}
+
+  .btn {
+    width: 40px;
+    height: 38px;
+    cursor: pointer;
+    color: #FF813B;
+    float: right;
+    margin-top: 1px;
+    border-left: solid 1px #FF813B;
+    font-size: 20px;
+    background: no-repeat;
   }
   /*# sourceMappingURL=./style.css.map */
 </style>

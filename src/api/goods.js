@@ -79,24 +79,24 @@ export const delOrder = (params) => {
 }
 // 商品列表
 export const getSearch = (params) => {
-  return http.fetchGet('/goods/search', params)
+  return http.fetchPost('/esservice/searchGoodsByKeyword', params)
 }
-// 商品列表
+// 品牌列表
 export const getBrand = (params) => {
-  return http.fetchGet('/goods/getBrand', params)
+  return http.fetchPost('/dcData/getDcDataByDcName', params)
 }
-// 商品列表
+// 供货商列表
 export const getVendor = (params) => {
-  return http.fetchGet('/goods/getVendor', params)
+  return http.fetchPost('/vender/queryVenderList', params)
 }
 // // 快速搜索
 // export const getQuickSearch = (key) => {
 //   return http.fetchQuickSearch(`http://127.0.0.1:8080/item/itemList/_search?q=productName: ${key}`)
 // }
 // 模糊查询
-export const getQuickSearch = (params) => {
-  return http.fetchPost('/address/queryAddressList', params)
-}
+// export const getQuickSearch = (params) => {
+//   return http.fetchPost('/address/queryAddressList', params)
+// }
 // 获取用户地址
 export const getAddressList = (params) => {
   return http.fetchPost('/address/queryAddressList', params)

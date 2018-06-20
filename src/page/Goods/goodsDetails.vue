@@ -153,6 +153,7 @@
       let id = this.$route.query.goodsId
       this._productDet(id)
       this.userId = getStore('userId')
+      console.log(getStore('vendorType'))
     }
   }
 </script>

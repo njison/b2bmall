@@ -26,40 +26,65 @@
         </div>
       </div>
     </div>
-
     <div >
       <div class="nav-subs-brand">
         <div class="nav-sub-bgs"></div>
         <div class="nav-sub-wrappers">
-          <div class="w">
-            <ul class="nav-lists">
-              <li> 品牌：</li>
-              <div  >
-                <li v-for="(item,i) in brandList" :key="i" style="margin-left: 20px"  @click="selectByBrand(item.brandId)">
-                  <a v-bind:class="{ selectedBrand: item.brandId == selectedBrandId }"> {{ item.brandName }}</a>
+          <div class="w"  >
+            <div class="searchType">  品牌：</div>
+            <div style="float: left;width: 100%">
+              <ul class="nav-lists">
+                <div :class='{showAll:isshowBrand==true}' class="searchNav">
+                  <li v-for="(key,value) in brandList" class="searchTitle"
+                      :class="{ selectedBrand: key.brandId == selectedBrandId }">{{ key.valueDesc }}
                 </li>
-              </div>
-            </ul>
+                </div>
+              </ul>
+            </div>
+            <div v-if="brandList.length>10">
+              <div  v-if="isshowBrand==false" class="searchMOre showMore" @click="showAll(1)">更多></div>
+              <div  v-if="isshowBrand==true" class="searchMOre showMore" @click="closeShow(1)">收起></div>
+            </div>
+
           </div>
         </div>
       </div>
-      <div style="border-bottom:#999999 1px dashed; width: 90%;margin: auto"></div>
       <div class="nav-subs-brand">
         <div class="nav-sub-bgs"></div>
         <div class="nav-sub-wrappers">
-          <div class="w">
-            <ul class="nav-lists">
-              <li> 供货商：</li>
-              <div >
-                <li v-for="(item,i) in vendorList" :key="i"  style="margin-left: 20px"  @click="selectByVendor(item.vendorId)">
-                  <a  v-bind:class="{ selected: item.vendorId == selectedVendorId }">{{ item.vendorName }} </a>
-                </li>
-              </div>
-            </ul>
+          <div class="w"  >
+            <div class="searchType">  供货商：</div>
+            <div style="float: left;width: 90%">
+              <ul class="nav-lists">
+                <div :class='{showAll:isshowVendor==true}' class="searchNav">
+                  <li v-for="(key,value) in vendorList" class="searchTitle"
+                      :class="{ selected: key.vendorId == selectedVendorId }"
+                      @click="selectByVendor(key.vendorId)">{{ key.venderName }}</li>
+                </div>
+              </ul>
+            </div>
+            <div v-if="vendorList.length>10">
+              <div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>
+              <div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>
+            </div>
           </div>
         </div>
       </div>
-      <div style="border-bottom:#999999 1px dashed; width: 90%;margin: auto"></div>
+      <!--<div class="nav-subs-brand">-->
+        <!--<div class="nav-sub-bgs"></div>-->
+        <!--<div class="nav-sub-wrappers">-->
+          <!--<div class="w">-->
+            <!--<ul class="nav-lists">-->
+              <!--<li> 供货商：</li>-->
+              <!--<div >-->
+                <!--<li v-for="(item,i) in vendorList" :key="i"  style="margin-left: 20px"  @click="selectByVendor(item.vendorId)">-->
+                  <!--<a  v-bind:class="{ selected: item.vendorId == selectedVendorId }">{{ item.vendorName }} </a>-->
+                <!--</li>-->
+              <!--</div>-->
+            <!--</ul>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
     </div>
 
     <div class="nav">
@@ -82,7 +107,6 @@
         <div class="goods-box w">
           <mall-goods v-for="(item,i) in goods" :key="i" :msg="item"></mall-goods>
         </div>
-
         <el-pagination
           v-if="!noResult&&!error"
           @size-change="handleSizeChange"
@@ -93,7 +117,6 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
-
       </div>
       <div class="no-info" v-if="noResult" >
         <div class="no-data">
@@ -120,7 +143,7 @@
   </div>
 </template>
 <script>
-  import { getSearch,getVendor,getBrand } from '/api/goods.js'
+  import { getSearch, getVendor, getBrand } from '/api/goods.js'
   import mallGoods from '/components/mallGoods'
   import YButton from '/components/YButton'
   import YShelf from '/components/shelf'
@@ -135,8 +158,8 @@
         error: false,
         min: '',
         max: '',
-        loading: true,
-        searching: true,
+        loading: false,
+        searching: false,
         timer: null,
         sortType: 1,
         windowHeight: null,
@@ -146,17 +169,34 @@
         pageSize: 20,
         total: 0,
         key: '',
-        brandList:[],
-        vendorList:[],
+        brandList: [],
+        vendorList: [],
         brandId: '',
         vendorId: '',
-        skuType:'',
-        orgId:'',
-        selectedVendorId:'0',
-        selectedBrandId:'0'
+        skuType: '',
+        orgId: '',
+        selectedVendorId: '0',
+        selectedBrandId: '0',
+        isshowBrand: false,
+        isshowVendor: false
       }
     },
     methods: {
+      closeShow (i) {
+        if (i==1 ) {
+          this.isshowBrand = false
+        } else if(i==2){
+          this.isshowVendor = false
+        }
+      },
+      showAll (i) {
+          if(i==1){
+            this.isshowBrand = true
+          }else if(i==2){
+            this.isshowVendor = true
+          }
+
+      },
       handleSizeChange (val) {
         this.pageSize = val
         this._getSearch()
@@ -169,23 +209,14 @@
       },
       _getSearch () {
         let params = {
-          params: {
-             key: this.key,
-            size: this.pageSize,
-            page: this.currentPage,
-            sort: this.sort,
-            priceGt: this.min,
-            priceLte: this.max,
-            brandId:this.brandId,
-            vendorId:this.vendorId,
-            skuType:this.skuType,
-            orgId:this.orgId
-          }
+          searchType: 'ES_SQL_SEARCH_GOODS',
+          searchValue: this.key
+
         }
         getSearch(params).then(res => {
-          if (res.result.resultCode === 200) {
-            this.goods = res.result.data.itemList
-            this.total = res.result.data.recordCount
+          if ( res.code == 'success') {
+            this.goods = res.list
+            this.total = res.list.length
             this.noResult = false
             if (this.total === 0) {
               this.noResult = true
@@ -236,23 +267,31 @@
         this._getSearch()
       },
       _getBrand () {
-        getBrand().then(res => {
-          if (res.result.resultCode === 200) {
-            this.brandList = res.result.data
+        let params = {
+          dcName:"DIC_BRAND"
+        }
+        getBrand(params).then(res => {
+          if (res.code === 'success') {
+            this.brandList = res.dcDataMap.DIC_BRAND
           }
         })
       },
       _getVendor () {
-        getVendor().then(res => {
-          if (res.result.resultCode === 200) {
-            this.vendorList = res.result.data
+        let params = {
+          vender: {
+            vendorType: 1
+          }
+
+        }
+        getVendor(params).then(res => {
+          if (res.code === 'success') {
+            this.vendorList = res.venders
           }
         })
       }
-
-
     },
     created () {
+
     },
     mounted () {
       this.windowHeight = window.innerHeight
@@ -268,8 +307,6 @@
           this.recommendPanel = data[0]
         })*/
       })
-
-
     },
     components: {
       mallGoods,
@@ -283,6 +320,7 @@
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "../../assets/style/mixin";
   @import "../../assets/style/theme";
+
   .selected
   {
     background-color: #5683EA;
@@ -340,7 +378,7 @@
   }
 
   .nav-subs {
-    position: relative;
+    /*position: relative;*/
    //margin-top: -40px;
     margin-top: 0px;
     z-index: 20;
@@ -350,7 +388,7 @@
     .nav-sub-wrappers {
       padding: 31px 0;
       height: 90px;
-      position: relative;
+      /*position: relative;*/
     }
     .w {
       display: flex;
@@ -369,9 +407,9 @@
         }
       }
       li {
-        position: relative;
+        /*position: relative;*/
         float: left;
-        padding-left: 2px;
+        /*padding-left: 2px;*/
         a {
           display: block;
           // cursor: default;
@@ -387,7 +425,7 @@
       }
       li:before {
         content: ' ';
-        position: absolute;
+        /*position: absolute;*/
         left: 0;
         top: 13px;
         width: 2px;
@@ -446,39 +484,44 @@
 
 
   .nav-subs-brand {
-    position: relative;
+    border-bottom: 1px dashed rgb(153, 153, 153);
+    width: 90%;
+    margin: auto;
+    /*position: relative;*/
     //margin-top: -40px;
     margin-top: 0px;
     z-index: 20;
-    height: 50px;
-    background: #ededed;
+    /*height: 50px;*/
+    overflow: hidden;
+    line-height: 50px;
+    /*background: #ededed;*/
 
     .nav-sub-wrappers {
-      padding: 10px 0;
-      height: 50px;
-      position: relative;
+      padding: 5px 0;
+      /*height: 50px;*/
+      /*position: relative;*/
     }
     .w {
       display: flex;
       justify-content: space-between;
     }
     .nav-lists {
-      height: 28px;
-      line-height: 28px;
+      /*height: 28px;*/
+      /*line-height: 28px;*/
       display: flex;
       align-items: center;
       height: 100%;
       li:first-child {
-        padding-left: 0;
+        /*padding-left: 0;*/
         a {
-          padding-left: 10px;
+          /*padding-left: 10px;*/
         }
 
       }
       li {
-        position: relative;
+        /*position: relative;*/
         float: left;
-        padding-left: 2px;
+        /*padding-left: 2px;*/
         list-style-type:none;
         a {
           display: block;
@@ -504,7 +547,7 @@
       }
       li:before {
         content: ' ';
-        position: absolute;
+        /*position: absolute;*/
         left: 0;
         top: 13px;
         width: 2px;
@@ -513,4 +556,41 @@
       }
     }
   }
+  .searchNav{
+    height:50px;
+    overflow: hidden;
+    line-height: 40px;
+    width: 90%;
+    padding: 10px 0;
+  }
+  .searchType{
+    float: left;width: 100px;position: relative;top: 6px;text-align: right
+  }
+  .showAll{
+    padding: 5px;
+    height: auto;
+    min-height:50px;
+    /*overflow: auto;*/
+  }
+  .showMore{
+    float: left;width: 130px;position: relative;top: 6px;
+  }
+  .searchMOre{
+    color:#5683EA;
+    margin-left:30px;
+    cursor:pointer;
+    padding: 0;
+  }
+  .searchTitle{
+    color:#5683EA;
+    margin-left:30px;
+    cursor:pointer;
+    padding: 0;
+  }
+  .searchTitle:first-child{
+    background-color: #5683EA;
+    padding: 0px 15px;
+    color:white;
+  }
+
 </style>

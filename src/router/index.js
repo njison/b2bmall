@@ -39,8 +39,8 @@ export default new Router({
         {path: 'home', component: Home},
         {path: 'goods', component: GoodS},
         {path: 'goodsDetails', name: 'goodsDetails', component: goodsDetails},
-        {path: 'thanks', name: 'thanks', component: Thanks}
-        //{path: 'refreshgoods', name: 'refreshgoods', component: RefreshGoods},
+        {path: 'thanks', name: 'thanks', component: Thanks},
+        {path: 'refreshgoods', name: 'refreshgoods', component: RefreshGoods},
         //{path: 'search', name: 'search', component: Search}
         //{path: 'cart', name: 'cart', component: Cart}
       ]
@@ -49,7 +49,7 @@ export default new Router({
     {path: '/login', name: 'login', component: Login},
     {path: '/register', name: 'register', component: Register},
     {path: '/cart', name: 'cart', component: Cart},
-    //{path: '/refreshsearch', name: 'refreshsearch', component: RefreshSearch},
+    {path: '/refreshsearch', name: 'refreshsearch', component: RefreshSearch},
     {path: '/search', name: 'search', component: Search},
     //{path: 'goodsDetails', name: 'goodsDetails', component: goodsDetails},
     {

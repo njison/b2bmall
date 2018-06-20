@@ -16,6 +16,6 @@
   }
 
   .main {
-    background: #ededed;;
+    /*background: #ededed;*/
   }
 </style>

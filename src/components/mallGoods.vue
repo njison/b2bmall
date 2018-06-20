@@ -2,27 +2,27 @@
   <div class="good-item">
     <div style="">
       <div class="good-img">
-        <a target="_blank" :href="'/#/goodsDetails?productId='+msg.productId">
+        <a target="_blank" :href="'/#/goodsDetails?goodsId='+msg.goodsId">
           <div class="imgBox">
-            <img v-lazy="msg.url" :alt="msg.productName" width="100%">
+            <img v-lazy="msg.goodsHostImg" :alt="msg.goodsName" width="100%">
           </div>
 
         </a>
       </div>
-      <h6 class="good-title" v-html="msg.productName">{{msg.productName}}</h6>
+      <h6 class="good-title" v-html="msg.goodsName">{{msg.goodsName}}</h6>
       <h3 class="sub-title ellipsis">{{msg.subTitle}}</h3>
       <div class="good-price pr">
         <div class="ds pa">
-          <a target="_blank" :href="'/#/goodsDetails?productId='+msg.productId">
+          <a target="_blank" :href="'/#/goodsDetails?goodsId='+msg.goodsId">
             <y-button text="查看详情" style="margin: 0 5px"></y-button>
           </a>
           <y-button text="加入购物车"
                     style="margin: 0 5px"
-                    @btnClick="addCart(msg.productId,msg.price,msg.productName,msg.url)"
+                    @btnClick="addCart(msg.goodsId,msg.price,msg.goodsName,msg.url)"
                     classStyle="main-btn"
           ></y-button>
         </div>
-        <p><span style="font-size:14px">￥</span>{{msg.price.toFixed(2)}}</p>
+        <p><span style="font-size:14px">￥</span>{{msg.goodsRetailPrice}}</p>
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@
   export default {
     props: {
       msg: {
-        salePrice: 0,
+//        salePrice: 0,
       }
     },
     data () {

@@ -3,6 +3,7 @@
     <div>
       <header class="w">
         <div class="w-box">
+          <router-link to="/home">
             <div class="headerLeft clear-fix">
               <div class="logo-box">
                 <img src="/static/images/CMlogo.png" alt="">
@@ -11,6 +12,7 @@
                 <h1> 辽宁移动零售库存系统</h1>
               </div>
             </div>
+          </router-link>
           <div class="right-box">
             <div class="nav-list">
               <el-autocomplete
@@ -18,6 +20,7 @@
                 v-model="input"
                 :fetch-suggestions="querySearchAsync"
                 placeholder="请输入内容"
+                @keyup.enter.native="handleIconClick"
                 @select="handleSelect">
                 <i
                   class="el-icon-search el-input__icon"
@@ -136,7 +139,7 @@
 <script>
   import YButton from '/components/YButton'
   import { mapMutations, mapState } from 'vuex'
-  import { getCartList, cartDel, getQuickSearch } from '/api/goods'
+  import { getCartList, cartDel, getSearch } from '/api/goods'
   import { loginOut } from '/api/index'
   import { setStore, getStore, removeStore } from '/utils/storage'
   import 'element-ui/lib/theme-chalk/index.css'
@@ -183,12 +186,21 @@
     methods: {
       ...mapMutations(['ADD_CART', 'INIT_BUYCART', 'ADD_ANIMATION', 'SHOW_CART', 'REDUCE_CART', 'RECORD_USERINFO', 'EDIT_CART']),
       handleIconClick (ev) {
+        if (this.$route.path === '/search') {
+          this.$router.push({
+            path: '/refreshsearch',
+            query: {
+              key: this.input
+            }
+          })
+        } else {
           this.$router.push({
             path: '/search',
             query: {
               key: this.input
             }
           })
+        }
       },
       // 导航栏文字样式改变
       changePage (v) {
@@ -211,15 +223,20 @@
       },
       // 搜索框提示
       loadAll () {
-        getQuickSearch(this.input).then(res => {
+        let params = {
+          searchType:'ES_SQL_QK_SEARCH',
+          searchValue:this.input
+
+        }
+        getSearch(params).then(res => {
           var array = []
           var maxSize = 5
-          if (res.hits.hits.length <= 5) {
-            maxSize = res.hits.hits.length
+          if (res.list.length <= 5) {
+            maxSize = res.list.length
           }
           for (var i = 0; i < maxSize; i++) {
             var obj = {}
-            obj.value = res.hits.hits[i]._source.productName
+            obj.value = res.list[i].goodsName
             array.push(obj)
           }
           if (array.length !== 0) {
@@ -360,7 +377,9 @@
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "../assets/style/theme";
   @import "../assets/style/mixin";
-
+  *{
+    list-sytle:none;
+  }
   .move_in_cart {
     animation: mymove .5s ease-in-out;
   }
