@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-
     <div v-loading="loading" element-loading-text="加载中..." style="min-height: 35vw;" v-if="!error">
       <div class="banner" >
         <div class="bg" ref="bg"
@@ -24,8 +23,7 @@
         <section class="w mt30 clearfix" v-if="item.panelType == 3">
           <y-shelf :title="item.panelName">
             <div slot="content" class="floors" >
-              <mall-goods :msg="iitem" v-for="(iitem,j) in item.panelDtosSkuList" :key="j" ></mall-goods>
-              <!-- <mall-goods :msg="iitem" v-for="(iitem,j) in item.panelContents" :key="j" ></mall-goods>-->
+              <mall-goods-Index :msg="iitem" v-for="(iitem,j) in item.panelDtosGoodsList" :key="j" ></mall-goods-Index>
             </div>
           </y-shelf>
         </section>
@@ -55,7 +53,7 @@
   import { productHome, goodsDetails, getBanner, getPanel } from '/api/index.js'
   import YShelf from '/components/shelf'
   import product from '/components/product'
-  import mallGoods from '/components/mallGoods'
+  import mallGoodsIndex from '/components/mallGoodsIndex'
   import { setStore, getStore } from '/utils/storage.js'
   export default {
     data () {
@@ -168,9 +166,7 @@
         }
       }
       let panelParams = {
-        panelDto :{
-          orgCode: getStore('orgCode')
-        }
+        panelDto :null
       }
 
       getBanner(params).then(res => {
@@ -187,8 +183,8 @@
           this.error = true
           return
         }
-        let panelData = res.panelDtoList
-        this.home = panelData
+        this.home = res.panelDtoList
+//        console.log(this.home)
       })
       this.showNotify()
     },
@@ -198,7 +194,7 @@
     components: {
       YShelf,
       product,
-      mallGoods
+      mallGoodsIndex
     }
   }
 </script>

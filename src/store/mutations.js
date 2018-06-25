@@ -18,12 +18,14 @@ export default {
     }
   },
   // 加入购物车
-  [ADD_CART] (state, {goodsId, salePrice, goodsName, goodsImg, goodsNum = 1}) {
+  [ADD_CART] (state, {goodsId, goodsRetailPrice, goodsSettlePrice, goodsShipPrice, goodsName, goodsImg, goodsNum = 1}) {
     let cart = state.cartList // 购物车
     let falg = true
     let goods = {
       goodsId,
-      salePrice,
+      goodsRetailPrice, //零售价
+      goodsSettlePrice, //结算价
+      goodsShipPrice, //出货价
       goodsName,
       goodsImg
     }

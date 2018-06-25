@@ -33,7 +33,7 @@
       _productDet (goodsId) {
         let params={
           goodsDto:{
-            goodsId:'180000614162259268000010'
+            goodsId:goodsId
           }
         }
         goodsDetail(params).then(res => {

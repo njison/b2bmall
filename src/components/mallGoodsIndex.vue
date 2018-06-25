@@ -4,7 +4,7 @@
       <div class="good-img">
         <a target="_blank" :href="'/#/goodsDetails?goodsId='+msg.goodsId">
           <div class="imgBox">
-            <img v-lazy="msg.goodsHostImg" :alt="msg.goodsName" width="100%">
+            <img v-lazy="msg.url" :alt="msg.goodsName" width="100%">
           </div>
 
         </a>
@@ -23,7 +23,9 @@
           ></y-button>
         </div>
         <p v-if="chanelType===4" ><span style="font-size:14px">￥</span>{{msg.goodsShipPrice}}</p>
-        <p v-else ><span style="font-size:14px">￥</span>{{msg.goodsSettlePrice}}</p>      </div>
+        <p v-else ><span style="font-size:14px">￥</span>{{msg.goodsSettlePrice}}</p>
+
+      </div>
     </div>
   </div>
 </template>
@@ -41,7 +43,8 @@
     },
     data () {
       return {
-        chanelType:getStore('chanelType')
+          hotImg:'',
+          chanelType:getStore('chanelType')
       }
     },
     methods: {
@@ -84,6 +87,7 @@
     },
     mounted () {
 //      this.chanelType = getStore('chanelType')
+//      console.log(getStore('chanelType') )
     },
     components: {
       YButton

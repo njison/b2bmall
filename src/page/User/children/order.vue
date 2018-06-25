@@ -22,9 +22,9 @@
                 <span class="order-detail"> <a @click="orderDetail(item.orderId)">查看详情 ><em class="icon-font"></em></a> </span>
               </div>
             </div>
-            <div class="pr" v-if="item.orderItemDtoList.length==0" style="height:110px;text-align: center;line-height: 110px; ">此订单无商品</div>
+            <!--<div class="pr" v-if="item.orderItemDtoList.length==0" style="height:110px;text-align: center;line-height: 110px; ">此订单无商品</div>-->
 
-            <div class="pr" v-else>
+            <div class="pr">
               <div  class="cart" v-for="(good,j) in item.orderItemDtoList" :key="j">
                 <div class="cart-l" :class="{bt:j>0}">
                   <div class="car-l-l">
@@ -73,17 +73,26 @@
         </div>
       </div>
     </y-shelf>
-    <div style="float:right">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 20, 50]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next"
-        :total="total">
-      </el-pagination>
-    </div>
+    <!--<div style="float:right">-->
+      <!--<el-pagination-->
+        <!--@size-change="handleSizeChange"-->
+        <!--@current-change="handleCurrentChange"-->
+        <!--:current-page="currentPage"-->
+        <!--:page-sizes="[5, 10, 20, 50]"-->
+        <!--:page-size="pageSize"-->
+        <!--layout="total, sizes, prev, pager, next,jumper"-->
+        <!--:total="total">-->
+      <!--</el-pagination>-->
+      <!--<el-pagination-->
+        <!--@size-change="handleSizeChange"-->
+        <!--@current-change="handleCurrentChange"-->
+        <!--:current-page="currentPage"-->
+        <!--:page-sizes="[5, 10, 20, 50]"-->
+        <!--:page-size="pageSize"-->
+        <!--layout="total, sizes, prev, pager, next"-->
+        <!--:total="total">-->
+      <!--</el-pagination>-->
+    <!--</div>-->
   </div>
 </template>
 <script>
@@ -140,6 +149,7 @@
             if (res.code == 'success'){
               this.loading=false
               this.orderList = res.orderDtoList
+              this.total = res.orderDtoList.length
             } else {
 
             }
@@ -167,12 +177,13 @@
             }
         }
         orderCancel(params).then(res => {
-          if (res.success === true) {
+          if (res.code == 'success') {
             this.message(res.desc)
             this._orderList()
           } else {
             this.message(res.desc)
           }
+//          this._orderList()
         })
       }
     },

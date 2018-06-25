@@ -25,8 +25,12 @@
           <h6>
             <span><!--{{product.subTitle}}-->
             采购价：</span>
-            <span class="price">
-              <em>¥</em><i>{{product.price}}</i></span>
+            <span class="price" v-if="chanelType===4">
+              <em>¥</em><i>{{product.goodsShipPrice}}</i>
+            </span>
+            <span class="price" v-else>
+              <em>¥</em><i>{{product.goodsSettlePrice}}</i>
+            </span>
           </h6>
 
           <!--<div class="height-range">-->
@@ -57,7 +61,7 @@
     </div>
     <!--产品信息-->
     <div class="item-info">
-      <detail-info >
+      <detail-info>
       </detail-info>
     </div>
   </div>
@@ -78,7 +82,8 @@
         big: '',
         product: [],
         goodsNum: 1,
-        userId: ''
+        userId: '',
+        chanelType:getStore('chanelType')
       }
     },
     computed: {
@@ -89,43 +94,31 @@
       _productDet (goodsId) {
           let params={
             goodsDto:{
-                  goodsId:'180000614162259268000010'
+                  goodsId:goodsId
               }
           }
         goodsDetail(params).then(res => {
             if(res.code=='success'){
-
               this.product = res.goodsDto
-//              console.log(this.product)
             }
-
-//         // this.productMsg = result.detail || ''
-//          this.small = result.productImageSmall
-//          this.big = this.small[0]
         })
       },
       addCart (id, price, name, img) {
         if (!this.showMoveImg) {     // 动画是否在运动
-          if (this.login) { // 登录了 直接存在用户名下
-            addCart({userId: this.userId, productId: id, productNum: this.productNum}).then(res => {
-              // 并不重新请求数据
-              this.ADD_CART({
-                productId: id,
-                salePrice: price,
-                productName: name,
-                productImg: img,
-                productNum: this.productNum
-              })
-            })
-          } else { // 未登录 vuex
-            this.ADD_CART({
-              productId: id,
-              salePrice: price,
-              productName: name,
-              productImg: img,
-              productNum: this.productNum
-            })
+          let cartAddParams = {
+            cartDto :{
+              goodsNum: 1,
+              goodsId:id,
+              userId:getStore('userId'),
+              userName:getStore('userName')
+            }
           }
+
+          addCart(cartAddParams).then(res => {
+            // 并不重新请求数据
+            this.ADD_CART({goodsId: id, salePrice: price, goodsName: name, goodsImg: img})
+          })
+
           // 加入购物车动画
           var dom = event.target
           // 获取点击的坐标
@@ -153,7 +146,7 @@
       let id = this.$route.query.goodsId
       this._productDet(id)
       this.userId = getStore('userId')
-      console.log(getStore('vendorType'))
+//      console.log(getStore('vendorType'))
     }
   }
 </script>

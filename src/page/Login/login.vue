@@ -17,7 +17,7 @@
           <p class="error_p_title">哎呦~ 服务器居然累倒了!</p>
           <p class="error_p_con">●别急，工程师正在紧急处理，马上就好。</p>
           <p class="error_p_con">●您可致电010-*****转8169,***通知***开发人员!</p>
-          <p class="error_p_con">●***的进步需要您的反馈,感谢您对***的使用,请您耐心等待!</p>
+          <p class="error_p_con">●我们的进步需要您的反馈,感谢您的使用,请您耐心等待!</p>
         </div>
       </div>
     </div>
@@ -81,7 +81,7 @@ import { setStore, getStore, removeStore } from '/utils/storage.js'
 
 require('../../../static/geetest/gt.js')
 let Base64 = require('js-base64').Base64;
-let checkCodeUrl='http://192.168.1.163:8080/rims/vcode'
+let checkCodeUrl='http://192.168.1.162:8080/rims/vcode'
 var captcha
 export default {
   data () {
@@ -114,7 +114,7 @@ export default {
   },
   methods: {
     getCheckCode(){
-      this.vercodeUrl='http://192.168.1.163:8080/rims/vcode?'+Math.random()
+      this.vercodeUrl='http://192.168.1.162:8080/rims/vcode?'+Math.random()
     },
     open (t, m) {
       this.$notify.info({
@@ -210,7 +210,7 @@ export default {
               this.logintxt = '登录'
           }else{
               setStore('userId', res.userId)
-              setStore('vendorType', res.vendorType)
+              setStore('chanelType', res.chanelType)
               setStore('userName', res.userName)
               setStore('orgCode', res.STAFF_ORG_CODE)
               setStore('token', res.userToken)
@@ -249,10 +249,10 @@ export default {
       userInfo(params).then(res => {
         if (res) {
           this.checkStatus=true
-          console.log(this.checkStatus)
+//          console.log(this.checkStatus)
         } else {
           this.checkStatus=false
-          console.log(this.checkStatus)
+//          console.log(this.checkStatus)
         }
       })
     }

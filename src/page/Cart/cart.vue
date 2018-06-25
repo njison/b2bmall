@@ -48,7 +48,8 @@
                       <!--商品数量-->
                       <div>
                         <!--总价格-->
-                        <div class="subtotal" style="font-size: 14px">¥ {{item.salePrice * item.goodsNum}}</div>
+                        <div v-if="chanelType===4" class="subtotal" style="font-size: 14px">¥ {{item.goodsShipPrice * item.goodsNum}}</div>
+                        <div v-else class="subtotal" style="font-size: 14px">¥ {{item.goodsSettlePrice * item.goodsNum}}</div>
                         <!--数量-->
                         <buy-num :num="item.goodsNum"
                                  :id="item.goodsId"
@@ -63,7 +64,8 @@
                         >
                         </buy-num>
                         <!--价格-->
-                        <div class="price1">¥ {{item.salePrice}}</div>
+                        <div class="price1" v-if="chanelType===4">¥ {{item.goodsShipPrice}}</div>
+                        <div class="price1" v-else>¥ {{item.goodsSettlePrice}}</div>
                       </div>
                     </div>
                   </div>
@@ -138,7 +140,8 @@
         submit: true,
         getcartList: [],
         checkStatus: false,
-        getNum: ''
+        getNum: '',
+        chanelType: ''
       }
     },
     computed: {
@@ -169,8 +172,10 @@
       checkPrice () {
         var totalPrice = 0
         this.cartList && this.cartList.forEach(item => {
-          if (item.checked == '1') {
-            totalPrice += (item.goodsNum * item.salePrice)
+          if (item.checked == '1' && this.chanelType===4) {
+            totalPrice += (item.goodsNum * item.goodsShipPrice)
+          }else if (item.checked == '1' && this.chanelType!=4) {
+            totalPrice += (item.goodsNum * item.goodsSettlePrice)
           }
         })
         return totalPrice
@@ -187,6 +192,11 @@
       }
     },
     methods: {
+      message (m) {
+        this.$message.error({
+          message: m
+        })
+      },
       ...mapMutations([
         'INIT_BUYCART', 'EDIT_CART'
       ]),
@@ -201,7 +211,7 @@
         })
       },
       // 修改购物车
-      _cartEdit (cartParams,goodsId,goodsNum,checked) {
+      _cartEdit (cartParams, goodsId, goodsNum, checked) {
         cartEdit(cartParams).then(res => {
           if (res.code === 'success') {
             this.EDIT_CART(
@@ -222,17 +232,25 @@
           let checked = item.checked
           let goodsId = item.goodsId
           let goodsNum = item.goodsNum
+//          console.log('checked='+ checked)
           // 勾选
           if (type === 'check') {
-            let newChecked = checked === '1' ? '0' : '1'
+            let newChecked = ''
+              if(checked==false){
+                 newChecked ='0'
+              }else{
+                 newChecked ='1'
+              }
+//            let newChecked = checked === '1' ? '0' : '1'
             let cartParams = {
               cartDto : {
                 userId:  getStore('userId'),
-                goodsId: '2018060202',
+                goodsId: goodsId,
                 goodsNum: goodsNum,
                 checked: newChecked
               }
             }
+//            console.log(newChecked)
             this._cartEdit(cartParams, goodsId, goodsNum, checked)
           }
         } else {
@@ -244,7 +262,7 @@
         let cartParams = {
           cartDto : {
             userId:  getStore('userId'),
-            goodsId: '2018060202',
+            goodsId: goodsId,
             goodsNum: goodsNum,
             checked: checked
           }
@@ -260,7 +278,13 @@
           }
         }
         cartDel(cartDelParams).then(res => {
-          this.EDIT_CART({goodsId})
+            if (res.code=='success') {
+              this.EDIT_CART({goodsId})
+              this.message('删除成功！')
+            } else {
+                this.message('删除失败！')
+            }
+
         })
       },
       checkout (id) {
@@ -279,9 +303,8 @@
           return
         }
         this.getcartList = res.cartDtoList
-//        console.log(this.getcartList)
       })
-
+      this.chanelType = getStore('chanelType')
       this.userId = getStore('userId')
       this.INIT_BUYCART()
     },

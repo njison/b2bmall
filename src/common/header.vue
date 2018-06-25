@@ -79,9 +79,11 @@
                                       <h4>
                                       <a href="" v-text="item.goodsName"></a>
                                     </h4>
-                                      <h6><span class="price-icon">¥</span><span
-                                        class="price-num">{{item.salePrice}}</span><span
-                                        class="item-num">x {{item.goodsNum}}</span>
+                                      <h6><span class="price-icon">¥</span>
+                                        <span v-if="chanelType===4" class="price-num">{{item.goodsShipPrice}}</span>
+                                        <span v-else class="price-num">{{item.goodsSettlePrice}}</span>
+
+                                        <span class="item-num">x {{item.goodsNum}}</span>
                                       </h6></div>
                                   </div>
                                 </router-link>
@@ -98,7 +100,8 @@
                         <h6>
                           <y-button classStyle="main-btn"
                                     style="height: 40px;width: 100%;margin: 0;color: #fff;font-size: 14px;line-height: 38px"
-                                    text="去购物车" @btnClick="toCart"></y-button>
+                                    text="去购物车" @btnClick="toCart">
+                          </y-button>
                         </h6>
                       </div>
                     </div>
@@ -121,12 +124,12 @@
                 <li>
                   <router-link to="/"><a @click="changePage(1)" :class="{active:choosePage===1}">首页</a></router-link>
                 </li>
-                <li>
-                  <a @click="changGoods(2)" :class="{active:choosePage===2}">手机</a>
-                </li>
-                <li>
-                  <a @click="changGoods(3)" :class="{active:choosePage===3}">周边</a>
-                </li>
+                <!--<li>-->
+                  <!--<a @click="changGoods(2)" :class="{active:choosePage===2}">手机</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                  <!--<a @click="changGoods(3)" :class="{active:choosePage===3}">周边</a>-->
+                <!--</li>-->
               </ul>
               <div></div>
             </div>
@@ -159,7 +162,8 @@
         searchResults: [],
         timeout: null,
         token: '',
-        getcartList: []
+        getcartList: [],
+        chanelType: ''
       }
     },
     computed: {
@@ -170,7 +174,11 @@
       totalPrice () {
         var totalPrice = 0
         this.cartList && this.cartList.forEach(item => {
-          totalPrice += (item.goodsNum * item.salePrice)
+          if (this.chanelType===4) {
+            totalPrice += (item.goodsNum * item.goodsShipPrice)
+          }else{
+            totalPrice += (item.goodsNum * item.goodsSettlePrice)
+          }
         })
         return totalPrice
       },
@@ -201,6 +209,11 @@
             }
           })
         }
+      },
+      message (m) {
+        this.$message.error({
+          message: m
+        })
       },
       // 导航栏文字样式改变
       changePage (v) {
@@ -291,12 +304,18 @@
       delGoods (goodsId) {
         let cartDelParams = {
           cartDto :{
-            goodsId:'2018060201'
+            userId:  getStore('userId'),
+            goodsId:goodsId
           }
         }
 
         cartDel(cartDelParams).then(res => {
-          this.EDIT_CART({goodsId})
+          if (res.code=='success') {
+            this.message('删除成功！')
+            this.EDIT_CART({goodsId})
+          } else {
+            this.message('删除失败！')
+          }
         })
 
       },
@@ -355,6 +374,7 @@
         this.getcartList = res.cartDtoList
       })
       this.token = getStore('token')
+      this.chanelType = getStore('chanelType')
 /*      if (this.login) {
         this._getCartList()
       } else {

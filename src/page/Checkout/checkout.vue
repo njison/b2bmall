@@ -74,13 +74,19 @@
                       <!--商品数量-->
                       <div>
                         <!--总价格-->
-                        <div class="subtotal" style="font-size: 14px">¥ {{item.salePrice * item.goodsNum}}</div>
+                        <div v-if="chanelType===4" class="subtotal" style="font-size: 14px">¥ {{item.goodsShipPrice * item.goodsNum}}</div>
+                        <div v-else class="subtotal" style="font-size: 14px">¥ {{item.goodsSettlePrice * item.goodsNum}}</div>
+
+                        <!--<div class="subtotal" style="font-size: 14px">¥ {{item.salePrice * item.goodsNum}}</div>-->
                         <!--数量-->
                         <div class="item-cols-num">
                           <span v-text="item.goodsNum"></span>
                         </div>
                         <!--价格-->
-                        <div class="price">¥ {{item.salePrice}}</div>
+                        <div class="price" v-if="chanelType===4">¥ {{item.goodsShipPrice}}</div>
+                        <div class="price" v-else>¥ {{item.goodsSettlePrice}}</div>
+
+                        <!--<div class="price">¥ {{item.salePrice}}</div>-->
                       </div>
                     </div>
                   </div>
@@ -136,7 +142,7 @@
   </div>
 </template>
 <script>
-  import { getCartList, productDet, submitOrder, addAddress, getAddressList, modifyAddress, deleteAddress } from '/api/goods'
+  import { getCartList, productDet, submitOrder, addAddress, getAddressList, modifyAddress, deleteAddress, goodsDetail } from '/api/goods'
   import YShelf from '/components/shelf'
   import YButton from '/components/YButton'
   import YPopup from '/components/popup'
@@ -167,7 +173,8 @@
         orderTotal: 0,
         submit: false,
         submitOrder: '提交订单',
-        getAddress: []
+        getAddress: [],
+        chanelType:''
       }
     },
     computed: {
@@ -179,9 +186,14 @@
       checkPrice () {
         let totalPrice = 0
         this.cartList && this.cartList.forEach(item => {
-          if (item.checked === '1') {
-            totalPrice += (item.goodsNum * item.salePrice)
+          if (item.checked == '1' && this.chanelType===4) {
+            totalPrice += (item.goodsNum * item.goodsShipPrice)
+          }else if (item.checked == '1' && this.chanelType!=4) {
+            totalPrice += (item.goodsNum * item.goodsSettlePrice)
           }
+//          if (item.checked === '1') {
+//            totalPrice += (item.goodsNum * item.salePrice)
+//          }
         })
         this.orderTotal = totalPrice
         return totalPrice
@@ -201,7 +213,7 @@
         let cartParams = {
           cartDto :{
             /*userId: getStore('userId')*/
-            userId: '1'
+            userId:  getStore('userId')
           }
         }
 
@@ -263,17 +275,29 @@
         var orderItems = []
         for (var i = 0; i < this.cartList.length; i++) {
             var orderItem = new Object();
-            if (this.cartList[i].checked === '1') {
+            if (this.cartList[i].checked === '1' && this.chanelType===4) {
               orderItem.goodsId = this.cartList[i].goodsId;
               orderItem.goodsNum = this.cartList[i].goodsNum;
-              orderItem.goodsPrice = this.cartList[i].salePrice;
-              orderItem.totalPrice = this.cartList[i].salePrice * this.cartList[i].goodsNum;
-//              orderItem.venderId = this.cartList[i].venderId;
-//              orderItem.venderName = this.cartList[i].venderName;
+              orderItem.goodsPrice = this.cartList[i].goodsShipPrice;
+              orderItem.totalPrice = this.cartList[i].goodsShipPrice * this.cartList[i].goodsNum;
+              orderItem.venderId =i
+              orderItem.venderName=i
+              orderItems.push(orderItem)
+            }else if(this.cartList[i].checked === '1' && this.chanelType!=4){
+              orderItem.goodsId = this.cartList[i].goodsId;
+              orderItem.goodsNum = this.cartList[i].goodsNum;
+              orderItem.goodsPrice = this.cartList[i].goodsSettlePrice;
+              orderItem.totalPrice = this.cartList[i].goodsSettlePrice * this.cartList[i].goodsNum;
               orderItem.venderId =i
               orderItem.venderName=i
               orderItems.push(orderItem)
             }
+        }
+        var array = []
+        for (var i = 0; i < this.cartList.length; i++) {
+          if (this.cartList[i].checked === '1') {
+            array.push(this.cartList[i])
+          }
         }
         let params = {
           orderDto:{
@@ -401,15 +425,30 @@
           }
         })
       },
-      _productDet (productId) {
-        productDet({params: {productId}}).then(res => {
-          let item = res.result
-          item.checked = '1'
-          item.productImg = item.productImageBig
-          item.productNum = this.num
-          item.productPrice = item.salePrice
-          this.cartList.push(item)
+      _productDet (goodsId) {
+        let params={
+          goodsDto:{
+            goodsId:goodsId
+          }
+        }
+        goodsDetail(params).then(res => {
+          if(res.code=='success'){
+            let item = res.goodsDto
+            item.checked = '1'
+            item.goodsImg = item.url
+            item.goodsNum = this.num
+            item.productPrice = item.goodsSettlePrice
+            this.cartList.push(item)
+          }
         })
+//        goodsDetail({params: {goodsId}}).then(res => {
+//          let item = res.goodsDto
+//          item.checked = '1'
+//          item.productImg = item.productImageBig
+//          item.productNum = this.num
+//          item.productPrice = item.salePrice
+//          this.cartList.push(item)
+//        })
       },
       getAddressList(){
         let params={
@@ -430,16 +469,18 @@
       this.userId = getStore('userId')
       let query = this.$route.query
       if (query.goodsId && query.num) {
-        this.goosdId = query.goodsId
+        this.goodsId = query.goodsId
         this.num = query.num
-        this._goodsDet(this.goodsId)
+        console.log(this.goodsId)
+        this._productDet(this.goodsId)
       } else {
         this._getCartList()
       }
       this._addressList()
     },
     mounted () {
-        this.getAddressList()
+      this.chanelType = getStore('chanelType')
+      this.getAddressList()
 
 
     },
