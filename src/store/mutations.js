@@ -6,7 +6,8 @@ import {
   ADD_ANIMATION,
   SHOW_CART,
   REDUCE_CART,
-  EDIT_CART
+  EDIT_CART,
+  GET_PRICE
 } from './mutation-types'
 import { setStore, getStore } from '../utils/storage'
 export default {
@@ -18,7 +19,7 @@ export default {
     }
   },
   // 加入购物车
-  [ADD_CART] (state, {goodsId, goodsRetailPrice, goodsSettlePrice, goodsShipPrice, goodsName, goodsImg, goodsNum = 1}) {
+  [ADD_CART] (state, {goodsId, goodsRetailPrice, goodsSettlePrice, goodsShipPrice, goodsName, goodsImg, goodsNum}) {
     let cart = state.cartList // 购物车
     let falg = true
     let goods = {
@@ -27,14 +28,15 @@ export default {
       goodsSettlePrice, //结算价
       goodsShipPrice, //出货价
       goodsName,
-      goodsImg
+      goodsImg,
+      goodsNum
     }
     if (cart.length) {        // 有内容
       cart.forEach(item => {
         if (item.goodsId === goodsId) {
           if (item.goodsNum >= 0) {
             falg = false
-            item.goodsNum +=goodsNum
+            item.goodsNum += goodsNum
           }
         }
       })
@@ -132,6 +134,17 @@ export default {
       state.userInfo = {...info}
     } else {
       state.userInfo = null
+    }
+  },
+  // 获取不同登录状态下的价格
+  [GET_PRICE] (state, {goodsSettlePrice, goodsShipPrice}) {
+    let chanelType = getStore('chanelType')
+    if (chanelType === 4) {
+      setStore('showPrice', goodsShipPrice)
+      state.showPrice = goodsShipPrice
+    } else {
+      setStore('showPrice', goodsSettlePrice)
+      state.showPrice = goodsSettlePrice
     }
   }
 }

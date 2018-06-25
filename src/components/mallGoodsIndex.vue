@@ -23,8 +23,7 @@
           ></y-button>
         </div>
         <p v-if="chanelType===4" ><span style="font-size:14px">￥</span>{{msg.goodsShipPrice}}</p>
-        <p v-else ><span style="font-size:14px">￥</span>{{msg.goodsSettlePrice}}</p>
-
+        <p v-else><span style="font-size:14px">￥</span>{{msg.goodsSettlePrice}}</p>
       </div>
     </div>
   </div>
@@ -34,17 +33,15 @@
   import { addCart } from '/api/goods.js'
   import { mapMutations, mapState } from 'vuex'
   import { getStore } from '/utils/storage'
+//  import util from '/lib/util.js'
   export default {
     props: {
-      msg: {
-//        salePrice: 0,
-      },
-
+      msg: {},
     },
     data () {
       return {
           hotImg:'',
-          chanelType:getStore('chanelType')
+          chanelType:getStore('chanelType'),
       }
     },
     methods: {
@@ -65,7 +62,7 @@
 
           addCart(cartAddParams).then(res => {
               // 并不重新请求数据
-              this.ADD_CART({goodsId: id, goodsSettlePrice: goodsSettlePrice, goodsRetailPrice:goodsRetailPrice ,goodsShipPrice:goodsShipPrice, goodsName: name, goodsImg: img})
+              this.ADD_CART({goodsNum: 1, goodsId: id, goodsSettlePrice: goodsSettlePrice, goodsRetailPrice:goodsRetailPrice ,goodsShipPrice:goodsShipPrice, goodsName: name, goodsImg: img})
             })
 
           // 加入购物车动画
@@ -83,11 +80,8 @@
     },
     computed: {
       ...mapState(['login', 'showMoveImg', 'showCart','userInfo'])
-
     },
     mounted () {
-//      this.chanelType = getStore('chanelType')
-//      console.log(getStore('chanelType') )
     },
     components: {
       YButton

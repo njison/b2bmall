@@ -50,9 +50,10 @@
         </div>
         <div class="buy">
           <y-button text="加入购物车"
-                    @btnClick="addCart(product.goodsId,product.price,product.goodsName,product.url)"
+                    @btnClick="addCart(product.goodsId,product.goodsShipPrice,product.goodsSettlePrice,product.goodsRetailPrice,product.goodsName,product.url)"
                     classStyle="main-btn"
-                    style="width: 145px;height: 50px;line-height: 48px"></y-button>
+                    style="width: 145px;height: 50px;line-height: 48px">
+          </y-button>
           <y-button text="现在购买"
                     @btnClick="checkout(product.goodsId)"
                     style="width: 145px;height: 50px;line-height: 48px;margin-left: 10px"></y-button>
@@ -103,11 +104,11 @@
             }
         })
       },
-      addCart (id, price, name, img) {
+      addCart (id, goodsShipPrice,goodsSettlePrice, goodsRetailPrice, name, img) {
         if (!this.showMoveImg) {     // 动画是否在运动
           let cartAddParams = {
             cartDto :{
-              goodsNum: 1,
+              goodsNum: this.goodsNum,
               goodsId:id,
               userId:getStore('userId'),
               userName:getStore('userName')
@@ -116,7 +117,7 @@
 
           addCart(cartAddParams).then(res => {
             // 并不重新请求数据
-            this.ADD_CART({goodsId: id, salePrice: price, goodsName: name, goodsImg: img})
+            this.ADD_CART({ goodsNum: this.goodsNum, goodsId: id, goodsSettlePrice: goodsSettlePrice, goodsRetailPrice:goodsRetailPrice ,goodsShipPrice:goodsShipPrice, goodsName: name, goodsImg: img})
           })
 
           // 加入购物车动画

@@ -122,7 +122,7 @@
             <input type="text" placeholder="收货人姓名" v-model="msg.userName">
           </div>
           <div>
-            <input type="number" placeholder="手机号码" v-model="msg.tel">
+            <input type="number" placeholder="手机号码" v-model="msg.tel" @blur="upperCase">
           </div>
           <div>
             <input type="text" placeholder="收货地址" v-model="msg.streetName">
@@ -206,19 +206,23 @@
         })
       },
       goodsDetails (id) {
-        window.open(window.location.origin + '#/goodsDetails?productId=' + id)
+        window.open(window.location.origin + '#/goodsDetails?goodsId=' + id)
+      },
+      upperCase(){
+        var phone = this.msg.tel
+        if(!(/^1[34578]\d{9}$/.test(phone))){
+          this.message("手机号码有误，请重填");
+          return false;
+        }
       },
       _getCartList () {
-
         let cartParams = {
           cartDto :{
-            /*userId: getStore('userId')*/
             userId:  getStore('userId')
           }
         }
 
         getCartList(cartParams).then(res => {
-          /*this.cartList = res.result.data*/
           this.cartList =  res.cartDtoList
         })
       },
@@ -323,15 +327,6 @@
             this.submit = false
           }
         })
-//        submitOrder(params).then(res => {
-//          if (res.result.resultCode === 200) {
-//            this.$router.push({path: '/user/orderList'})
-//          } else {
-//            this.message(res.message)
-//            this.submitOrder = '提交订单'
-//            this.submit = false
-//          }
-//        })
       },
       // 付款
      payment (orderId) {
@@ -373,7 +368,6 @@
       saveAddress (add) {
         this.popupOpen = false
         if (add.addressId) {
-          console.log(add.addressId)
           let params={
             addressDto:{
               isDefault:add.isDefault,
@@ -441,14 +435,6 @@
             this.cartList.push(item)
           }
         })
-//        goodsDetail({params: {goodsId}}).then(res => {
-//          let item = res.goodsDto
-//          item.checked = '1'
-//          item.productImg = item.productImageBig
-//          item.productNum = this.num
-//          item.productPrice = item.salePrice
-//          this.cartList.push(item)
-//        })
       },
       getAddressList(){
         let params={
@@ -471,7 +457,6 @@
       if (query.goodsId && query.num) {
         this.goodsId = query.goodsId
         this.num = query.num
-        console.log(this.goodsId)
         this._productDet(this.goodsId)
       } else {
         this._getCartList()

@@ -81,7 +81,7 @@ import { setStore, getStore, removeStore } from '/utils/storage.js'
 
 require('../../../static/geetest/gt.js')
 let Base64 = require('js-base64').Base64;
-let checkCodeUrl='http://192.168.1.162:8080/rims/vcode'
+let checkCodeUrl='http://192.168.1.112:9000/rims/vcode'
 var captcha
 export default {
   data () {
@@ -114,7 +114,7 @@ export default {
   },
   methods: {
     getCheckCode(){
-      this.vercodeUrl='http://192.168.1.162:8080/rims/vcode?'+Math.random()
+      this.vercodeUrl='http://192.168.1.112:9000/rims/vcode?'+Math.random()
     },
     open (t, m) {
       this.$notify.info({

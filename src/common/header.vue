@@ -338,15 +338,16 @@
       },
       // 退出登陆
       _loginOut () {
-        let params = {
-          params: {
-            token: this.token
-          }
-        }
-        loginOut(params).then(res => {
+//        let params = {
+//          params: {
+//            token: this.token
+//          }
+//        }
+//        loginOut(params).then(res => {
           removeStore('buyCart')
-          window.location.href = '/'
-        })
+          removeStore('token')
+          window.location.href = '/login'
+//        })
       },
       // 通过路由改变导航文字样式
       getPage () {

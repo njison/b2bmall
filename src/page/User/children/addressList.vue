@@ -38,7 +38,7 @@
           <input type="text" placeholder="收货人姓名" v-model="msg.userName">
         </div>
         <div>
-          <input type="number" placeholder="手机号码" v-model="msg.tel">
+          <input type="number" placeholder="手机号码" v-model="msg.tel" @blur="upperCase">
         </div>
         <div>
           <input type="text" placeholder="收货地址" v-model="msg.streetName">
@@ -89,6 +89,13 @@
         this.$message.error({
           message: m
         })
+      },
+      upperCase(){
+        var phone = this.msg.tel
+        if(!(/^1[34578]\d{9}$/.test(phone))){
+          this.message("手机号码有误，请重填");
+          return false;
+        }
       },
       getAddressList(){
         let params = {
