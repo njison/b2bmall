@@ -207,8 +207,12 @@
         'INIT_BUYCART', 'EDIT_CART'
       ]),
       goodsDetails (id) {
-//          console.log(window.location.origin + '/goodsDetails?goodsId=' + id)
-        window.open(window.location.origin + '/goodsDetails?goodsId=' + id)
+        this.$router.push({
+          path: 'goodsDetails',
+          query: {
+            goodsId: id
+          }
+        })
       },
       // 全选
       editCheckAll () {

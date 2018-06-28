@@ -206,8 +206,12 @@
         })
       },
       goodsDetails (id) {
-        window.open(window.location.origin + '/goodsDetails?goodsId=' + id)
-      },
+        this.$router.push({
+          path: 'goodsDetails',
+          query: {
+            goodsId: id
+          }
+        })
       upperCase(){
         var phone = this.msg.tel
         if(!(/^1[34578]\d{9}$/.test(phone))){

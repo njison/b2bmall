@@ -166,8 +166,12 @@
         window.open(window.location.origin + '/order/payment?orderId=' + orderId)
       },
       goodsDetails (id) {
-        this.$router.push({path: 'goodsDetails/goodsId=' + id})
-      },
+        this.$router.push({
+          path: 'goodsDetails',
+          query: {
+            goodsId: id
+          }
+        })
       _getOrderlog(){
         let params = {
           orderDto: {
