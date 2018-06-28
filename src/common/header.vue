@@ -1125,5 +1125,9 @@
     background-size: cover;
 
   }
+  .del-btn{
+    background: url('../../static/images/account-icon@2x.32d87deb02b3d1c3cc5bcff0c26314ac.png') -50px -60px no-repeat;
+
+  }
 </style>
 

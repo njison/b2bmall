@@ -16,7 +16,7 @@
         <div class="error_detail">
           <p class="error_p_title">哎呦~ 服务器居然累倒了!</p>
           <p class="error_p_con">●别急，工程师正在紧急处理，马上就好。</p>
-          <p class="error_p_con">●您可致电010-*****转8169,***通知***开发人员!</p>
+          <!--<p class="error_p_con">●您可致电010-*****转8169,***通知***开发人员!</p>-->
           <p class="error_p_con">●我们的进步需要您的反馈,感谢您的使用,请您耐心等待!</p>
         </div>
       </div>
