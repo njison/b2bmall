@@ -163,10 +163,10 @@
         })
       },
       orderPayment (orderId) {
-        window.open(window.location.origin + '#/order/payment?orderId=' + orderId)
+        window.open(window.location.origin + 'order/payment?orderId=' + orderId)
       },
       goodsDetails (id) {
-        window.open(window.location.origin + '#/goodsDetails?goodsId=' + id)
+        window.open(window.location.origin + 'goodsDetails?goodsId=' + id)
       },
       _getOrderlog(){
         let params = {

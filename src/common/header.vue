@@ -630,7 +630,7 @@
       width: 36px;
       &:hover {
         a:before {
-          background-position: -5px 0;
+          background-position: -215px 0;
         }
         .nav-user-wrapper {
           top: 18px;
@@ -728,7 +728,7 @@
       &:hover {
         a:before {
           content: " ";
-          background-position: 0 -22px;
+          background-position: -210px -22px;
         }
       }
       .nav-user-wrapper.active {

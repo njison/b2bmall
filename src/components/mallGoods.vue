@@ -2,7 +2,7 @@
   <div class="good-item">
     <div style="">
       <div class="good-img">
-        <a target="_blank" :href="'/#/goodsDetails?goodsId='+msg.goodsId">
+        <a target="_blank" :href="'goodsDetails?goodsId='+msg.goodsId">
           <div class="imgBox">
             <img v-lazy="msg.goodsHostImg" :alt="msg.goodsName" width="100%">
           </div>
@@ -13,7 +13,7 @@
       <h3 class="sub-title ellipsis">{{msg.subTitle}}</h3>
       <div class="good-price pr">
         <div class="ds pa">
-          <a target="_blank" :href="'/#/goodsDetails?goodsId='+msg.goodsId">
+          <a target="_blank" :href="'goodsDetails?goodsId='+msg.goodsId">
             <y-button text="查看详情" style="margin: 0 5px"></y-button>
           </a>
           <y-button text="加入购物车"

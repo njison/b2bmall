@@ -84,7 +84,7 @@
         <a href="javascript:;" :class="{active:sortType===1}" @click="reset()">综合排序</a>
         <a href="javascript:;" @click="sortByPrice(1)" :class="{active:sortType===2}">价格从低到高</a>
         <a href="javascript:;" @click="sortByPrice(-1)" :class="{active:sortType===3}">价格从高到低</a>
-        <a href="javascript:;">销量排行</a>
+        <a href="javascript:;" @click="sortBysale" :class="{active:sortType===4}">销量排行</a>
 
         <!--<div class="price-interval">-->
           <!--<input type="number" class="input" placeholder="价格" v-model="min">-->
@@ -256,7 +256,19 @@
           return this.goods.sort(compare('goodsSettlePrice'))
         }
       },
-      //查询所有品牌商
+      // 销量排序
+      sortBysale () {
+        this.sortType=4
+        function compare(property){
+          return function(a,b){
+            var value1 = a[property]
+            var value2 = b[property]
+            return value1 - value2;
+          }
+        }
+        return this.goods.sort(compare('goodsSales'))
+      },
+      // 查询所有品牌商
       searchALlBrand(){
         this.selectedBrandId=''
         this.selectAllBrand=true
@@ -674,7 +686,7 @@
     float: left;width: 100px;position: relative;top: 6px;text-align: right
   }
   .showAll{
-    padding: 5px;
+    /*padding: 5px;*/
     height: auto;
     min-height:50px;
     /*overflow: auto;*/

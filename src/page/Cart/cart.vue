@@ -207,7 +207,7 @@
         'INIT_BUYCART', 'EDIT_CART'
       ]),
       goodsDetails (id) {
-        window.open(window.location.origin + '#/goodsDetails?goodsId=' + id)
+        window.open(window.location.origin + 'goodsDetails?goodsId=' + id)
       },
       // 全选
       editCheckAll () {
