@@ -126,10 +126,10 @@
         this._orderList()
       },
       orderPayment (orderId) {
-        window.open(window.location.origin + 'order/payment?orderId=' + orderId)
+        window.open(window.location.origin + '/order/payment?orderId=' + orderId)
       },
       goodsDetails (id) {
-        window.open(window.location.origin + 'goodsDetails?goodsId=' + id)
+        this.$router.push({path: 'goodsDetails/goodsId=' + id})
       },
       orderDetail (orderId) {
         this.$router.push({
