@@ -84,6 +84,8 @@
         <a href="javascript:;" :class="{active:sortType===1}" @click="reset()">综合排序</a>
         <a href="javascript:;" @click="sortByPrice(1)" :class="{active:sortType===2}">价格从低到高</a>
         <a href="javascript:;" @click="sortByPrice(-1)" :class="{active:sortType===3}">价格从高到低</a>
+        <a href="javascript:;">销量排行</a>
+
         <!--<div class="price-interval">-->
           <!--<input type="number" class="input" placeholder="价格" v-model="min">-->
           <!--<span style="margin: 0 5px"> - </span>-->
@@ -112,7 +114,7 @@
       </div>
       <div class="no-info" v-if="noResult" >
         <div class="no-data">
-          <img src="/static/images/no-search.png">
+          <img src="../../../static/images/no-search.png">
           <br> 抱歉！没有为您找到相关的商品
         </div>
       </div>

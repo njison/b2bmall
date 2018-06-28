@@ -21,9 +21,9 @@
                   <div class="cart-top-items">
                     <div class="cart-items clearfix">
                       <!--勾选-->
-                      <div class="items-choose" @click="editCart('check',item)">
-                        <span class="blue-checkbox-new " v-if="item.checked==0"></span>
-                        <span class="blue-checkbox-new checkbox-on" v-if="item.checked==1"></span>
+                      <div class="items-choose">
+                      <span class="blue-checkbox-new " :class="{'checkbox-on':item.checked === '1'}"
+                            @click="editCart('check',item)"></span>
                       </div>
                       <!--图片-->
                       <div class="items-thumb fl">
@@ -172,9 +172,9 @@
       checkPrice () {
         var totalPrice = 0
         this.cartList && this.cartList.forEach(item => {
-          if (item.checked == '1' && this.chanelType===4) {
+          if (item.checked == '1' && this.chanelType === 4) {
             totalPrice += (item.goodsNum * item.goodsShipPrice)
-          }else if (item.checked == '1' && this.chanelType!=4) {
+          } else if (item.checked == '1' && this.chanelType != 4) {
             totalPrice += (item.goodsNum * item.goodsSettlePrice)
           }
         })
@@ -192,7 +192,13 @@
       }
     },
     methods: {
-      message (m) {
+      messageSuccess (m) {
+        this.$message({
+          message: m,
+          type: 'success'
+        })
+      },
+      messageError (m) {
         this.$message.error({
           message: m
         })
@@ -206,9 +212,9 @@
       // 全选
       editCheckAll () {
         let checkAll = !this.checkAllFlag
-        editCheckAll({userId: this.userId, checked: checkAll}).then(res => {
+//        editCheckAll({userId: this.userId, checked: checkAll}).then(res => {
           this.EDIT_CART({checked: checkAll})
-        })
+//        })
       },
       // 修改购物车
       _cartEdit (cartParams, goodsId, goodsNum, checked) {
@@ -227,21 +233,13 @@
 
       // 修改购物车
       editCart (type, item) {
-        item.checked=!item.checked
         if (type && item) {
           let checked = item.checked
           let goodsId = item.goodsId
           let goodsNum = item.goodsNum
-//          console.log('checked='+ checked)
           // 勾选
           if (type === 'check') {
-            let newChecked = ''
-              if(checked==false){
-                 newChecked ='0'
-              }else{
-                 newChecked ='1'
-              }
-//            let newChecked = checked === '1' ? '0' : '1'
+            let newChecked = checked === '1' ? '0' : '1'
             let cartParams = {
               cartDto : {
                 userId:  getStore('userId'),
@@ -250,8 +248,7 @@
                 checked: newChecked
               }
             }
-//            console.log(newChecked)
-            this._cartEdit(cartParams, goodsId, goodsNum, checked)
+            this._cartEdit(cartParams, goodsId, goodsNum, newChecked)
           }
         } else {
           console.log('缺少所需参数')
@@ -267,6 +264,7 @@
             checked: checked
           }
         }
+        console.log(checked)
         this._cartEdit(cartParams, goodsId, goodsNum, checked)
       },
       // 删除整条购物车
@@ -280,9 +278,9 @@
         cartDel(cartDelParams).then(res => {
             if (res.code=='success') {
               this.EDIT_CART({goodsId})
-              this.message('删除成功！')
+              this.messageSuccess('删除成功！')
             } else {
-                this.message('删除失败！')
+                this.messageError('删除失败！')
             }
 
         })
@@ -599,7 +597,7 @@
 
   .cart-e {
     margin: 0 auto;
-    background: url("/static/images/cart-empty_@2x.png") no-repeat;
+    background: url("../../../static/images/cart-empty_@2x.png") no-repeat;
     width: 275px;
     height: 300px;
     color: #8d8d8d;

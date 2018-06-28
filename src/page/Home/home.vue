@@ -32,7 +32,7 @@
 
     <div class="no-info" v-if="error">
       <div class="no-data">
-        <img src="/static/images/error.png">
+        <img src="../../../static/images/error.png">
         <br> 抱歉！出错了...
       </div>
     </div>

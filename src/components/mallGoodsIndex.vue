@@ -18,7 +18,7 @@
           </a>
           <y-button text="加入购物车"
                     style="margin: 0 5px"
-                    @btnClick="addCart(msg.goodsId,msg.goodsShipPrice,msg.goodsSettlePrice,msg.goodsRetailPrice,msg.goodsName,msg.url)"
+                    @btnClick="addCart(msg.goodsId,msg.goodsShipPrice,msg.goodsSettlePrice,msg.goodsRetailPrice,msg.goodsName,msg.goodsHostImg)"
                     classStyle="main-btn"
           ></y-button>
         </div>
