@@ -60,7 +60,7 @@
                   <p v-if="item.state=='4'">交易完成</p>
                   <p v-if="item.state=='5'">采购方已取消</p>
                   <!--{{getOrderStatus(item.state)}}-->
-                 </div>
+                </div>
               </div>
 
             </div>
@@ -74,24 +74,24 @@
       </div>
     </y-shelf>
     <!--<div style="float:right">-->
-      <!--<el-pagination-->
-        <!--@size-change="handleSizeChange"-->
-        <!--@current-change="handleCurrentChange"-->
-        <!--:current-page="currentPage"-->
-        <!--:page-sizes="[5, 10, 20, 50]"-->
-        <!--:page-size="pageSize"-->
-        <!--layout="total, sizes, prev, pager, next,jumper"-->
-        <!--:total="total">-->
-      <!--</el-pagination>-->
-      <!--<el-pagination-->
-        <!--@size-change="handleSizeChange"-->
-        <!--@current-change="handleCurrentChange"-->
-        <!--:current-page="currentPage"-->
-        <!--:page-sizes="[5, 10, 20, 50]"-->
-        <!--:page-size="pageSize"-->
-        <!--layout="total, sizes, prev, pager, next"-->
-        <!--:total="total">-->
-      <!--</el-pagination>-->
+    <!--<el-pagination-->
+    <!--@size-change="handleSizeChange"-->
+    <!--@current-change="handleCurrentChange"-->
+    <!--:current-page="currentPage"-->
+    <!--:page-sizes="[5, 10, 20, 50]"-->
+    <!--:page-size="pageSize"-->
+    <!--layout="total, sizes, prev, pager, next,jumper"-->
+    <!--:total="total">-->
+    <!--</el-pagination>-->
+    <!--<el-pagination-->
+    <!--@size-change="handleSizeChange"-->
+    <!--@current-change="handleCurrentChange"-->
+    <!--:current-page="currentPage"-->
+    <!--:page-sizes="[5, 10, 20, 50]"-->
+    <!--:page-size="pageSize"-->
+    <!--layout="total, sizes, prev, pager, next"-->
+    <!--:total="total">-->
+    <!--</el-pagination>-->
     <!--</div>-->
   </div>
 </template>
@@ -130,11 +130,12 @@
       },
       goodsDetails (id) {
         this.$router.push({
-          path: 'goodsDetails',
+          path: '/goodsDetails',
           query: {
             goodsId: id
           }
         })
+      },
       orderDetail (orderId) {
         this.$router.push({
           path: 'orderDetail',
@@ -150,13 +151,13 @@
           }
         }
         getOrderList(params).then(res => {
-            if (res.code == 'success'){
-              this.loading=false
-              this.orderList = res.orderDtoList
-              this.total = res.orderDtoList.length
-            } else {
+          if (res.code == 'success'){
+            this.loading=false
+            this.orderList = res.orderDtoList
+            this.total = res.orderDtoList.length
+          } else {
 
-            }
+          }
         })
       },
       _delOrder (orderId, i) {
@@ -175,10 +176,10 @@
       },
       cancelOrder (orderId) {
         let params = {
-            orderDto : {
-              orderId: orderId,
-              userId: this.userId
-            }
+          orderDto : {
+            orderId: orderId,
+            userId: this.userId
+          }
         }
         orderCancel(params).then(res => {
           if (res.code == 'success') {

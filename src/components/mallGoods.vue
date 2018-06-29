@@ -46,7 +46,12 @@
     methods: {
       ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART','GET_USERINFO']),
       goodsDetails (id) {
-        this.$router.push({path: 'goodsDetails/goodsId=' + id})
+        this.$router.push({
+          path: '/goodsDetails',
+          query: {
+            goodsId: id
+          }
+        })
       },
       addCart (id, goodsShipPrice,goodsSettlePrice, goodsRetailPrice, name, img) {
         if (!this.showMoveImg) {     // 动画是否在运动

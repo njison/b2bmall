@@ -207,11 +207,12 @@
       },
       goodsDetails (id) {
         this.$router.push({
-          path: 'goodsDetails',
+          path: '/goodsDetails',
           query: {
             goodsId: id
           }
         })
+      },
       upperCase(){
         var phone = this.msg.tel
         if(!(/^1[34578]\d{9}$/.test(phone))){
@@ -282,24 +283,24 @@
         }
         var orderItems = []
         for (var i = 0; i < this.cartList.length; i++) {
-            var orderItem = new Object();
-            if (this.cartList[i].checked === '1' && this.chanelType===4) {
-              orderItem.goodsId = this.cartList[i].goodsId;
-              orderItem.goodsNum = this.cartList[i].goodsNum;
-              orderItem.goodsPrice = this.cartList[i].goodsShipPrice;
-              orderItem.totalPrice = this.cartList[i].goodsShipPrice * this.cartList[i].goodsNum;
-              orderItem.venderId =i
-              orderItem.venderName=i
-              orderItems.push(orderItem)
-            }else if(this.cartList[i].checked === '1' && this.chanelType!=4){
-              orderItem.goodsId = this.cartList[i].goodsId;
-              orderItem.goodsNum = this.cartList[i].goodsNum;
-              orderItem.goodsPrice = this.cartList[i].goodsSettlePrice;
-              orderItem.totalPrice = this.cartList[i].goodsSettlePrice * this.cartList[i].goodsNum;
-              orderItem.venderId =i
-              orderItem.venderName=i
-              orderItems.push(orderItem)
-            }
+          var orderItem = new Object();
+          if (this.cartList[i].checked === '1' && this.chanelType===4) {
+            orderItem.goodsId = this.cartList[i].goodsId;
+            orderItem.goodsNum = this.cartList[i].goodsNum;
+            orderItem.goodsPrice = this.cartList[i].goodsShipPrice;
+            orderItem.totalPrice = this.cartList[i].goodsShipPrice * this.cartList[i].goodsNum;
+            orderItem.venderId =i
+            orderItem.venderName=i
+            orderItems.push(orderItem)
+          }else if(this.cartList[i].checked === '1' && this.chanelType!=4){
+            orderItem.goodsId = this.cartList[i].goodsId;
+            orderItem.goodsNum = this.cartList[i].goodsNum;
+            orderItem.goodsPrice = this.cartList[i].goodsSettlePrice;
+            orderItem.totalPrice = this.cartList[i].goodsSettlePrice * this.cartList[i].goodsNum;
+            orderItem.venderId =i
+            orderItem.venderName=i
+            orderItems.push(orderItem)
+          }
         }
         var array = []
         for (var i = 0; i < this.cartList.length; i++) {
@@ -333,7 +334,7 @@
         })
       },
       // 付款
-     payment (orderId) {
+      payment (orderId) {
         // 需要拿到地址id
         this.$router.push({
           path: '/order/payment',

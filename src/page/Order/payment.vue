@@ -162,7 +162,12 @@
         this.checkValid()
       },
       goodsDetails (id) {
-        window.open(window.location.origin + '/goodsDetails?productId=' + id)
+        this.$router.push({
+          path: '/goodsDetails',
+          query: {
+            goodsId: id
+          }
+        })
       },
       _getOrderDet (orderId) {
         let params = {

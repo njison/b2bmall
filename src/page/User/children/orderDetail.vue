@@ -49,8 +49,8 @@
             <ul>
               <li class="status-title"><h3>订单状态：{{item.orderState}}</h3></li>
               <li class="button">
-               <!-- <el-button @click="orderPayment(orderId)" type="primary" size="small">现在付款</el-button>
-               <!--&ndash;&gt; <el-button @click="_cancelOrder()" size="small">取消订单</el-button>-->
+                <!-- <el-button @click="orderPayment(orderId)" type="primary" size="small">现在付款</el-button>
+                <!--&ndash;&gt; <el-button @click="_cancelOrder()" size="small">取消订单</el-button>-->
               </li>
             </ul>
           </div>
@@ -118,7 +118,7 @@
 
 
           </div>
-          </div>
+        </div>
 
         <div v-loading="loading" element-loading-text="加载中..." v-else>
           <div style="padding: 100px 0;text-align: center">
@@ -167,11 +167,12 @@
       },
       goodsDetails (id) {
         this.$router.push({
-          path: 'goodsDetails',
+          path: '/goodsDetails',
           query: {
             goodsId: id
           }
         })
+      },
       _getOrderlog(){
         let params = {
           orderDto: {
@@ -179,12 +180,12 @@
           }
         }
         getOrderLogList(params).then(res => {
-            if (res.code == 'success'){
-              this.orderLog = res
-            } else {
+          if (res.code == 'success'){
+            this.orderLog = res
+          } else {
 
-            }
-          })
+          }
+        })
       },
       _getOrderDet () {
         let params = {
