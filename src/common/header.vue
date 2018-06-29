@@ -344,16 +344,11 @@
       },
       // 退出登陆
       _loginOut () {
-//        let params = {
-//          params: {
-//            token: this.token
-//          }
-//        }
-//        loginOut(params).then(res => {
           removeStore('buyCart')
           removeStore('token')
-          window.location.href = '/login'
-//        })
+//          window.location.href = '/'
+          this.$router.push({path: '/login'})
+
       },
       // 通过路由改变导航文字样式
       getPage () {

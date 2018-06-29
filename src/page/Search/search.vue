@@ -672,7 +672,7 @@
     color:#5683EA;
     margin-left:30px;
     cursor:pointer;
-    padding: 0;
+    padding: 0 15px;
   }
   /*.searchTitle:first-child{*/
     /*background-color: #5683EA;*/
