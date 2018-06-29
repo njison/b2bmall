@@ -31,16 +31,15 @@
   import { addCart } from '/api/goods.js'
   import { mapMutations, mapState } from 'vuex'
   import { getStore } from '/utils/storage'
+  //  import util from '/lib/util.js'
   export default {
     props: {
-      msg: {
-//        salePrice: 0,
-      },
-
+      msg: {},
     },
     data () {
       return {
-        chanelType:getStore('chanelType')
+        hotImg:'',
+        chanelType:getStore('chanelType'),
       }
     },
     methods: {
@@ -63,19 +62,20 @@
               userName:getStore('userName')
             }
           }
-
           addCart(cartAddParams).then(res => {
-              // 并不重新请求数据
-              this.ADD_CART({goodsNum: 1,goodsId: id, goodsSettlePrice: goodsSettlePrice, goodsRetailPrice:goodsRetailPrice ,goodsShipPrice:goodsShipPrice, goodsName: name, goodsImg: img})
-            })
+              if(res.code=='success'){
+                // 并不重新请求数据
+                this.ADD_CART({goodsNum: 1, goodsId: id, goodsSettlePrice: goodsSettlePrice, goodsRetailPrice:goodsRetailPrice ,goodsShipPrice:goodsShipPrice, goodsName: name, goodsImg: img})
+              }
 
+          })
           // 加入购物车动画
           var dom = event.target
           // 获取点击的坐标
           let elLeft = dom.getBoundingClientRect().left + (dom.offsetWidth / 2)
           let elTop = dom.getBoundingClientRect().top + (dom.offsetHeight / 2)
           // 需要触发
-          this.ADD_ANIMATION({moveShow: true, elLeft: elLeft, elTop: elTop, img: img})
+//          this.ADD_ANIMATION({moveShow: true, elLeft: elLeft, elTop: elTop, img: img})
           if (!this.showCart) {
             this.SHOW_CART({showCart: true})
           }
@@ -84,10 +84,8 @@
     },
     computed: {
       ...mapState(['login', 'showMoveImg', 'showCart','userInfo'])
-
     },
     mounted () {
-//      this.chanelType = getStore('chanelType')
     },
     components: {
       YButton

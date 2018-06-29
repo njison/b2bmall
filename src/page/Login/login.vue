@@ -461,7 +461,7 @@ export default {
     height: 40px;
   }
   .error_content{ margin: 0 auto; width: 1000px;}
-  .error_left{ margin: 20px 0 0 50px; width: 330px ; height: 345px; background: url(/static/images/timg.png) no-repeat;background-size: 100%;float: left;}
+  .error_left{ margin: 20px 0 0 50px; width: 330px ; height: 345px; background: url('../../../static/images/timg.png') no-repeat;background-size: 100%;float: left;}
   .error_right{ width: 450px; float: left; }
   .error_detail { margin: 180px 0 0 120px;     width: 400px; height: auto; }
   .error_detail .error_p_title{ font-size: 28px; color: #eb8531;}

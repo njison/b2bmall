@@ -67,12 +67,10 @@
               userName:getStore('userName')
             }
           }
-
           addCart(cartAddParams).then(res => {
               // 并不重新请求数据
               this.ADD_CART({goodsNum: 1, goodsId: id, goodsSettlePrice: goodsSettlePrice, goodsRetailPrice:goodsRetailPrice ,goodsShipPrice:goodsShipPrice, goodsName: name, goodsImg: img})
             })
-
           // 加入购物车动画
           var dom = event.target
           // 获取点击的坐标

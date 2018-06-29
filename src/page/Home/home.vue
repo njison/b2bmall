@@ -2,10 +2,9 @@
   <div class="home">
     <div v-loading="loading" element-loading-text="加载中..." style="min-height: 35vw;" v-if="!error">
       <div class="banner" >
-        <div class="bg" ref="bg"
-             @mouseover="bgOver($refs.bg)" @mousemove="bgMove($refs.bg,$event)" @mouseout="bgOut($refs.bg)">
+        <div class="bg" ref="bg">
           <transition name="fade">
-            <div v-for="(item, i) in banner" v-if="i===mark" :key="i" style="position:absolute" @click="linkTo(item)" @mouseover="stopTimer" @mouseout="startTimer">
+            <div v-for="(item, i) in banner" v-if="i===mark" :key="i" style="position:absolute" @click="linkTo(item)">
               <img v-if="item.url" class="img1" :src="item.url"/>
               <!-- <img v-if="item.picUrl2"  class="img2 a" :src="item.picUrl2"/>
                <img v-if="item.picUrl3"  class="img3 b" :src="item.picUrl3"/>-->
@@ -146,22 +145,8 @@
       }
     },
     mounted () {
-      /*     productHome().then(res => {
-       if (res.success === false) {
-       this.error = true
-       return
-       }
-       let data = res.result
-       this.home = data
-       this.loading = false
-       for (let i = 0; i < data.length; i++) {
-       if (data[i].type === 0) {
-       this.banner = data[i].panelContents
-       }
-       }
-       })*/
       let params = {
-        materialDto :{
+        materialDto: {
           materialType: "1"
         }
       }
