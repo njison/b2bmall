@@ -13,7 +13,7 @@
             <div class="address-msg">{{item.addressDetail}}</div>
             <div class="telephone">{{item.addressPhone}}</div>
             <div class="defalut" >
-              <p v-if="item.isDefault=='false'" @click="changeDef(item)" class="defalut-address"></p>
+              <p v-if="item.isDefault=='false'" class="defalut-address"></p>
               <p v-if="item.isDefault=='true'">( 默认地址 )</p>
             </div>
             <div class="operation">
@@ -44,7 +44,8 @@
           <input type="text" placeholder="收货地址" v-model="msg.streetName">
         </div>
         <div>
-          <el-checkbox class="auto-login" v-model="msg.isDefault">设为默认</el-checkbox>
+          <el-checkbox v-if="msg.isDefault==='true'" class="auto-login" v-model="msg.isDefault" checked>设为默认</el-checkbox>
+          <el-checkbox v-else class="auto-login" v-model="msg.isDefault">设为默认</el-checkbox>
         </div>
         <y-button text='保存'
                   class="btn"
@@ -72,8 +73,9 @@
           userName: '',
           tel: '',
           streetName: '',
-          isDefault: false
+          isDefault: true
         },
+        checked: true,
         userId: '',
         getAddress:[]
       }
@@ -85,9 +87,15 @@
       }
     },
     methods: {
-      message (m) {
+      messageSuccess (m) {
+        this.$message({
+          message: m,
+          type: 'success'
+        })
+      },
+      messageError (m) {
         this.$message.error({
-          message: m
+           message: m
         })
       },
       upperCase(){
@@ -134,10 +142,10 @@
           }
           modifyAddress(params).then(res => {
             if (res.code = '"success"') {
-              this.message('修改成功')
+              this.messageSuccess('修改成功')
               this.getAddressList()
             }else{
-              this.message('修改失败')
+              this.messageError('修改失败')
             }
           })
         } else {
@@ -152,10 +160,10 @@
           }
           addAddress(params).then(res => {
             if (res.code = '"success"') {
-              this.message('添加成功')
+              this.messageSuccess('添加成功')
               this.getAddressList()
             }else{
-              this.message('修改失败')
+              this.messageError('修改失败')
             }
           })
         }
@@ -170,7 +178,7 @@
         }
         deleteAddress(params).then(res => {
           if (res.code = '"success"') {
-            this.message('删除成功')
+            this.messageSuccess('删除成功')
             this.getAddressList()
           }
         })
@@ -183,8 +191,9 @@
           this.msg.userName = item.addressName
           this.msg.tel = item.addressPhone
           this.msg.streetName = item.addressDetail
-          this.msg.isDefault = item.isDefault
+          this.msg.isDefault= item.isDefault
           this.msg.addressId = item.addressId
+//          console.log(item.addressId)
         } else {
           this.popupTitle = '新增收货地址'
           this.msg.userName = ''

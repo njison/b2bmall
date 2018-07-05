@@ -292,7 +292,6 @@
 
       // 登陆时获取一次购物车商品
       _getCartList () {
-
         let cartParams = {
           cartDto :{
             userId: getStore('userId')
@@ -368,13 +367,13 @@
       }
     },
     mounted () {
-      getCartList().then(res => {
-        if (res.code !== "success") {
-          this.error = true
-          return
-        }
-        this.getcartList = res.cartDtoList
-      })
+//      getCartList().then(res => {
+//        if (res.code !== "success") {
+//          this.error = true
+//          return
+//        }
+//        this.getcartList = res.cartDtoList
+//      })
       this.token = getStore('token')
       this.chanelType = getStore('chanelType')
 /*      if (this.login) {

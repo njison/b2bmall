@@ -24,7 +24,7 @@
           <h4>{{product.goodsName}}</h4>
           <h6>
             <span><!--{{product.subTitle}}-->
-            采购价：</span>
+            {{product.goodsTitle}}</span>
             <span class="price" v-if="chanelType===4">
               <em>¥</em><i>{{product.goodsShipPrice}}</i>
             </span>
@@ -39,9 +39,9 @@
           <div class="height-range">
             <span >供应商名称：{{product.venderName}}</span>
           </div>
-          <div class="height-range">
-            <span >产品简介：{{product.goodsTitle}}</span>
-          </div>
+          <!--<div class="height-range">-->
+            <!--<span >产品简介：{{product.goodsTitle}}</span>-->
+          <!--</div>-->
 
         </div>
         <div class="num">

@@ -4,7 +4,7 @@
       <div class="banner" >
         <div class="bg" ref="bg">
           <transition name="fade">
-            <div v-for="(item, i) in banner" v-if="i===mark" :key="i" style="position:absolute" @click="linkTo(item)">
+            <div v-for="(item, i) in banner" v-if="i===mark" :key="i" style="position:absolute">
               <img v-if="item.url" class="img1" :src="item.url"/>
               <!-- <img v-if="item.picUrl2"  class="img2 a" :src="item.picUrl2"/>
                <img v-if="item.picUrl3"  class="img3 b" :src="item.picUrl3"/>-->
@@ -17,7 +17,76 @@
           </ul>
         </div>
       </div>
-
+      <div>
+        <section class="w mt30 clearfix">
+          <y-shelf title="品牌旗舰店">
+            <div slot="content" class="floors" >
+              <ul class="clearfix vivas">
+                <li class="vivasli">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li class="marL10 vivasli">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li class="marL11 vivasli">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li class="marL10 vivasli">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li class="vivasli">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li class="marL10 vivasli">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li class="marL11 vivasli">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li class="marL10 vivasli">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li>
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li class="marL10">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li class="marL11">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+                <li class="marL10">
+                  <a href="javascript:void(0);">
+                    <img src="../../../static/images/vivas-07.jpg">
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </y-shelf>
+        </section>
+      </div>
       <div v-for="(item,i) in home" :key="i">
         <section class="w mt30 clearfix" v-if="item.panelType == 3">
           <y-shelf :title="item.panelName">
@@ -487,5 +556,46 @@
       height: 100%;
     }
   }
+  /*.vivas {*/
+    /*margin-top: 20px;*/
+  /*}*/
+  /*.w1200 {*/
+    /*width: 1200px;*/
+    /*margin: 0 auto;*/
+  /*}*/
+  /*.vivas h2 {*/
+    /*border-bottom: 4px #e40077 solid;*/
+  /*}*/
+  /*.vivas h2 i {*/
+    /*width: 151px;*/
+    /*height: 47px;*/
+    /*line-height: 47px;*/
+    /*display: inline-block;*/
+    /*font-size: 26px;*/
+    /*color: #727272;*/
+    /*font-weight: lighter;*/
+    /*font-family: "微软雅黑";*/
+  /*}*/
+  .fl {
+    float: left;
+  }
+  /*.vivas h2 a:link, .recommend h2 a:visited {*/
+    /*color: #727272;*/
+  /*}*/
+  .marL11 {
+    margin-left: 10px;
+  }
+  .vivas li{
+    float: left;
+  }
+  .vivasli {
 
+    margin-bottom: 10px;
+  }
+  .marL10 {
+    margin-left: 10px;
+  }
+  .w{
+    width: 1200px;
+  }
 </style>

@@ -157,11 +157,6 @@
       }
     },
     methods: {
-      message (m) {
-        this.$message.error({
-          message: m
-        })
-      },
       orderPayment (orderId) {
         window.open(window.location.origin + '/order/payment?orderId=' + orderId)
       },

@@ -115,7 +115,6 @@
           </div>
         </div>
       </y-shelf>
-
       <y-popup :open="popupOpen" @close='popupOpen=false' :title="popupTitle">
         <div slot="content" class="md" :data-id="msg.addressId">
           <div>
@@ -128,7 +127,8 @@
             <input type="text" placeholder="收货地址" v-model="msg.streetName">
           </div>
           <div>
-            <el-checkbox class="auto-login" v-model="msg.isDefault">设为默认</el-checkbox>
+            <el-checkbox v-if="msg.isDefault==='true'" class="auto-login" v-model="msg.isDefault" checked>设为默认</el-checkbox>
+            <el-checkbox v-else class="auto-login" v-model="msg.isDefault">设为默认</el-checkbox>
           </div>
           <y-button text='保存'
                     class="btn"
@@ -191,16 +191,19 @@
           }else if (item.checked == '1' && this.chanelType!=4) {
             totalPrice += (item.goodsNum * item.goodsSettlePrice)
           }
-//          if (item.checked === '1') {
-//            totalPrice += (item.goodsNum * item.salePrice)
-//          }
         })
         this.orderTotal = totalPrice
         return totalPrice
       }
     },
     methods: {
-      message (m) {
+      messageSuccess (m) {
+        this.$message({
+          message: m,
+          type: 'success'
+        })
+      },
+      messageError (m) {
         this.$message.error({
           message: m
         })
@@ -216,17 +219,17 @@
       upperCase(){
         var phone = this.msg.tel
         if(!(/^1[34578]\d{9}$/.test(phone))){
-          this.message("手机号码有误，请重填");
+          this.messageError("手机号码有误，请重填");
           return false;
         }
       },
+      // 获取购物车商品
       _getCartList () {
         let cartParams = {
           cartDto :{
             userId:  getStore('userId')
           }
         }
-
         getCartList(cartParams).then(res => {
           this.cartList =  res.cartDtoList
         })
@@ -245,38 +248,38 @@
 //          }
 //        })
       },
-      _addressUpdate (params) {
-        addressUpdate(params).then(res => {
-          this._addressList()
-        })
-      },
-      _addressAdd (params) {
-        addressAdd(params).then(res => {
-          if (res.success === true) {
-            this._addressList()
-          } else {
-            this.message(res.message)
-          }
-        })
-      },
-      _addressDel (params) {
-        addressDel(params).then(res => {
-          this._addressList()
-        })
-      },
+//      _addressUpdate (params) {
+//        addressUpdate(params).then(res => {
+//          this._addressList()
+//        })
+//      },
+//      _addressAdd (params) {
+//        addressAdd(params).then(res => {
+//          if (res.success === true) {
+//            this._addressList()
+//          } else {
+//            this.messageError(res.message)
+//          }
+//        })
+//      },
+//      _addressDel (params) {
+//        addressDel(params).then(res => {
+//          this._addressList()
+//        })
+//      },
       // 提交订单后跳转付款页面
       _submitOrder () {
         this.submitOrder = '提交订单中...'
         this.submit = true
 
         if (this.addressId === '0') {
-          this.message('请选择收货地址')
+          this.messageError('请选择收货地址')
           this.submitOrder = '提交订单'
           this.submit = false
           return
         }
         if (this.cartList.length === 0) {
-          this.message('非法操作')
+          this.messageError('非法操作')
           this.submitOrder = '提交订单'
           this.submit = false
           return
@@ -289,16 +292,16 @@
             orderItem.goodsNum = this.cartList[i].goodsNum;
             orderItem.goodsPrice = this.cartList[i].goodsShipPrice;
             orderItem.totalPrice = this.cartList[i].goodsShipPrice * this.cartList[i].goodsNum;
-            orderItem.venderId =i
-            orderItem.venderName=i
+            orderItem.venderId =this.cartList[i].venderId;
+            orderItem.venderName=this.cartList[i].venderName;
             orderItems.push(orderItem)
           }else if(this.cartList[i].checked === '1' && this.chanelType!=4){
             orderItem.goodsId = this.cartList[i].goodsId;
             orderItem.goodsNum = this.cartList[i].goodsNum;
             orderItem.goodsPrice = this.cartList[i].goodsSettlePrice;
             orderItem.totalPrice = this.cartList[i].goodsSettlePrice * this.cartList[i].goodsNum;
-            orderItem.venderId =i
-            orderItem.venderName=i
+            orderItem.venderId =this.cartList[i].venderId;
+            orderItem.venderName=this.cartList[i].venderName;
             orderItems.push(orderItem)
           }
         }
@@ -323,11 +326,11 @@
         }
         submitOrder(params).then(res => {
           if (res.code =='success' ) {
-            this.message('操作成功')
+            this.messageSuccess('操作成功')
             this.$router.push({path: '/user/orderList'})
 //            this.payment(res.result)
           } else {
-            this.message('操作失败')
+            this.messageError('操作失败')
             this.submitOrder = '提交订单'
             this.submit = false
           }
@@ -385,7 +388,7 @@
           }
           modifyAddress(params).then(res => {
             if(res.code='"success"'){
-              this.message('修改成功')
+              this.messageSuccess('修改成功')
               this.getAddressList()
             }
           })
@@ -401,12 +404,10 @@
           }
           addAddress(params).then(res => {
             if(res.code='"success"'){
-              this.message('添加成功')
+              this.messageSuccess('添加成功')
               this.getAddressList()
             }
           })
-//          delete add.addressId
-//          this._addressAdd(add)
         }
       },
       // 删除
@@ -419,7 +420,7 @@
         }
         deleteAddress(params).then(res => {
           if(res.code='"success"'){
-            this.message('删除成功')
+            this.messageSuccess('删除成功')
             this.getAddressList()
           }
         })
@@ -441,6 +442,7 @@
           }
         })
       },
+      // 获取地址信息
       getAddressList(){
         let params={
           addressDto:{

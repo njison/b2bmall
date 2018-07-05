@@ -1,10 +1,10 @@
 import axios from 'axios'
-import {Message} from 'element-ui'
+// import {Message} from 'element-ui'
 axios.defaults.timeout = 10000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www=form-urlencoded'
 axios.defaults.withCredentials = true
-// axios.defaults.baseURL = 'http://192.168.1.162:8080/rims'
-axios.defaults.baseURL = 'http://192.168.1.112:9000/rims/'
+axios.defaults.baseURL = 'http://192.168.1.121:8081'
+// axios.defaults.baseURL = 'http://192.168.1.112:9000/rims/'
 axios.interceptors.response.use(data => {
   return data
 }, err => {

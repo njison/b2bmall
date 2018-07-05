@@ -112,7 +112,13 @@
       }
     },
     methods: {
-      message (m) {
+      messageSuccess (m) {
+        this.$message({
+          message: m,
+          type: 'success'
+        })
+      },
+      messageError (m) {
         this.$message.error({
           message: m
         })
@@ -170,7 +176,7 @@
           if (res.success === true) {
             this.orderList.splice(i, 1)
           } else {
-            this.message('删除失败')
+            this.messageError('删除失败')
           }
         })
       },
@@ -183,10 +189,10 @@
         }
         orderCancel(params).then(res => {
           if (res.code == 'success') {
-            this.message(res.desc)
+            this.messageSuccess('取消成功')
             this._orderList()
           } else {
-            this.message(res.desc)
+            this.messageError('取消失败')
           }
 //          this._orderList()
         })

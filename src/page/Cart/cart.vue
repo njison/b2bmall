@@ -51,6 +51,7 @@
                         <div v-if="chanelType===4" class="subtotal" style="font-size: 14px">¥ {{item.goodsShipPrice * item.goodsNum}}</div>
                         <div v-else class="subtotal" style="font-size: 14px">¥ {{item.goodsSettlePrice * item.goodsNum}}</div>
                         <!--数量-->
+                        <!--{{item.goodsNum}}-->
                         <buy-num :num="item.goodsNum"
                                  :id="item.goodsId"
                                  :checked="item.checked"
@@ -59,10 +60,10 @@
                                    align-items: center;
                                    justify-content: center;"
                                  :limit="100"
-                                 v-on:edit-num="ani"
                                  @edit-num="EditNum"
                         >
-                        </buy-num>
+                        <!--v-on:edit-num="ani"-->
+                      </buy-num>
                         <!--价格-->
                         <div class="price1" v-if="chanelType===4">¥ {{item.goodsShipPrice}}</div>
                         <div class="price1" v-else>¥ {{item.goodsSettlePrice}}</div>
@@ -214,6 +215,20 @@
           }
         })
       },
+      _getCartList () {
+        let cartParams = {
+          cartDto :{
+            userId: getStore('userId')
+          }
+        }
+        getCartList(cartParams).then(res => {
+        if (res.code !== "success") {
+          this.error = true
+          return
+        }
+        this.getcartList = res.cartDtoList
+      })
+      },
       // 全选
       editCheckAll () {
         let checkAll = !this.checkAllFlag
@@ -269,7 +284,6 @@
             checked: checked
           }
         }
-        console.log(checked)
         this._cartEdit(cartParams, goodsId, goodsNum, checked)
       },
       // 删除整条购物车
@@ -300,13 +314,14 @@
       }
     },
     mounted () {
-      getCartList().then(res => {
-        if (res.code !== "success") {
-          this.error = true
-          return
-        }
-        this.getcartList = res.cartDtoList
-      })
+//      getCartList().then(res => {
+//        if (res.code !== "success") {
+//          this.error = true
+//          return
+//        }
+//        this.getcartList = res.cartDtoList
+//      })
+      this._getCartList()
       this.chanelType = getStore('chanelType')
       this.userId = getStore('userId')
       this.INIT_BUYCART()

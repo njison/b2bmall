@@ -3,19 +3,16 @@
     <div style="">
       <div class="good-img">
         <router-link target="_blank" :to="'goodsDetails?goodsId='+msg.goodsId">
-
         <!--<a target="_blank" :href="'goodsDetails?goodsId='+msg.goodsId">-->
           <div class="imgBox">
             <img v-lazy="msg.url" :alt="msg.goodsName" width="100%">
           </div>
-
         </router-link>
       </div>
       <h6 class="good-title" v-html="msg.goodsName">{{msg.goodsName}}</h6>
       <h3 class="sub-title ellipsis">{{msg.subTitle}}</h3>
       <div class="good-price pr">
         <div class="ds pa">
-
           <router-link target="_blank" :to="'goodsDetails?goodsId='+msg.goodsId">
             <y-button text="查看详情" style="margin: 0 5px"></y-button>
           </router-link>
