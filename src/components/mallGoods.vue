@@ -8,8 +8,8 @@
           </div>
         </router-link>
       </div>
-      <h6 class="good-title" v-html="msg.goodsName">{{msg.goodsName}}</h6>
-      <h3 class="sub-title ellipsis">{{msg.subTitle}}</h3>
+      <h6 class="good-title" v-html="msg.goodsName"></h6>
+      <h3 class="sub-title ellipsis">{{msg.goodsAd}}</h3>
       <div class="good-price pr">
         <div class="ds pa">
           <router-link target="_blank" :to="'goodsDetails?goodsId='+msg.goodsId">

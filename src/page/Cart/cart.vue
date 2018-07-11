@@ -52,18 +52,40 @@
                         <div v-else class="subtotal" style="font-size: 14px">¥ {{item.goodsSettlePrice * item.goodsNum}}</div>
                         <!--数量-->
                         <!--{{item.goodsNum}}-->
-                        <buy-num :num="item.goodsNum"
-                                 :id="item.goodsId"
-                                 :checked="item.checked"
-                                 style="height: 140px;
+                        <!--<buy-num :num="item.goodsNum"-->
+                                 <!--:id="item.goodsId"-->
+                                 <!--:checked="item.checked"-->
+                                 <!--style="height: 140px;-->
+                                   <!--display: flex;-->
+                                   <!--align-items: center;-->
+                                   <!--justify-content: center;"-->
+                                 <!--:limit="100"-->
+                                 <!--@edit-num="EditNum"-->
+                        <!--&gt;-->
+                        <!--&lt;!&ndash;v-on:edit-num="ani"&ndash;&gt;-->
+                      <!--</buy-num>-->
+                        <div class="item-cols-num clearfix" style="height: 140px;
                                    display: flex;
                                    align-items: center;
-                                   justify-content: center;"
-                                 :limit="100"
-                                 @edit-num="EditNum"
-                        >
-                        <!--v-on:edit-num="ani"-->
-                      </buy-num>
+                                   justify-content: center;">
+                          <div class="select">
+                            <span class="down"
+                                  @click.stop.prevent="down(i)"
+                                  :class="{'down-disabled':item.goodsNum<=1}">-</span>
+                            <span class="num">
+                              <input type="text"
+                                     :class="{show:show}"
+                                     v-model="item.goodsNum>=limit?limit:item.goodsNum"
+                                     @blur="blur()"
+                                     maxlength="2">
+                                        <ul :style="ul" >
+                                          <li v-for="i in numList" :key="i">{{item.goodsNum}}</li>
+                                        </ul>
+                            </span>
+                            <span class="up" :class="{'up-disabled':item.goodsNum>=limit}"
+                                  @click.stop.prevent="up(i)">+</span>
+                          </div>
+                        </div>
                         <!--价格-->
                         <div class="price1" v-if="chanelType===4">¥ {{item.goodsShipPrice}}</div>
                         <div class="price1" v-else>¥ {{item.goodsSettlePrice}}</div>
@@ -142,7 +164,16 @@
         getcartList: [],
         checkStatus: false,
         getNum: '',
-        chanelType: ''
+        chanelType: '',
+        show: true,
+        flag: true,
+        Num: '',
+        numList: [],
+        limit: 100,
+        ul: {
+          zIndex: 1,
+          transform: 'translateY(-36px)'
+        }
       }
     },
     computed: {
@@ -207,6 +238,31 @@
       ...mapMutations([
         'INIT_BUYCART', 'EDIT_CART'
       ]),
+      up (i) {
+        this.flag = false
+        let n = this.cartList[i].goodsNum
+        this.cartList[i].goodsNum++
+        this.numList = [n - 1, n, n + 1]
+//        let ulStyle = this.ul
+//        ulStyle = {zIndex: '99', transition: 'all .2s ease-out', transform: 'translateY(-54px)'}
+        this.show = true
+        this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked)
+      },
+      down (i) {
+        let n = this.cartList[i].goodsNum
+          if ( n > 1 ) {
+            this.flag = false
+            this.cartList[i].goodsNum--
+            this.numList = [n - 1, n, n + 1]
+            this.show = true
+            this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked)
+          }else{
+            this.cartList[i].goodsNum==1
+          }
+      },
+      blur () {
+        this.Num = this.Num > this.limit ? Number(this.limit) : Number(this.Num)
+      },
       goodsDetails (id) {
         this.$router.push({
           path: '/goodsDetails',
@@ -309,18 +365,8 @@
         this.submit = false
         this.$router.push({path: 'checkout'})
       },
-      ani(data){
-          this.getNum=data
-      }
     },
     mounted () {
-//      getCartList().then(res => {
-//        if (res.code !== "success") {
-//          this.error = true
-//          return
-//        }
-//        this.getcartList = res.cartDtoList
-//      })
       this._getCartList()
       this.chanelType = getStore('chanelType')
       this.userId = getStore('userId')
@@ -622,6 +668,111 @@
     height: 300px;
     color: #8d8d8d;
   }
+  .select {
+    input {
+      z-index: 10;
+      width: 36px;
+      height: 18px;
+      background-color: #fff;
+      border: none;
+      text-align: center;
+      line-height: 18px;
+      font-size: 14px;
+      padding: 0;
+      color: #666;
+      visibility: hidden;
+      position: relative;
+      border: none;
+      &.show {
+        visibility: visible;
+      }
+    }
+    ul {
+      padding: 0;
+      line-height: 18px;
+      font-size: 14px;
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      list-style: none;
+      width: 36px;
+      font-family: system-ui;
+      z-index: 1;
+      transform: translateY(-36px);
+    }
+    .up.up-disabled, .up.up-disabled:hover {
+      background-position: 0 -240px !important;
+      cursor: not-allowed !important;
+    }
+  }
 
+  /*数量*/
+  .item-cols-num {
+    display: inline-block;
+  }
 
+  .select {
+    height: 40px;
+    padding-top: 4px;
+    input {
+      width: 100%;
+      text-align: center;
+    }
+    .down {
+      background-position: 0 -60px;
+    }
+    .down.down-disabled:hover {
+      background-position: 0 -300px;
+      cursor: not-allowed;
+    }
+    .down, .up {
+      background: url(../../../static/images/cart-updown_8303731e15@2x.jpg) no-repeat;
+      overflow: hidden;
+      float: left;
+      width: 34px;
+      height: 37px;
+      background-size: 100% auto;
+      line-height: 40px;
+      text-indent: -9999em;
+      cursor: pointer;
+      user-select: none;
+    }
+    .num {
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      float: left;
+      width: 36px;
+      height: 18px;
+      margin: 7px 0 0;
+      border: none;
+      border-radius: 3px;
+      line-height: 18px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .up {
+      margin: 0;
+      background-position: 0 0;
+      &:hover {
+        background-position: 0 -120px;
+      }
+    }
+    .down {
+      background-position: 0 -60px;
+      &:hover {
+        background-position: 0 -180px;
+      }
+    }
+  }
+
+  .down.down-disabled {
+    background-position: 0 -300px;
+    cursor: not-allowed;
+  }
+  .correct{
+  z-index: 99!important;
+  transition:all .2s ease-out!important;
+  transform:translateY(-54px)!important;
+  }
 </style>

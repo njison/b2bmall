@@ -13,14 +13,14 @@
                 class="address pr"
                 :class="{checked:addressId === item.addressId}"
                 @click="chooseAddress(item.addressId, item.addressName, item.addressPhone, item.addressDetail)">
-           <span v-if="addressId === item.addressId" class="pa">
-             <svg viewBox="0 0 1473 1024" width="17.34375" height="12">
-             <path
-               d="M1388.020 57.589c-15.543-15.787-37.146-25.569-61.033-25.569s-45.491 9.782-61.023 25.558l-716.054 723.618-370.578-374.571c-15.551-15.769-37.151-25.537-61.033-25.537s-45.482 9.768-61.024 25.527c-15.661 15.865-25.327 37.661-25.327 61.715 0 24.053 9.667 45.849 25.327 61.715l431.659 436.343c15.523 15.814 37.124 25.615 61.014 25.615s45.491-9.802 61.001-25.602l777.069-785.403c15.624-15.868 25.271-37.66 25.271-61.705s-9.647-45.837-25.282-61.717M1388.020 57.589z"
-               fill="#6A8FE5" p-id="1025">
-               </path>
-             </svg>
-             </span>
+               <span v-if="addressId === item.addressId" class="pa">
+                 <svg viewBox="0 0 1473 1024" width="17.34375" height="12">
+                 <path
+                   d="M1388.020 57.589c-15.543-15.787-37.146-25.569-61.033-25.569s-45.491 9.782-61.023 25.558l-716.054 723.618-370.578-374.571c-15.551-15.769-37.151-25.537-61.033-25.537s-45.482 9.768-61.024 25.527c-15.661 15.865-25.327 37.661-25.327 61.715 0 24.053 9.667 45.849 25.327 61.715l431.659 436.343c15.523 15.814 37.124 25.615 61.014 25.615s45.491-9.802 61.001-25.602l777.069-785.403c15.624-15.868 25.271-37.66 25.271-61.705s-9.647-45.837-25.282-61.717M1388.020 57.589z"
+                   fill="#6A8FE5" p-id="1025">
+                   </path>
+                 </svg>
+               </span>
               <p v-if="item.isDefault=='true'">收货人: {{item.addressName}} (默认地址)</p>
               <p v-if="item.isDefault=='false'">收货人: {{item.addressName}}</p>
               <p class="street-name ellipsis">收货地址: {{item.addressDetail}}</p>
@@ -234,39 +234,6 @@
           this.cartList =  res.cartDtoList
         })
       },
-      _addressList () {
-//        addressList({userId: this.userId}).then(res => {
-//          let data = res.result.data
-//          if (data.length) {
-//            this.addList = data
-//            this.addressId = data[0].addressId || '1'
-//            this.userName = data[0].userName
-//            this.tel = data[0].tel
-//            this.streetName = data[0].streetName
-//          } else {
-//            this.addList = []
-//          }
-//        })
-      },
-//      _addressUpdate (params) {
-//        addressUpdate(params).then(res => {
-//          this._addressList()
-//        })
-//      },
-//      _addressAdd (params) {
-//        addressAdd(params).then(res => {
-//          if (res.success === true) {
-//            this._addressList()
-//          } else {
-//            this.messageError(res.message)
-//          }
-//        })
-//      },
-//      _addressDel (params) {
-//        addressDel(params).then(res => {
-//          this._addressList()
-//        })
-//      },
       // 提交订单后跳转付款页面
       _submitOrder () {
         this.submitOrder = '提交订单中...'
@@ -288,6 +255,7 @@
         for (var i = 0; i < this.cartList.length; i++) {
           var orderItem = new Object();
           if (this.cartList[i].checked === '1' && this.chanelType===4) {
+            orderItem.placeOrderMethod  = this.cartList[i].placeOrderMethod;
             orderItem.goodsId = this.cartList[i].goodsId;
             orderItem.goodsNum = this.cartList[i].goodsNum;
             orderItem.goodsPrice = this.cartList[i].goodsShipPrice;
@@ -296,6 +264,7 @@
             orderItem.venderName=this.cartList[i].venderName;
             orderItems.push(orderItem)
           }else if(this.cartList[i].checked === '1' && this.chanelType!=4){
+            orderItem.placeOrderMethod  = this.cartList[i].placeOrderMethod;
             orderItem.goodsId = this.cartList[i].goodsId;
             orderItem.goodsNum = this.cartList[i].goodsNum;
             orderItem.goodsPrice = this.cartList[i].goodsSettlePrice;
@@ -437,7 +406,11 @@
             item.checked = '1'
             item.goodsImg = item.url
             item.goodsNum = this.num
-            item.productPrice = item.goodsSettlePrice
+            if(this.chanelType===4){
+              item.productPrice = item.goodsShipPrice
+            }else{
+              item.productPrice = item.goodsSettlePrice
+            }
             this.cartList.push(item)
           }
         })
@@ -453,8 +426,24 @@
           if (res.code !== "success") {
             this.error = true
             return
+          }else{
+            let data = res.addressDtoList
+            if (data.length) {
+              this.getAddress = data
+              data && data.forEach(item => {
+                if (item.isDefault == 'true' ) {
+                  this.addressId = item.addressId || '1'
+                  this.userName = item.addressName
+                  this.tel = item.addressPhone
+                  this.streetName = item.addressDetail
+                }
+              })
+
+            } else {
+              this.getAddress = []
+            }
           }
-          this.getAddress=res.addressDtoList
+//          this.getAddress=res.addressDtoList
         })
       }
     },
@@ -468,7 +457,6 @@
       } else {
         this._getCartList()
       }
-      this._addressList()
     },
     mounted () {
       this.chanelType = getStore('chanelType')

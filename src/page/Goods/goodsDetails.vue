@@ -46,7 +46,25 @@
         </div>
         <div class="num">
           <span class="params-name">数量</span>
-          <buy-num @edit-num="editNum" :limit="100"></buy-num>
+          <div class="item-cols-num clearfix" style="height: 140px;display: flex;align-items: center; justify-content: center;">
+            <div class="select">
+              <span class="down"
+                    @click.stop.prevent="down()" :class="{'down-disabled':goodsNum<=1}">-</span>
+              <span class="num">
+                <input type="text"
+                       :class="{show:show}"
+                       v-model="goodsNum>=limit?limit:goodsNum"
+                       @blur="blur()"
+                       maxlength="2">
+                <ul>
+                  <li v-for="i in numList" :key="i">{{goodsNum}}</li>
+                </ul>
+              </span>
+              <span class="up" :class="{'up-disabled':goodsNum>=limit}"
+                    @click.stop.prevent="up()">+</span>
+            </div>
+          </div>
+          <!--<buy-num @edit-num="editNum" :limit="100" :Num="goodsNum"></buy-num>-->
         </div>
         <div class="buy">
           <y-button text="加入购物车"
@@ -84,6 +102,11 @@
         product: [],
         goodsNum: 1,
         userId: '',
+        show: true,
+        flag: true,
+        Num: '',
+        numList: [],
+        limit: 100,
         chanelType:getStore('chanelType')
       }
     },
@@ -135,6 +158,27 @@
       checkout (goodsId) {
         this.$router.push({path: '/checkout', query: {goodsId, num: this.goodsNum}})
       },
+      up () {
+        this.flag = false
+        let n = this.goodsNum
+        this.goodsNum++
+        this.numList = [n - 1, n, n + 1]
+        this.show = true
+      },
+      down () {
+        let n = this.goodsNum
+        if ( n > 1 ) {
+          this.flag = false
+          this.goodsNum--
+          this.numList = [n - 1, n, n + 1]
+          this.show = true
+        }else{
+          this.goodsNum==1
+        }
+      },
+      blur () {
+        this.goodsNum = this.goodsNum > this.limit ? Number(this.limit) : Number(this.goodsNum)
+      },
       editNum (num) {
         this.goodsNum = num
       }
@@ -143,11 +187,9 @@
       YShelf, BuyNum, YButton, DetailInfo
     },
     created () {
-//        let id=180000613194510824000124
       let id = this.$route.query.goodsId
       this._productDet(id)
       this.userId = getStore('userId')
-//      console.log(getStore('vendorType'))
     }
   }
 </script>
@@ -240,8 +282,8 @@
         line-height: 36px;
       }
       .num {
-        padding: 29px 0 8px 10px;
-        border-top: 1px solid #ebebeb;
+        /*padding: 29px 0 8px 10px;*/
+        /*border-top: 1px solid #ebebeb;*/
         display: flex;
         align-items: center;
       }
@@ -301,5 +343,107 @@
       padding-left: 2px;
       font-size: 24px;
     }
+  }
+  .select {
+    input {
+      z-index: 10;
+      width: 36px;
+      height: 18px;
+      background-color: #fff;
+      border: none;
+      text-align: center;
+      line-height: 18px;
+      font-size: 14px;
+      padding: 0;
+      color: #666;
+      visibility: hidden;
+      position: relative;
+      border: none;
+      &.show {
+        visibility: visible;
+      }
+    }
+    ul {
+      padding: 0;
+      line-height: 18px;
+      font-size: 14px;
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      list-style: none;
+      width: 36px;
+      font-family: system-ui;
+      z-index: 1;
+      transform: translateY(-36px);
+    }
+    .up.up-disabled, .up.up-disabled:hover {
+      background-position: 0 -240px !important;
+      cursor: not-allowed !important;
+    }
+  }
+
+  /*数量*/
+  .item-cols-num {
+    display: inline-block;
+  }
+
+  .select {
+    height: 40px;
+    padding-top: 4px;
+    input {
+      width: 100%;
+      text-align: center;
+    }
+    .down {
+      background-position: 0 -60px;
+    }
+    .down.down-disabled:hover {
+      background-position: 0 -300px;
+      cursor: not-allowed;
+    }
+    .down, .up {
+      background: url(../../../static/images/cart-updown_8303731e15@2x.jpg) no-repeat;
+      overflow: hidden;
+      float: left;
+      width: 34px;
+      height: 37px;
+      background-size: 100% auto;
+      line-height: 40px;
+      text-indent: -9999em;
+      cursor: pointer;
+      user-select: none;
+    }
+    .num {
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      float: left;
+      width: 36px;
+      height: 18px;
+      margin: 7px 0 0;
+      border: none;
+      border-radius: 3px;
+      line-height: 18px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .up {
+      margin: 0;
+      background-position: 0 0;
+      &:hover {
+        background-position: 0 -120px;
+      }
+    }
+    .down {
+      background-position: 0 -60px;
+      &:hover {
+        background-position: 0 -180px;
+      }
+    }
+  }
+
+  .down.down-disabled {
+    background-position: 0 -300px;
+    cursor: not-allowed;
   }
 </style>

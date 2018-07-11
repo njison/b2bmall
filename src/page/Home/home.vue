@@ -17,69 +17,14 @@
           </ul>
         </div>
       </div>
-      <div>
-        <section class="w mt30 clearfix">
-          <y-shelf title="品牌旗舰店">
+      <div v-for="(item,i) in home">
+        <section class="w mt30 clearfix" v-if="item.panelType == 1">
+          <y-shelf :title="item.panelName">
             <div slot="content" class="floors" >
               <ul class="clearfix vivas">
-                <li class="vivasli">
+                <li class="vivasli" v-for="(iitem,j) in item.panelDtosGoodsList" :key="j" >
                   <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li class="marL10 vivasli">
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li class="marL11 vivasli">
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li class="marL10 vivasli">
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li class="vivasli">
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li class="marL10 vivasli">
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li class="marL11 vivasli">
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li class="marL10 vivasli">
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li>
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li class="marL10">
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li class="marL11">
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
-                  </a>
-                </li>
-                <li class="marL10">
-                  <a href="javascript:void(0);">
-                    <img src="../../../static/images/vivas-07.jpg">
+                    <img :src="iitem.url">
                   </a>
                 </li>
               </ul>
@@ -104,17 +49,6 @@
         <br> 抱歉！出错了...
       </div>
     </div>
-    <!--
-        <el-dialog
-          title="通知"
-          :visible.sync="dialogVisible"
-          width="30%"
-          style="width:70%;margin:0 auto">
-          <span>首页已升级！XPay个人支付收款系统已上线，赶快去支付体验吧！</span>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="dialogVisible = false">知道了</el-button>
-          </span>
-        </el-dialog>-->
   </div>
 </template>
 <script>
@@ -249,6 +183,8 @@
       YShelf,
       product,
       mallGoodsIndex
+
+
     }
   }
 </script>
@@ -556,45 +492,32 @@
       height: 100%;
     }
   }
-  /*.vivas {*/
-    /*margin-top: 20px;*/
-  /*}*/
-  /*.w1200 {*/
-    /*width: 1200px;*/
-    /*margin: 0 auto;*/
-  /*}*/
-  /*.vivas h2 {*/
-    /*border-bottom: 4px #e40077 solid;*/
-  /*}*/
-  /*.vivas h2 i {*/
-    /*width: 151px;*/
-    /*height: 47px;*/
-    /*line-height: 47px;*/
-    /*display: inline-block;*/
-    /*font-size: 26px;*/
-    /*color: #727272;*/
-    /*font-weight: lighter;*/
-    /*font-family: "微软雅黑";*/
-  /*}*/
   .fl {
     float: left;
   }
-  /*.vivas h2 a:link, .recommend h2 a:visited {*/
-    /*color: #727272;*/
-  /*}*/
-  .marL11 {
-    margin-left: 10px;
+  .vivas{
+    overflow:hidden;
+    margin-left:-10px;
+    margin-bottom:-10px;
   }
+  /*.marL11 {*/
+    /*margin-left: 10px;*/
+  /*}*/
   .vivas li{
     float: left;
+    margin-left:10px;
+    margin-bottom:10px;
+    width: 292px;
+    height: 150px;
+    overflow: hidden;
   }
-  .vivasli {
+  /*.vivasli {*/
 
-    margin-bottom: 10px;
-  }
-  .marL10 {
-    margin-left: 10px;
-  }
+    /*margin-bottom: 10px;*/
+  /*}*/
+  /*.marL10 {*/
+    /*margin-left: 10px;*/
+  /*}*/
   .w{
     width: 1200px;
   }

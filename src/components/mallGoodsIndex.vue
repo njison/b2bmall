@@ -9,7 +9,7 @@
           </div>
         </router-link>
       </div>
-      <h6 class="good-title" v-html="msg.goodsName">{{msg.goodsName}}</h6>
+      <h6 class="good-title" v-html="msg.productName">{{msg.goodsName}}</h6>
       <h3 class="sub-title ellipsis">{{msg.subTitle}}</h3>
       <div class="good-price pr">
         <div class="ds pa">

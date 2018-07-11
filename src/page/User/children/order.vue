@@ -40,7 +40,6 @@
                   <div class="cart-l-r">
                     <div>¥ {{good.goodsPrice}}</div>
                     <div class="num">{{good.goodsNum}}</div>
-
                   </div>
                 </div>
                 <div class="cart-r">
@@ -73,26 +72,6 @@
         </div>
       </div>
     </y-shelf>
-    <!--<div style="float:right">-->
-    <!--<el-pagination-->
-    <!--@size-change="handleSizeChange"-->
-    <!--@current-change="handleCurrentChange"-->
-    <!--:current-page="currentPage"-->
-    <!--:page-sizes="[5, 10, 20, 50]"-->
-    <!--:page-size="pageSize"-->
-    <!--layout="total, sizes, prev, pager, next,jumper"-->
-    <!--:total="total">-->
-    <!--</el-pagination>-->
-    <!--<el-pagination-->
-    <!--@size-change="handleSizeChange"-->
-    <!--@current-change="handleCurrentChange"-->
-    <!--:current-page="currentPage"-->
-    <!--:page-sizes="[5, 10, 20, 50]"-->
-    <!--:page-size="pageSize"-->
-    <!--layout="total, sizes, prev, pager, next"-->
-    <!--:total="total">-->
-    <!--</el-pagination>-->
-    <!--</div>-->
   </div>
 </template>
 <script>
@@ -108,7 +87,8 @@
         loading: true,
         currentPage: 1,
         pageSize: 5,
-        total: 0
+        total: 0,
+        orderItemDtoList: ''
       }
     },
     methods: {
@@ -162,7 +142,6 @@
             this.orderList = res.orderDtoList
             this.total = res.orderDtoList.length
           } else {
-
           }
         })
       },
@@ -182,7 +161,7 @@
       },
       cancelOrder (orderId) {
         let params = {
-          orderDto : {
+          orderDto: {
             orderId: orderId,
             userId: this.userId
           }
