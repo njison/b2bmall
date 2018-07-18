@@ -3,6 +3,10 @@ import http from './public'
 export const userLogin = (params) => {
   return http.fetchPost('/login', params)
 }
+// 手机验证码
+export const phoneCode = (params) => {
+  return http.fetchPost('/sendSmsCode', params)
+}
 // Token
 export const userToken = (params) => {
   return http.fetchGet('/usertoken', params)
@@ -14,6 +18,10 @@ export const loginOut = (params) => {
 // 用户信息
 export const userInfo = (params) => {
   return http.fetchPost('/checkUserToken', params)
+}
+// 验证是否显示图形验证码和短信验证码
+export const checkCodeShow = (params) => {
+  return http.fetchGet('sysparams/HAS_VERIFICATION_CODE', params)
 }
 // 注册账号
 export const register = (params) => {
@@ -44,7 +52,7 @@ export const getBanner = (params) => {
 export const getPanel = (params) => {
   return http.fetchPost('/panel/queryMallPanelList', params)
 }
-// 推荐板块
+// // 推荐板块
 export const recommend = (params) => {
   return http.fetchGet('/goods/recommend', params)
 }

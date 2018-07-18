@@ -38,7 +38,7 @@
                     <ul>
                       <!--头像-->
                       <li class="nav-user-avatar">
-                        <p class="name"></p>
+                        <p class="name">{{userName}}</p>
                       </li>
                       <li>
                         <router-link to="/user/orderList">我的订单</router-link>
@@ -70,14 +70,14 @@
                           <li class="clearfix" v-for="(item,i) in cartList" :key="i">
                             <div class="cart-item">
                               <div class="cart-item-inner">
-                                <router-link :to="'goodsDetails?goodsId='+item.goodsId">
+                                <router-link :to="'goodsDetails?goodsId='+item.goodsId" target="_blank">
                                   <div class="item-thumb">
                                     <img :src="item.goodsImg">
                                   </div>
                                   <div class="item-desc">
                                     <div class="cart-cell">
                                       <h4>
-                                      <a href="" v-text="item.goodsName"></a>
+                                      <p style="'font-style: normal;text-decoration: none;color: #5079d9;cursor: pointer;transition: all .15s ease-out;" v-text="item.goodsName"></p>
                                     </h4>
                                       <h6><span class="price-icon">¥</span>
                                         <span v-if="chanelType===4" class="price-num">{{item.goodsShipPrice}}</span>
@@ -163,7 +163,8 @@
         timeout: null,
         token: '',
         getcartList: [],
-        chanelType: ''
+        chanelType: '',
+        userName: ''
       }
     },
     computed: {
@@ -367,20 +368,10 @@
       }
     },
     mounted () {
-//      getCartList().then(res => {
-//        if (res.code !== "success") {
-//          this.error = true
-//          return
-//        }
-//        this.getcartList = res.cartDtoList
-//      })
       this.token = getStore('token')
       this.chanelType = getStore('chanelType')
-/*      if (this.login) {
-        this._getCartList()
-      } else {
-        this.INIT_BUYCART()
-      }*/
+      this.userName = getStore('userName')
+
       this._getCartList()
       this.navFixed()
       this.getPage()

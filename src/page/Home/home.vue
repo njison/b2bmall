@@ -5,7 +5,9 @@
         <div class="bg" ref="bg">
           <transition name="fade">
             <div v-for="(item, i) in banner" v-if="i===mark" :key="i" style="position:absolute">
-              <img v-if="item.url" class="img1" :src="item.url"/>
+              <router-link :to="'goodsDetails?goodsId='+item.goodsId">
+                <img v-if="item.url" class="img1" :src="item.url"/>
+              </router-link>
               <!-- <img v-if="item.picUrl2"  class="img2 a" :src="item.picUrl2"/>
                <img v-if="item.picUrl3"  class="img3 b" :src="item.picUrl3"/>-->
             </div>
@@ -23,9 +25,9 @@
             <div slot="content" class="floors" >
               <ul class="clearfix vivas">
                 <li class="vivasli" v-for="(iitem,j) in item.panelDtosGoodsList" :key="j" >
-                  <a href="javascript:void(0);">
+                  <router-link :to="'search?vendorId='+iitem.goodsId">
                     <img :src="iitem.url">
-                  </a>
+                  </router-link>
                 </li>
               </ul>
             </div>

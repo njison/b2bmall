@@ -127,8 +127,8 @@
             <input type="text" placeholder="收货地址" v-model="msg.streetName">
           </div>
           <div>
-            <el-checkbox v-if="msg.isDefault==='true'" class="auto-login" v-model="msg.isDefault" checked>设为默认</el-checkbox>
-            <el-checkbox v-else class="auto-login" v-model="msg.isDefault">设为默认</el-checkbox>
+            <!--<el-checkbox v-if="msg.isDefault==true"  v-model="msg.isDefault" checked>设为默认</el-checkbox>-->
+            <el-checkbox v-model="msg.isDefault">设为默认</el-checkbox>
           </div>
           <y-button text='保存'
                     class="btn"
@@ -174,7 +174,8 @@
         submit: false,
         submitOrder: '提交订单',
         getAddress: [],
-        chanelType:''
+        chanelType:'',
+        show: true
       }
     },
     computed: {
@@ -330,7 +331,7 @@
           this.msg.userName = item.addressName
           this.msg.tel = item.addressPhone
           this.msg.streetName = item.addressDetail
-          this.msg.isDefault = item.isDefault
+          this.msg.isDefault = item.isDefault=='true'
           this.msg.addressId = item.addressId
         } else {
           this.popupTitle = '新增收货地址'
@@ -359,6 +360,14 @@
             if(res.code='"success"'){
               this.messageSuccess('修改成功')
               this.getAddressList()
+              setTimeout(()=>{
+                this.addressId = add.addressId
+                this.userName = add.userName
+                this.tel = add.tel
+                this.streetName = add.streetName
+              },100)
+
+
             }
           })
         } else {

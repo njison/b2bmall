@@ -51,19 +51,6 @@
                         <div v-if="chanelType===4" class="subtotal" style="font-size: 14px">¥ {{item.goodsShipPrice * item.goodsNum}}</div>
                         <div v-else class="subtotal" style="font-size: 14px">¥ {{item.goodsSettlePrice * item.goodsNum}}</div>
                         <!--数量-->
-                        <!--{{item.goodsNum}}-->
-                        <!--<buy-num :num="item.goodsNum"-->
-                                 <!--:id="item.goodsId"-->
-                                 <!--:checked="item.checked"-->
-                                 <!--style="height: 140px;-->
-                                   <!--display: flex;-->
-                                   <!--align-items: center;-->
-                                   <!--justify-content: center;"-->
-                                 <!--:limit="100"-->
-                                 <!--@edit-num="EditNum"-->
-                        <!--&gt;-->
-                        <!--&lt;!&ndash;v-on:edit-num="ani"&ndash;&gt;-->
-                      <!--</buy-num>-->
                         <div class="item-cols-num clearfix" style="height: 140px;
                                    display: flex;
                                    align-items: center;
@@ -76,8 +63,8 @@
                               <input type="text"
                                      :class="{show:show}"
                                      v-model="item.goodsNum>=limit?limit:item.goodsNum"
-                                     @blur="blur()"
-                                     maxlength="2">
+                                     maxlength="2" ref="input"
+                                     @blur="getGoodNum(i)">
                                         <ul :style="ul" >
                                           <li v-for="i in numList" :key="i">{{item.goodsNum}}</li>
                                         </ul>
@@ -134,7 +121,7 @@
           </div>
           <p style="text-align: center;padding: 20px;color: #8d8d8d">你的购物车空空如也</p>
           <div style="text-align: center">
-            <router-link to="/goods">
+            <router-link to="/home">
               <y-button text="现在选购" style="width: 150px;height: 40px;line-height: 38px;color: #8d8d8d"></y-button>
             </router-link>
           </div>
@@ -243,8 +230,6 @@
         let n = this.cartList[i].goodsNum
         this.cartList[i].goodsNum++
         this.numList = [n - 1, n, n + 1]
-//        let ulStyle = this.ul
-//        ulStyle = {zIndex: '99', transition: 'all .2s ease-out', transform: 'translateY(-54px)'}
         this.show = true
         this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked)
       },
@@ -260,8 +245,14 @@
             this.cartList[i].goodsNum==1
           }
       },
-      blur () {
-        this.Num = this.Num > this.limit ? Number(this.limit) : Number(this.Num)
+      getGoodNum (i) {
+        let n = this.cartList[i].goodsNum
+        if ( n > 1 ) {
+          this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked)
+        } else {
+          this.cartList[i].goodsNum==1
+        }
+//        this.Num = this.Num > this.limit ? Number(this.limit) : Number(this.Num)
       },
       goodsDetails (id) {
         this.$router.push({
@@ -371,6 +362,7 @@
       this.chanelType = getStore('chanelType')
       this.userId = getStore('userId')
       this.INIT_BUYCART()
+
     },
     components: {
       YButton,

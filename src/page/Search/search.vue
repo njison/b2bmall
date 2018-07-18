@@ -44,7 +44,7 @@
               </ul>
             </div>
             <div style="width: 100px">
-              <div v-if="brandList.length>10">
+              <div v-if="brandList.length>4">
                 <div  v-if="isshowBrand==false" class="searchMOre showMore" @click="showAll(1)">更多></div>
                 <div  v-if="isshowBrand==true" class="searchMOre showMore" @click="closeShow(1)">收起></div>
               </div>
@@ -68,7 +68,7 @@
               </ul>
             </div>
             <div style="width: 100px">
-              <div v-if="vendorList.length>10">
+              <div v-if="vendorList.length>4">
                 <div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>
                 <div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>
               </div>
@@ -201,24 +201,23 @@
       },
       // 价格排序
       sortByPrice (v) {
-        if(v==1){
-          this.sortType=2
-          function compare(property){
-            return function(a,b){
+        if (v == 1) {
+          this.sortType = 2
+          function compare (property) {
+            return function (a, b) {
               var value1 = a[property]
               var value2 = b[property]
-              return value1 - value2;//价由高到低
+              return value1 - value2//价由高到低
             }
           }
           return this.goods.sort(compare('goodsSettlePrice'));
-        }
-        else if(v== -1){
-          this.sortType=3
-          function compare(property){
-            return function(a,b){
+        } else if (v == -1) {
+          this.sortType = 3
+          function compare (property) {
+            return function (a, b) {
               var value1 = a[property]
               var value2 = b[property]
-              return value2 - value1;//价由低到高
+              return value2 - value1 // 价由低到高
             }
           }
           return this.goods.sort(compare('goodsSettlePrice'))
@@ -226,29 +225,45 @@
       },
       // 销量排序
       sortBysale () {
-        this.sortType=4
-        function compare(property){
-          return function(a,b){
+        this.sortType = 4
+        function compare (property) {
+          return function (a, b) {
             var value1 = a[property]
             var value2 = b[property]
-            return value1 - value2;
+            return value1 - value2
           }
         }
         return this.goods.sort(compare('goodsSales'))
       },
       // 查询所有品牌商
-      searchALlBrand(){
-        this.selectedBrandId=''
-        this.selectAllBrand=true
+      searchALlBrand () {
+        this.selectedBrandId = ''
+        this.selectAllBrand = true
         this.loading = true
-        let params = {
-          searchType: 'ES_SQL_MULTI_SEARCH',
-          searchValue: '',
-          esGoodsDto:{
-            brandId: ''
+        this.brandId = ''
+        let isNull = ''
+//       / console.log('查询所有品牌商,vendorId=' + this.vendorId)
+        if (this.vendorId) {
+          let params = {
+            searchType: 'ES_SQL_MULTI_SEARCH',
+            searchValue: '',
+            esGoodsDto: {
+//              brandId: '',
+              venderId: this.vendorId
+            }
           }
+          isNull = params
+        } else {
+          let params = {
+            searchType: 'ES_SQL_MULTI_SEARCH',
+            searchValue: '',
+            esGoodsDto: {
+//              brandId: ''
+            }
+          }
+          isNull = params
         }
-        getSearch(params).then(res => {
+        getSearch(isNull).then(res => {
           if ( res.code == 'success') {
             this.goods = res.list
             this.total = res.list.length
@@ -271,14 +286,29 @@
         this.selectedBrandId = value
         this.brandId = value
         this.loading = true
-        let params = {
-          searchType: 'ES_SQL_MULTI_SEARCH',
-          searchValue: '',
-          esGoodsDto: {
-            brandId: this.brandId
+        let isNull = ''
+//        console.log('按品牌查询,vendorId='+this.vendorId)
+        if (this.venderId) {
+          let params = {
+            searchType: 'ES_SQL_MULTI_SEARCH',
+            searchValue: '',
+            esGoodsDto: {
+              venderId: this.vendorId,
+              brandId: this.brandId
+            }
           }
+          isNull = params
+        } else {
+          let params = {
+            searchType: 'ES_SQL_MULTI_SEARCH',
+            searchValue: '',
+            esGoodsDto: {
+              brandId: this.brandId
+            }
+          }
+          isNull = params
         }
-        getSearch(params).then(res => {
+        getSearch(isNull).then(res => {
           if ( res.code == 'success') {
             this.goods = res.list
             this.total = res.list.length
@@ -294,41 +324,51 @@
           this.loading = false
           this.searching = false
         })
-
-//        this.sortType = 1
-//        this.sort = ''
-//        this.currentPage = 1
-//
-//        this._getSearch()
       },
-      //按所有供货商查询
-      searchALlVendor(){
-          this.selectAllVendor = true
-          this.selectedVendorId = ''
-          this.loading = true
+      // 按所有供货商查询
+      searchALlVendor () {
+        this.selectAllVendor = true
+        this.selectedVendorId = ''
+        this.loading = true
+        this.vendorId = ''
+        let isNull = ''
+//        console.log('按所有供货商查询,brandId='+this.brandId)
+        if (this.brandId) {
           let params = {
             searchType: 'ES_SQL_MULTI_SEARCH',
             searchValue: '',
             esGoodsDto: {
-              venderId: ''
+              brandId: this.brandId
+//              venderId: ''
             }
           }
-          getSearch(params).then(res => {
-            if ( res.code == 'success') {
-              this.goods = res.list
-              this.total = res.list.length
-              this.noResult = false
-              if (this.total === 0) {
-                this.noResult = true
-              }
-              this.error = false
-            } else {
-              this.noResult = true
-              this.error = true
+          isNull = params
+        } else {
+          let params = {
+            searchType: 'ES_SQL_MULTI_SEARCH',
+            searchValue: '',
+            esGoodsDto: {
+//              venderId: ''
             }
-            this.loading = false
-            this.searching = false
-          })
+          }
+          isNull = params
+        }
+        getSearch(isNull).then(res => {
+          if (res.code == 'success') {
+            this.goods = res.list
+            this.total = res.list.length
+            this.noResult = false
+            if (this.total === 0) {
+              this.noResult = true
+            }
+            this.error = false
+          } else {
+            this.noResult = true
+            this.error = true
+          }
+          this.loading = false
+          this.searching = false
+        })
       },
       // 按供货商查询
       selectByVendor (venderId) {
@@ -336,14 +376,29 @@
         this.selectedVendorId = venderId
         this.vendorId = venderId
         this.loading = true
-        let params = {
-          searchType: 'ES_SQL_MULTI_SEARCH',
-          searchValue: '',
-          esGoodsDto: {
-            venderId: this.vendorId
+        let isNull = ''
+//        console.log('按供货商查询,brandId='+this.brandId)
+        if (this.brandId) {
+          let params = {
+            searchType: 'ES_SQL_MULTI_SEARCH',
+            searchValue: '',
+            esGoodsDto: {
+              venderId: this.vendorId,
+              brandId: this.brandId
+            }
           }
+          isNull = params
+        } else {
+          let params = {
+            searchType: 'ES_SQL_MULTI_SEARCH',
+            searchValue: '',
+            esGoodsDto: {
+              venderId: this.vendorId
+            }
+          }
+          isNull = params
         }
-        getSearch(params).then(res => {
+        getSearch(isNull).then(res => {
           if ( res.code == 'success') {
             this.goods = res.list
             this.total = res.list.length
@@ -360,7 +415,7 @@
           this.searching = false
         })
       },
-      //品牌列表
+      // 品牌列表
       _getBrand () {
         let params = {
           dcName:"DIC_BRAND"
@@ -371,7 +426,7 @@
           }
         })
       },
-      //供货商列表
+      // 供货商列表
       _getVendor () {
         let params = {
           vender: {
@@ -393,16 +448,15 @@
       this.windowHeight = window.innerHeight
       this.windowWidth = window.innerWidthcartList
       this.key = this.$route.query.key
-
-      this.$nextTick(function () {
+      this.brandId = this.$route.query.vendorId
+      if (this.brandId) {
+        this.selectByBrand(this.brandId)
+      } else {
         this._getSearch()
-        this._getBrand()
-        this._getVendor()
-/*        recommend().then(res => {
-          let data = res.result
-          this.recommendPanel = data[0]
-        })*/
-      })
+      }
+
+      this._getBrand()
+      this._getVendor()
     },
     components: {
       mallGoods,

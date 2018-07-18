@@ -35,7 +35,7 @@
           <div class="inp-box">
             <input type="password" placeholder="密码" class="inp-full" v-model="ruleForm.userPwd">
           </div>
-          <div class="inp-box">
+          <div class="inp-box" v-if="currentValue===true">
             <div style="float: left;">
               <input type="text" placeholder="验证码" class="inp-part" v-model="ruleForm.checkCode">
             </div>
@@ -46,12 +46,15 @@
             <div style="clear: both"></div>
           </div>
 
-          <div class="inp-box">
+          <div class="inp-box" v-if="currentValue===true">
             <div style="float: left;">
-              <input type="password" placeholder="短信验证码" class="inp-part">
+              <input type="password" placeholder="短信验证码" class="inp-part" v-model="ruleForm.phoneCode">
             </div>
             <div style="float: right">
-              <div type="button" class="l-m-btn btn-part">发送</div>
+              <div type="button" class="l-m-btn btn-part">
+                <span  @click="getCode" v-show="show">发送短信</span>
+                <span v-show="!show"> 重新发送({{msgCount}})</span>
+               </div>
             </div>
             <div style="clear: both"></div>
           </div>
@@ -75,13 +78,12 @@
 import store from '../../store/'
 import YFooter from '/common/footer'
 import YButton from '/components/YButton'
-import { userLogin, geetest ,userToken,vcode,getBanner,userInfo } from '/api/index.js'
+import { userLogin, geetest ,userToken,vcode,getBanner,userInfo, phoneCode, checkCodeShow} from '/api/index.js'
 import { addCart } from '/api/goods.js'
 import { setStore, getStore, removeStore } from '/utils/storage.js'
-
 require('../../../static/geetest/gt.js')
 let Base64 = require('js-base64').Base64;
-let checkCodeUrl='http://192.168.1.112:9000/rims/vcode'
+let checkCodeUrl='http://192.168.1.112:9000/rims/verificationCode'
 var captcha
 export default {
   data () {
@@ -92,7 +94,8 @@ export default {
         userName: '',
         userPwd: '',
         errMsg: '',
-        checkCode:''
+        checkCode:'',
+        phoneCode:''
       },
       registered: {
         userName: '',
@@ -104,7 +107,10 @@ export default {
       logintxt: '登录',
       vercodeUrl:checkCodeUrl,
       bgImg:'',
-      checkStatus:true
+      checkStatus:true,
+      show:true,
+      msgCount:'',
+      currentValue:true
     }
   },
   computed: {
@@ -113,8 +119,46 @@ export default {
     }
   },
   methods: {
+      // 短信验证码
+    getCode(){
+        if( this.currentValue===true){
+          if (!this.ruleForm.userName || !this.ruleForm.userPwd || !this.ruleForm.checkCode) {
+            this.message('请填写完整!')
+          } else {
+            const TIME_COUNT = 60;
+            if (!this.timer) {
+              this.msgCount = TIME_COUNT;
+              this.show = false;
+              this.timer = setInterval(() => {
+                if (this.msgCount > 0 && this.msgCount <= TIME_COUNT) {
+                  this.msgCount--;
+                } else {
+                  this.show = true;
+                  clearInterval(this.timer);
+                  this.timer = null;
+                }
+              }, 1000)
+            }
+            let pwd=Base64.encode(this.ruleForm.userPwd);
+            var params = {
+              userName: this.ruleForm.userName,
+              userPwd: pwd,
+              verify:this.ruleForm.checkCode,
+              sso:0
+            }
+            phoneCode(params).then(res => {
+              if(res.errorCode='"success"'){
+                this.messageSuccess('发送成功 ！')
+              }else{
+                this.message('发送失败 !')
+              }
+            })
+          }
+        }
+    },
+      // 图形验证码
     getCheckCode(){
-      this.vercodeUrl=checkCodeUrl+'?'+Math.random()
+      this.vercodeUrl=checkCodeUrl+'?'+Math.random()* 100000 + 1
     },
     open (t, m) {
       this.$notify.info({
@@ -122,9 +166,9 @@ export default {
         message: m
       })
     },
-    messageSuccess () {
+    messageSuccess (m) {
       this.$message({
-        message: '恭喜您，注册成功！赶紧登录体验吧',
+        message: m,
         type: 'success'
       })
     },
@@ -188,17 +232,28 @@ export default {
     async  login () {
       this.logintxt = '登录中...'
       this.rememberPass()
-      if (!this.ruleForm.userName || !this.ruleForm.userPwd || !this.ruleForm.checkCode) {
-        this.message('请填写完整!')
-        this.logintxt = '登录'
+//      console.log(this.currentValue)
+      if(this.currentValue===true){
+        if (!this.ruleForm.userName || !this.ruleForm.userPwd || !this.ruleForm.checkCode || !this.ruleForm.phoneCode) {
+          this.message('请填写完整!')
+          this.logintxt = '登录'
 
-        return false
+          return false
+        }
+      }else{
+        if (!this.ruleForm.userName || !this.ruleForm.userPwd ) {
+          this.message('请填写完整!')
+          this.logintxt = '登录'
+
+          return false
+        }
       }
       let pwd=Base64.encode(this.ruleForm.userPwd);
       var params = {
         userName: this.ruleForm.userName,
         userPwd: pwd,
-        verify:this.ruleForm.checkCode
+        verify:this.ruleForm.checkCode,
+        smsCode: this.ruleForm.phoneCode
       }
        userLogin(params).then(res => {
         if (res.isSuccess == true) {
@@ -249,35 +304,44 @@ export default {
       userInfo(params).then(res => {
         if (res) {
           this.checkStatus=true
-//          console.log(this.checkStatus)
         } else {
           this.checkStatus=false
-//          console.log(this.checkStatus)
         }
       })
-    }
+    },
+    getCheckCode(){
+      checkCodeShow().then(res => {
+          if(res.currentValue === 'true'){
+            this.currentValue=true
+          }else{
+            this.currentValue=false
+          }
+      })
+    },
+    getBanner(){
+      let params = {
+        materialDto :{
+          materialType: "4"
+        }
+      }
+      getBanner(params).then(res => {
+        if (res.code !== "success") {
+          this.error = true
+          return
+        }
+        let data = res
+        this.loading = false
+        this.bgImg = data.materialDtoList[0].url
+      })
+    },
   },
   mounted () {
-    let params = {
-      materialDto :{
-        materialType: "4"
-      }
-    }
 
-    getBanner(params).then(res => {
-      if (res.code !== "success") {
-        this.error = true
-        return
-      }
-      let data = res
-      this.loading = false
-      this.bgImg = data.materialDtoList[0].url
-    })
-
+    this.getBanner()
     this.getRemembered()
     this.login_addCart()
-    //this.init_geetest()
-    this. checkUser()
+    this.getCheckCode()
+    this.checkUser()
   },
   components: {
     YFooter,
