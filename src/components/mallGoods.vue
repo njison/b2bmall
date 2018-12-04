@@ -3,8 +3,9 @@
     <div style="">
       <div class="good-img">
         <router-link target="_blank" :to="'goodsDetails?goodsId='+msg.goodsId">
-          <div class="imgBox">
-            <img v-lazy="msg.goodsHostImg" :alt="msg.goodsName" width="100%">
+          <div class="imgBox" style="text-align: center">
+            <img v-lazy="msg.goodsHostImg" :alt="msg.goodsName" width="100%" v-if="msg.goodsHostImg">
+            <img v-else="!msg.goodsHostImg" src="../../static/images/CMlogo1.png" :alt="msg.goodsName" style="margin-top:20px;">
           </div>
         </router-link>
       </div>
@@ -22,13 +23,14 @@
           ></y-button>
         </div>
         <p v-if="chanelType===4" ><span style="font-size:14px">￥</span>{{msg.goodsShipPrice}}</p>
-        <p v-else ><span style="font-size:14px">￥</span>{{msg.goodsSettlePrice}}</p>      </div>
+        <p v-else ><span style="font-size:14px">￥</span>{{msg.goodsSettlePrice}}</p>
+      </div>
     </div>
   </div>
 </template>
 <script>
   import YButton from '/components/YButton'
-  import { addCart } from '/api/goods.js'
+  import { addCart, goodsDetail } from '/api/goods.js'
   import { mapMutations, mapState } from 'vuex'
   import { getStore } from '/utils/storage'
   //  import util from '/lib/util.js'
@@ -40,6 +42,7 @@
       return {
         hotImg:'',
         chanelType:getStore('chanelType'),
+        limit:''
       }
     },
     methods: {
@@ -52,32 +55,63 @@
           }
         })
       },
+      messageError (m) {
+        this.$message.error({
+          message: m
+        })
+      },
       addCart (id, goodsShipPrice,goodsSettlePrice, goodsRetailPrice, name, img) {
-        if (!this.showMoveImg) {     // 动画是否在运动
-          let cartAddParams = {
-            cartDto :{
-              goodsNum: 1,
-              goodsId:id,
-              userId:getStore('userId'),
-              userName:getStore('userName')
+        let params={
+          goodsDto:{
+            goodsId:id
+          }
+        }
+        goodsDetail(params).then(res => {
+          if(res){
+            if(res.code=='success'){
+              this.limit = Number(res.goodsDto.iventory)
             }
           }
-          addCart(cartAddParams).then(res => {
-              if(res.code=='success'){
-                // 并不重新请求数据
-                this.ADD_CART({goodsNum: 1, goodsId: id, goodsSettlePrice: goodsSettlePrice, goodsRetailPrice:goodsRetailPrice ,goodsShipPrice:goodsShipPrice, goodsName: name, goodsImg: img})
+        })
+        if(Number(this.limit)==0) {
+          this.messageError('该商品可售数量为0')
+        }else {
+          if (!this.showMoveImg) {     // 动画是否在运动
+            let cartAddParams = {
+              cartDto: {
+                goodsNum: 1,
+                goodsId: id,
+                userId: getStore('userId'),
+                userName: getStore('userName')
               }
+            }
+            addCart(cartAddParams).then(res => {
+                if(res){
+                  if (res.code == 'success') {
+                    // 并不重新请求数据
+                    this.ADD_CART({
+                      goodsNum: 1,
+                      goodsId: id,
+                      goodsSettlePrice: goodsSettlePrice,
+                      goodsRetailPrice: goodsRetailPrice,
+                      goodsShipPrice: goodsShipPrice,
+                      goodsName: name,
+                      goodsImg: img
+                    })
+                  }
+                }
 
-          })
-          // 加入购物车动画
-          var dom = event.target
-          // 获取点击的坐标
-          let elLeft = dom.getBoundingClientRect().left + (dom.offsetWidth / 2)
-          let elTop = dom.getBoundingClientRect().top + (dom.offsetHeight / 2)
-          // 需要触发
+            })
+            // 加入购物车动画
+            var dom = event.target
+            // 获取点击的坐标
+            let elLeft = dom.getBoundingClientRect().left + (dom.offsetWidth / 2)
+            let elTop = dom.getBoundingClientRect().top + (dom.offsetHeight / 2)
+            // 需要触发
 //          this.ADD_ANIMATION({moveShow: true, elLeft: elLeft, elTop: elTop, img: img})
-          if (!this.showCart) {
-            this.SHOW_CART({showCart: true})
+            if (!this.showCart) {
+              this.SHOW_CART({showCart: true})
+            }
           }
         }
       }

@@ -4,8 +4,9 @@
       <div class="good-img">
         <router-link target="_blank" :to="'goodsDetails?goodsId='+msg.goodsId">
         <!--<a target="_blank" :href="'goodsDetails?goodsId='+msg.goodsId">-->
-          <div class="imgBox">
-            <img v-lazy="msg.url" :alt="msg.goodsName" width="100%">
+          <div class="imgBox"  style="text-align: center">
+            <img v-lazy="msg.url" :alt="msg.goodsName" width="100%"  v-if="msg.url!='null/null'">
+            <img src="../../static/images/CMlogo1.png" :alt="msg.goodsName" style="margin-top:20px;" v-else>
           </div>
         </router-link>
       </div>
@@ -18,7 +19,7 @@
           </router-link>
           <y-button text="加入购物车"
                     style="margin: 0 5px"
-                    @btnClick="addCart(msg.goodsId,msg.goodsShipPrice,msg.goodsSettlePrice,msg.goodsRetailPrice,msg.goodsName,msg.url)"
+                    @btnClick="addCart(msg.goodsId,msg.goodsShipPrice,msg.goodsSettlePrice,msg.goodsRetailPrice,msg.goodsName,msg.url,msg.inventory)"
                     classStyle="main-btn"
           ></y-button>
         </div>
@@ -30,7 +31,7 @@
 </template>
 <script>
   import YButton from '/components/YButton'
-  import { addCart } from '/api/goods.js'
+  import { addCart, goodsDetail } from '/api/goods.js'
   import { mapMutations, mapState } from 'vuex'
   import { getStore } from '/utils/storage'
 //  import util from '/lib/util.js'
@@ -42,6 +43,7 @@
       return {
           hotImg:'',
           chanelType:getStore('chanelType'),
+          limit:1
       }
     },
     methods: {
@@ -54,31 +56,50 @@
           }
         })
       },
-      addCart (id, goodsShipPrice,goodsSettlePrice, goodsRetailPrice, name, img) {
-        if (!this.showMoveImg) {     // 动画是否在运动
-          let cartAddParams = {
-            cartDto :{
-              goodsNum: 1,
-              goodsId:id,
-              userId:getStore('userId'),
-              userName:getStore('userName')
+      messageError (m) {
+        this.$message.error({
+          message: m
+        })
+      },
+      addCart (id, goodsShipPrice,goodsSettlePrice, goodsRetailPrice, name, img, inventory) {
+          if(Number(inventory) == 0){
+            this.messageError('该商品可售数量为0')
+          }else{
+            if (!this.showMoveImg) {     // 动画是否在运动
+              let cartAddParams = {
+                cartDto: {
+                  goodsNum: 1,
+                  goodsId: id,
+                  userId: getStore('userId'),
+                  userName: getStore('userName')
+                }
+              }
+              addCart(cartAddParams).then(res => {
+                // 并不重新请求数据
+                this.ADD_CART({
+                  goodsNum: 1,
+                  goodsId: id,
+                  goodsSettlePrice: goodsSettlePrice,
+                  goodsRetailPrice: goodsRetailPrice,
+                  goodsShipPrice: goodsShipPrice,
+                  goodsName: name,
+                  goodsImg: img
+                })
+              })
+
+              // 加入购物车动画
+              var dom = event.target
+              // 获取点击的坐标
+              let elLeft = dom.getBoundingClientRect().left + (dom.offsetWidth / 2)
+              let elTop = dom.getBoundingClientRect().top + (dom.offsetHeight / 2)
+              // 需要触发
+              this.ADD_ANIMATION({moveShow: true, elLeft: elLeft, elTop: elTop, img: img})
+              if (!this.showCart) {
+                this.SHOW_CART({showCart: true})
+              }
             }
           }
-          addCart(cartAddParams).then(res => {
-              // 并不重新请求数据
-              this.ADD_CART({goodsNum: 1, goodsId: id, goodsSettlePrice: goodsSettlePrice, goodsRetailPrice:goodsRetailPrice ,goodsShipPrice:goodsShipPrice, goodsName: name, goodsImg: img})
-            })
-          // 加入购物车动画
-          var dom = event.target
-          // 获取点击的坐标
-          let elLeft = dom.getBoundingClientRect().left + (dom.offsetWidth / 2)
-          let elTop = dom.getBoundingClientRect().top + (dom.offsetHeight / 2)
-          // 需要触发
-          this.ADD_ANIMATION({moveShow: true, elLeft: elLeft, elTop: elTop, img: img})
-          if (!this.showCart) {
-            this.SHOW_CART({showCart: true})
-          }
-        }
+
       }
     },
     computed: {

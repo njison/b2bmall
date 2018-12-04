@@ -81,9 +81,11 @@ import YButton from '/components/YButton'
 import { userLogin, geetest ,userToken,vcode,getBanner,userInfo, phoneCode, checkCodeShow} from '/api/index.js'
 import { addCart } from '/api/goods.js'
 import { setStore, getStore, removeStore } from '/utils/storage.js'
-require('../../../static/geetest/gt.js')
+//require('../../../static/geetest/gt.js')
 let Base64 = require('js-base64').Base64;
-let checkCodeUrl='http://192.168.1.112:9000/rims/verificationCode'
+
+//let checkCodeUrl='http://192.168.1.112:9000/rims/verificationCode'
+let checkCodeUrl='http://221.180.247.82:80/rims/verificationCode'
 var captcha
 export default {
   data () {
@@ -125,20 +127,6 @@ export default {
           if (!this.ruleForm.userName || !this.ruleForm.userPwd || !this.ruleForm.checkCode) {
             this.message('请填写完整!')
           } else {
-            const TIME_COUNT = 60;
-            if (!this.timer) {
-              this.msgCount = TIME_COUNT;
-              this.show = false;
-              this.timer = setInterval(() => {
-                if (this.msgCount > 0 && this.msgCount <= TIME_COUNT) {
-                  this.msgCount--;
-                } else {
-                  this.show = true;
-                  clearInterval(this.timer);
-                  this.timer = null;
-                }
-              }, 1000)
-            }
             let pwd=Base64.encode(this.ruleForm.userPwd);
             var params = {
               userName: this.ruleForm.userName,
@@ -147,14 +135,48 @@ export default {
               sso:0
             }
             phoneCode(params).then(res => {
-              if(res.errorCode='"success"'){
-                this.messageSuccess('发送成功 ！')
-              }else{
-                this.message('发送失败 !')
-              }
+                if(res){
+                  if(res.errorCode=='SUCCESS'){
+                    this.messageSuccess('发送成功 ！')
+                    const TIME_COUNT = 60;
+                    if (!this.timer) {
+                      this.msgCount = TIME_COUNT;
+                      this.show = false;
+                      this.timer = setInterval(() => {
+                        if (this.msgCount > 0 && this.msgCount <= TIME_COUNT) {
+                          this.msgCount--;
+                        } else {
+                          this.show = true;
+                          clearInterval(this.timer);
+                          this.timer = null;
+                        }
+                      }, 1000)
+                    }
+                  }else if (res.errorCode == 'P_LOGIN_PASSWORD_ERROR') {
+                    this.message('密码错误')
+                    this.logintxt = '登录'
+                  } else if (res.errorCode == 'P_LOGIN_NOSTAFF') {
+                    this.message('该用户不存在')
+                    this.logintxt = '登录'
+                  }else if(res.errorCode== 'P_MSG_EXCEED_RETRY_LIMIT'){
+                    this.message('用户已锁定')
+                    this.logintxt = '登录'
+                  }else if(res.errorCode== 'SMS_CHECK_ERROR'){
+                    this.message('短信验证码错误')
+                    this.logintxt = '登录'
+                  }else if(res.errorCode== 'P_VERIFICATION_CODE_WRONG') {
+                    this.message('图形验证码错误')
+                    this.logintxt = '登录'
+                  }else{
+                    this.message('发送失败 !')
+                    this.logintxt = '登录'
+                  }
+                }
+
             })
           }
         }
+
     },
       // 图形验证码
     getCheckCode(){
@@ -256,23 +278,33 @@ export default {
         smsCode: this.ruleForm.phoneCode
       }
        userLogin(params).then(res => {
-        if (res.isSuccess == true) {
-            if(res.errorCode== 'P_LOGIN_PASSWORD_ERROR'){
-              this.message('密码错误')
-              this.logintxt = '登录'
-            }else if(res.errorCode== 'P_LOGIN_NOSTAFF'){
-              this.message('该用户不存在')
-              this.logintxt = '登录'
-          }else{
-              setStore('userId', res.userId)
-              setStore('chanelType', res.chanelType)
-              setStore('userName', res.userName)
-              setStore('orgCode', res.STAFF_ORG_CODE)
-              setStore('token', res.userToken)
-              // 登录后成功后存用户信息
-              store.commit('RECORD_USERINFO', {info: res})
+           if(res) {
+             if (res.isSuccess == true) {
+               if (res.errorCode == 'P_LOGIN_PASSWORD_ERROR') {
+                 this.message('密码错误')
+                 this.logintxt = '登录'
+               } else if (res.errorCode == 'P_LOGIN_NOSTAFF') {
+                 this.message('该用户不存在')
+                 this.logintxt = '登录'
+               }else if(res.errorCode== 'P_MSG_EXCEED_RETRY_LIMIT'){
+                 this.message('用户已锁定')
+                 this.logintxt = '登录'
+               }else if(res.errorCode== 'SMS_CHECK_ERROR'){
+                 this.message('短信验证码错误')
+                 this.logintxt = '登录'
+               }else if(res.errorCode== 'P_VERIFICATION_CODE_WRONG'){
+                 this.message('图形验证码错误')
+                 this.logintxt = '登录'
+               } else if(res.errorCode== 'SUCCESS') {
+                 setStore('userId', res.userId)
+                 setStore('chanelType', res.chanelType)
+                 setStore('userName', res.userName)
+                 setStore('orgCode', res.STAFF_ORG_CODE)
+                 setStore('token', res.userToken)
+                 // 登录后成功后存用户信息
+                 store.commit('RECORD_USERINFO', {info: res})
 //              this.userToken();
-              // 登录后添加当前缓存中的购物车
+                 // 登录后添加当前缓存中的购物车
 //              if (this.cart.length) {
 //                for (var i = 0; i < this.cart.length; i++) {
 //                  addCart(this.cart[i]).then(res => {
@@ -280,20 +312,23 @@ export default {
 //                    }
 //                  })
 //                }
-                removeStore('buyCart')
-                this.$router.push({
-                  path: '/'
-                })
+                 removeStore('buyCart')
+                 this.$router.push({
+                   path: '/'
+                 })
 //              } else {
-                /* this.$router.push({
+                 /* this.$router.push({
                  path: '/'
                  })*/
 //              }
-            }
-
-        } else {
-          this.logintxt = '登录'
-          return false
+            }else{
+                 this.message('登录失败，请联系管理员')
+                 this.logintxt = '登录'
+               }
+          } else {
+                 this.logintxt = '登录'
+                 return false
+          }
         }
       })
     },
@@ -309,13 +344,16 @@ export default {
         }
       })
     },
-    getCheckCode(){
+    isCheckCode(){
       checkCodeShow().then(res => {
-          if(res.currentValue === 'true'){
-            this.currentValue=true
-          }else{
-            this.currentValue=false
+          if(res){
+            if(res.currentValue === 'true'){
+              this.currentValue=true
+            }else{
+              this.currentValue=false
+            }
           }
+
       })
     },
     getBanner(){
@@ -325,13 +363,19 @@ export default {
         }
       }
       getBanner(params).then(res => {
-        if (res.code !== "success") {
-          this.error = true
-          return
-        }
-        let data = res
-        this.loading = false
-        this.bgImg = data.materialDtoList[0].url
+          if(res){
+            if (res.code !== "success") {
+              this.error = true
+              return
+            }
+            let data = res
+            this.loading = false
+            if(data.materialDtoList.length>0){
+              this.bgImg = data.materialDtoList[0].url
+            }
+          }
+
+
       })
     },
   },
@@ -340,8 +384,12 @@ export default {
     this.getBanner()
     this.getRemembered()
     this.login_addCart()
-    this.getCheckCode()
+
+    this.isCheckCode()
     this.checkUser()
+  },
+  created () {
+    this.getCheckCode()
   },
   components: {
     YFooter,

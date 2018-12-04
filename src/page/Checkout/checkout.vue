@@ -6,13 +6,13 @@
     <div class="w" style="padding-top: 40px;">
       <!-- 收货地址 -->
       <y-shelf title="收货信息">
-        <div slot="content">
-          <ul class="address-item-list clearfix">
-            <li v-for="(item,i) in getAddress"
-                :key="i"
-                class="address pr"
-                :class="{checked:addressId === item.addressId}"
-                @click="chooseAddress(item.addressId, item.addressName, item.addressPhone, item.addressDetail)">
+      <div slot="content">
+        <ul class="address-item-list clearfix">
+          <li v-for="(item,i) in getAddress"
+              :key="i"
+              class="address pr"
+              :class="{checked:addressId === item.addressId}"
+              @click="chooseAddress(item.addressId, item.addressName, item.addressPhone, item.addressDetail)">
                <span v-if="addressId === item.addressId" class="pa">
                  <svg viewBox="0 0 1473 1024" width="17.34375" height="12">
                  <path
@@ -21,23 +21,31 @@
                    </path>
                  </svg>
                </span>
-              <p v-if="item.isDefault=='true'">收货人: {{item.addressName}} (默认地址)</p>
-              <p v-if="item.isDefault=='false'">收货人: {{item.addressName}}</p>
-              <p class="street-name ellipsis">收货地址: {{item.addressDetail}}</p>
-              <p>手机号码: {{item.addressPhone}}</p>
-              <div class="operation-section">
-                <span class="update-btn" style="font-size:12px" @click="update(item)">修改</span>
-                <span class="delete-btn" style="font-size:12px" :data-id="item.addressId" @click="del(item)">删除</span>
-              </div>
-            </li>
+            <p v-if="item.isDefault=='true'">收货人: {{item.addressName}} (默认地址)</p>
+            <p v-if="item.isDefault=='false'">收货人: {{item.addressName}}</p>
+            <p class="street-name ellipsis">收货地址: {{item.addressDetail}}</p>
+            <p>手机号码: {{item.addressPhone}}</p>
+            <div class="operation-section">
+              <span class="update-btn" style="font-size:12px" @click="update(item)">修改</span>
+              <span class="delete-btn" style="font-size:12px" :data-id="item.addressId" @click="del(item)">删除</span>
+            </div>
+          </li>
 
-            <li class="add-address-item" @click="update()">
-              <img src="../../../static/svg/jia.svg" alt="">
-              <p>使用新地址</p>
-            </li>
-          </ul>
+          <li class="add-address-item" @click="update()">
+            <img src="../../../static/svg/jia.svg" alt="">
+            <p>使用新地址</p>
+          </li>
+        </ul>
+      </div>
+    </y-shelf>
+      <!--支付方式-->
+      <y-shelf title="支付方式">
+        <div slot="content">
+          <el-radio class="checkType" v-model="radio" label="1">线下支付</el-radio>
+          <el-radio class="checkType" disabled v-model="radio" label="2">线上支付</el-radio>
         </div>
       </y-shelf>
+      <!--支付方式-->
       <!-- 购物清单 -->
       <y-shelf title="购物清单">
         <div slot="content">
@@ -107,7 +115,7 @@
                             :classStyle="submit?'disabled-btn':'main-btn'"
                             style="margin: 0;width: 130px;height: 50px;line-height: 50px;font-size: 16px"
                             :text="submitOrder"
-                            @btnClick="_submitOrder()">
+                            @btnClick="checkInventory()">
                   </y-button>
                 </div>
               </div>
@@ -118,10 +126,10 @@
       <y-popup :open="popupOpen" @close='popupOpen=false' :title="popupTitle">
         <div slot="content" class="md" :data-id="msg.addressId">
           <div>
-            <input type="text" placeholder="收货人姓名" v-model="msg.userName">
+            <input type="text" maxlength="20" placeholder="收货人姓名" v-model="msg.userName">
           </div>
           <div>
-            <input type="number" placeholder="手机号码" v-model="msg.tel" @blur="upperCase">
+            <input type="number" placeholder="手机号码" v-model="msg.tel">
           </div>
           <div>
             <input type="text" placeholder="收货地址" v-model="msg.streetName">
@@ -175,7 +183,12 @@
         submitOrder: '提交订单',
         getAddress: [],
         chanelType:'',
-        show: true
+        show: true,
+        limit:'',
+        product:[],
+        checkBlank:false,
+        checkPhone:false,
+        radio: '1'
       }
     },
     computed: {
@@ -183,6 +196,7 @@
         let msg = this.msg
         return msg.userName && msg.tel && msg.streetName
       },
+
       // 选中的总价格
       checkPrice () {
         let totalPrice = 0
@@ -217,12 +231,41 @@
           }
         })
       },
-      upperCase(){
-        var phone = this.msg.tel
-        if(!(/^1[34578]\d{9}$/.test(phone))){
-          this.messageError("手机号码有误，请重填");
-          return false;
+//      upperCase(){
+//        var phone = this.msg.tel
+//        if(!(/^1[34578]\d{9}$/.test(phone))){
+//          this.messageError("手机号码有误，请重填");
+//          this.checkPhone=false
+//          return false;
+//        }else{
+//          this.checkPhone=true
+//        }
+//      },
+//      isBlank(){
+//        if (this.msg.streetName.replace(/(^\s*)|(\s*$)/g, "")==""||this.msg.userName.replace(/(^\s*)|(\s*$)/g, "")==""){
+//          this.checkBlank=false
+//          this.messageError("请填写完整 !");
+//          return false;
+//        }else{
+//          this.checkBlank=true
+//        }
+//
+//      },
+      //获取商品详情
+      _productDet (goodsId) {
+        let params={
+          goodsDto:{
+            goodsId:goodsId
+          }
         }
+        goodsDetail(params).then(res => {
+          if(res){
+            if(res.code=='success'){
+              this.product = res.goodsDto
+              this.limit = Number(res.goodsDto.inventory)
+            }
+          }
+        })
       },
       // 获取购物车商品
       _getCartList () {
@@ -235,12 +278,35 @@
           this.cartList =  res.cartDtoList
         })
       },
+      //验证库存
+      checkInventory(){
+        var flag = 0
+        this.cartList && this.cartList.forEach(item => {
+          if(item.checked=='1'){
+             if (Number(item.inventory)<item.goodsNum) {
+                  this.messageError('库存不足')
+                  this.submitOrder = '提交订单'
+                  flag++
+             }
+            if (item.state == '4') {
+              this.messageError('该商品已下架')
+              flag++
+            }
+          }
+
+        })
+
+        if (flag == 0) {
+          this._submitOrder ()
+        }
+      },
       // 提交订单后跳转付款页面
       _submitOrder () {
+
         this.submitOrder = '提交订单中...'
         this.submit = true
 
-        if (this.addressId === '0') {
+        if (this.addressId === '') {
           this.messageError('请选择收货地址')
           this.submitOrder = '提交订单'
           this.submit = false
@@ -254,33 +320,29 @@
         }
         var orderItems = []
         for (var i = 0; i < this.cartList.length; i++) {
-          var orderItem = new Object();
-          if (this.cartList[i].checked === '1' && this.chanelType===4) {
-            orderItem.placeOrderMethod  = this.cartList[i].placeOrderMethod;
-            orderItem.goodsId = this.cartList[i].goodsId;
-            orderItem.goodsNum = this.cartList[i].goodsNum;
-            orderItem.goodsPrice = this.cartList[i].goodsShipPrice;
-            orderItem.totalPrice = this.cartList[i].goodsShipPrice * this.cartList[i].goodsNum;
-            orderItem.venderId =this.cartList[i].venderId;
-            orderItem.venderName=this.cartList[i].venderName;
-            orderItems.push(orderItem)
-          }else if(this.cartList[i].checked === '1' && this.chanelType!=4){
-            orderItem.placeOrderMethod  = this.cartList[i].placeOrderMethod;
-            orderItem.goodsId = this.cartList[i].goodsId;
-            orderItem.goodsNum = this.cartList[i].goodsNum;
-            orderItem.goodsPrice = this.cartList[i].goodsSettlePrice;
-            orderItem.totalPrice = this.cartList[i].goodsSettlePrice * this.cartList[i].goodsNum;
-            orderItem.venderId =this.cartList[i].venderId;
-            orderItem.venderName=this.cartList[i].venderName;
-            orderItems.push(orderItem)
+            var orderItem = new Object();
+            if (this.cartList[i].checked === '1' && this.chanelType === 4) {
+              orderItem.placeOrderMethod = this.cartList[i].placeOrderMethod;
+              orderItem.goodsId = this.cartList[i].goodsId;
+              orderItem.goodsNum = this.cartList[i].goodsNum;
+              orderItem.goodsPrice = this.cartList[i].goodsShipPrice;
+              orderItem.totalPrice = this.cartList[i].goodsShipPrice * this.cartList[i].goodsNum;
+              orderItem.venderId = this.cartList[i].venderId;
+              orderItem.venderName = this.cartList[i].venderName;
+              orderItems.push(orderItem)
+            } else if (this.cartList[i].checked === '1' && this.chanelType != 4) {
+              orderItem.placeOrderMethod = this.cartList[i].placeOrderMethod;
+              orderItem.goodsId = this.cartList[i].goodsId;
+              orderItem.goodsNum = this.cartList[i].goodsNum;
+              orderItem.goodsPrice = this.cartList[i].goodsSettlePrice;
+              orderItem.totalPrice = this.cartList[i].goodsSettlePrice * this.cartList[i].goodsNum;
+              orderItem.venderId = this.cartList[i].venderId;
+              orderItem.venderName = this.cartList[i].venderName;
+              orderItems.push(orderItem)
+            }
+
           }
-        }
-        var array = []
-        for (var i = 0; i < this.cartList.length; i++) {
-          if (this.cartList[i].checked === '1') {
-            array.push(this.cartList[i])
-          }
-        }
+//        }
         let params = {
           orderDto:{
             userId: this.userId,
@@ -290,21 +352,46 @@
             comments:'',
             linkPerson:this.userName,
             linkPersonTelephone:this.tel,
+            linkPersonAddress:this.streetName
           },
           orderItemDtos:orderItems
 
         }
         submitOrder(params).then(res => {
-          if (res.code =='success' ) {
-            this.messageSuccess('操作成功')
-            this.$router.push({path: '/user/orderList'})
-//            this.payment(res.result)
-          } else {
-            this.messageError('操作失败')
-            this.submitOrder = '提交订单'
-            this.submit = false
+          if(res){
+            if (res.code =='success' ) {
+              this.messageSuccess('操作成功')
+              this.$router.push({path: '/user/orderList'})
+            } else {
+              this.messageError('操作失败')
+              this.submitOrder = '提交订单'
+              this.submit = false
+            }
           }
         })
+//        var orderItems = []
+//        for (var i = 0; i < this.cartList.length; i++) {
+//          var array = []
+//          if (this.cartList[i].checked === '1') {
+//            array.push(this.cartList[i])
+//          }
+//          this._productDet(this.cartList[i].goodsId)
+//          console.log(this.cartList[i].goodsNum)
+//          console.log('库存'+this.limit)
+//          if(Number(this.limit)<Number(this.cartList[i].goodsNum)){
+//            this.messageError('库存不足')
+//            this.submitOrder = '提交订单'
+//          }else {
+//
+//          }
+//        }
+//        var array = []
+//        for (var i = 0; i < this.cartList.length; i++) {
+//          if (this.cartList[i].checked === '1') {
+//            array.push(this.cartList[i])
+//          }
+//        }
+
       },
       // 付款
       payment (orderId) {
@@ -344,48 +431,59 @@
       },
       // 保存
       saveAddress (add) {
-        this.popupOpen = false
-        if (add.addressId) {
-          let params={
-            addressDto:{
-              isDefault:add.isDefault,
-              addressDetail:add.streetName,
-              addressPhone:add.tel,
-              userId:add.userId,
-              addressName:add.userName,
-              addressId:add.addressId
+        var phone = this.msg.tel
+        if(this.msg.streetName.replace(/(^\s*)|(\s*$)/g, "")==""||this.msg.userName.replace(/(^\s*)|(\s*$)/g, "")==""){
+          this.messageError("请填写完整 !");
+        }else if(!(/^1[34578]\d{9}$/.test(phone))){
+          this.messageError("手机号码有误，请重填");
+        }else {
+          this.popupOpen = false
+          if (add.addressId) {
+            let params = {
+              addressDto: {
+                isDefault: add.isDefault,
+                addressDetail: add.streetName,
+                addressPhone: add.tel,
+                userId: add.userId,
+                addressName: add.userName,
+                addressId: add.addressId
+              }
             }
-          }
-          modifyAddress(params).then(res => {
-            if(res.code='"success"'){
-              this.messageSuccess('修改成功')
-              this.getAddressList()
-              setTimeout(()=>{
-                this.addressId = add.addressId
-                this.userName = add.userName
-                this.tel = add.tel
-                this.streetName = add.streetName
-              },100)
+            modifyAddress(params).then(res => {
+              if (res) {
+                if (res.code = '"success"') {
+                  this.messageSuccess('修改成功')
+                  this.getAddressList()
+                  setTimeout(() => {
+                    this.addressId = add.addressId
+                    this.userName = add.userName
+                    this.tel = add.tel
+                    this.streetName = add.streetName
+                  }, 100)
 
 
+                }
+              }
+            })
+          } else {
+            let params = {
+              addressDto: {
+                isDefault: add.isDefault,
+                addressDetail: add.streetName,
+                addressPhone: add.tel,
+                userId: add.userId,
+                addressName: add.userName
+              }
             }
-          })
-        } else {
-          let params={
-            addressDto:{
-              isDefault:add.isDefault,
-              addressDetail:add.streetName,
-              addressPhone:add.tel,
-              userId:add.userId,
-              addressName:add.userName
-            }
+            addAddress(params).then(res => {
+              if (res) {
+                if (res.code = '"success"') {
+                  this.messageSuccess('添加成功')
+                  this.getAddressList()
+                }
+              }
+            })
           }
-          addAddress(params).then(res => {
-            if(res.code='"success"'){
-              this.messageSuccess('添加成功')
-              this.getAddressList()
-            }
-          })
         }
       },
       // 删除
@@ -397,9 +495,15 @@
           }
         }
         deleteAddress(params).then(res => {
-          if(res.code='"success"'){
-            this.messageSuccess('删除成功')
-            this.getAddressList()
+          if(res){
+            if(res.code='"success"'){
+              this.messageSuccess('删除成功')
+              this.addressId = ''
+              this.userName = ''
+              this.tel = ''
+              this.streetName = ''
+              this.getAddressList()
+            }
           }
         })
       },
@@ -410,17 +514,19 @@
           }
         }
         goodsDetail(params).then(res => {
-          if(res.code=='success'){
-            let item = res.goodsDto
-            item.checked = '1'
-            item.goodsImg = item.url
-            item.goodsNum = this.num
-            if(this.chanelType===4){
-              item.productPrice = item.goodsShipPrice
-            }else{
-              item.productPrice = item.goodsSettlePrice
+          if(res){
+            if(res.code=='success'){
+              let item = res.goodsDto
+              item.checked = '1'
+              item.goodsImg = item.url
+              item.goodsNum = this.num
+              if(this.chanelType===4){
+                item.productPrice = item.goodsShipPrice
+              }else{
+                item.productPrice = item.goodsSettlePrice
+              }
+              this.cartList.push(item)
             }
-            this.cartList.push(item)
           }
         })
       },
@@ -432,27 +538,27 @@
           }
         }
         getAddressList(params).then(res => {
-          if (res.code !== "success") {
-            this.error = true
-            return
-          }else{
-            let data = res.addressDtoList
-            if (data.length) {
-              this.getAddress = data
-              data && data.forEach(item => {
-                if (item.isDefault == 'true' ) {
-                  this.addressId = item.addressId || '1'
-                  this.userName = item.addressName
-                  this.tel = item.addressPhone
-                  this.streetName = item.addressDetail
-                }
-              })
-
-            } else {
-              this.getAddress = []
+          if(res){
+            if (res.code !== "success") {
+              this.error = true
+              return
+            }else{
+              let data = res.addressDtoList
+              if (data.length) {
+                this.getAddress = data
+                data && data.forEach(item => {
+                  if (item.isDefault == 'true' ) {
+                    this.addressId = item.addressId || '1'
+                    this.userName = item.addressName
+                    this.tel = item.addressPhone
+                    this.streetName = item.addressDetail
+                  }
+                })
+              } else {
+                this.getAddress = []
+              }
             }
           }
-//          this.getAddress=res.addressDtoList
         })
       }
     },
@@ -470,8 +576,6 @@
     mounted () {
       this.chanelType = getStore('chanelType')
       this.getAddressList()
-
-
     },
     components: {
       YShelf,
@@ -790,6 +894,22 @@
     padding-top: 4px;
     line-height: 17px;
   }
-
-
+  .payType{
+    float: left;
+    margin: 20px;
+    width: 120px;
+    height: 50px;
+    line-height: 48px;
+    text-align: center;
+    border: 1px solid #d4d4d4;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #626262;
+    background: #f3f3f3;
+    background: -webkit-linear-gradient(#fbfbfb, #ececec);
+    background: linear-gradient(#fbfbfb, #ececec);
+  }
+  .checkType{
+    margin: 20px;
+  }
 </style>

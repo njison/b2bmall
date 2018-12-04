@@ -4,6 +4,7 @@
       <div slot="content" v-for="(item,i) in orderList">
         <div v-loading="loading" element-loading-text="加载中..." style="min-height: 10vw;position: static;" v-if="orderList.length">
           <div class="orderStatus"  v-if="item.state =='1'"  >
+            <!--// 供货商确认-->
             <el-steps :active="1" style="width:80%">
               <el-step title="下单" :description="item.createDate"></el-step>
               <el-step title="供货商确认" :description="item.confirmDate"></el-step>
@@ -13,14 +14,16 @@
             </el-steps>
           </div>
           <div class="orderStatus"  v-if="item.state =='2' "  >
+            <!--待发货-->
             <el-steps :active="2" style="width:80%">
-              < <el-step title="下单" :description="item.createDate"></el-step>
+              <el-step title="下单" :description="item.createDate"></el-step>
               <el-step title="供货商确认" :description="item.confirmDate"></el-step>
               <el-step title="供货商发货" :description="item.sendDate"></el-step>
               <el-step title="收货" :description="item.receiveDate"></el-step>
               <el-step title="交易成功" :description="item.completeDate"></el-step>
             </el-steps>
           </div>
+          <!--待收货-->
           <div class="orderStatus"  v-if="item.state =='3' "  >
             <el-steps :active="3" style="width:80%">
               <el-step title="下单" :description="item.createDate"></el-step>
@@ -30,8 +33,9 @@
               <el-step title="交易成功" :description="item.completeDate"></el-step>
             </el-steps>
           </div>
+          <!--收货-->
           <div class="orderStatus"  v-if="item.state =='4' "  >
-            <el-steps :active="4" style="width:80%">
+            <el-steps :active="5" style="width:80%">
               <el-step title="下单" :description="item.createDate"></el-step>
               <el-step title="供货商确认" :description="item.confirmDate"></el-step>
               <el-step title="供货商发货" :description="item.sendDate"></el-step>
@@ -48,10 +52,8 @@
           <div class="status-now">
             <ul>
               <li class="status-title"><h3>订单状态：{{item.orderState}}</h3></li>
-              <li class="button">
-                <!-- <el-button @click="orderPayment(orderId)" type="primary" size="small">现在付款</el-button>
-                <!--&ndash;&gt; <el-button @click="_cancelOrder()" size="small">取消订单</el-button>-->
-              </li>
+              <!--<li class="button">-->
+              <!--</li>-->
             </ul>
           </div>
 
@@ -100,9 +102,9 @@
               </div>
             </div>
             <div style="height: 155px;padding: 20px 30px;">
-              <p class="address">姓名：{{ item.addressName }}</p>
+              <p class="address">姓名：{{ item.linkPerson }}</p>
               <p class="address">联系电话：{{ item.linkPersonTelephone }}</p>
-              <p class="address">详细地址：{{ item.addressDetail }}</p>
+              <p class="address">详细地址：{{ item.linkPersonAddress }}</p>
             </div>
 
             <div class="gray-sub-title cart-title">
@@ -112,8 +114,18 @@
                 </div>
               </div>
             </div>
-            <div style="height: 155px;padding: 20px 30px;">
+            <div style="padding: 20px 30px;">
               <p class="address">供货商名称：{{ item.venderName }}</p>
+              <div v-for="(key,value) in product.supplyDtoList">
+                <div class="address">供货商联系人:{{key.contactName}}</div>
+                <div class="address">供货商联系电话:{{key.contactNumber}}</div>
+                <div class="address">地市商务联系人:{{key.linkMan1}}</div>
+                <div class="address">地市商务联系电话:{{key.phoneNo1}}</div>
+                <div class="address">地市物流联系人:{{key.linkMan2}}</div>
+                <div class="address">地市物流联系电话:{{key.phoneNo2}}</div>
+                <div class="address">地市售后联系人:{{key.linkMan3}}</div>
+                <div class="address">地市售后联系电话:{{key.phoneNo3}}</div>
+              </div>
             </div>
 
 
@@ -131,7 +143,7 @@
   </div>
 </template>
 <script>
-  import { getOrderList, getOrderLogList } from '/api/goods'
+  import { getOrderList, getOrderLogList, goodsDetail } from '/api/goods'
   import YShelf from '/components/shelf'
   import { getStore } from '/utils/storage'
   import countDown from '/components/countDown'
@@ -153,7 +165,9 @@
         orderTotal: '',
         loading: true,
         countTime: 0,
-        orderLog:[]
+        orderLog:[],
+        product:[]
+
       }
     },
     methods: {
@@ -168,35 +182,51 @@
           }
         })
       },
-      _getOrderlog(){
-        let params = {
-          orderDto: {
-            orderId: this.orderId
-          }
-        }
-        getOrderLogList(params).then(res => {
-          if (res.code == 'success'){
-            this.orderLog = res
-          } else {
-
-          }
-        })
-      },
       _getOrderDet () {
         let params = {
           orderDto: {
             orderId: this.orderId
-          }
+          },
+          pageNum:1,
+          pageSize:9999999
         }
         getOrderList(params).then(res => {
-          if (res.code == 'success'){
-            this.loading=false
-            this.orderList = res.orderDtoList
-          } else {
-
+          if(res){
+            if (res.code == 'success'){
+              this.loading=false
+              this.orderList = res.orderDtoList
+              this.goodsId = this.orderList[0].orderItemDtoList[0].goodsId
+              let paramsDetail={
+                goodsDto:{
+                  goodsId:this.goodsId
+                }
+              }
+              goodsDetail(paramsDetail).then(res => {
+                if(res){
+                  if(res.code=='success'){
+                    this.product = res.goodsDto
+                  }
+                }
+              })
+            }
           }
-
         })
+
+      },
+      _getOrderInfo(){
+//        let params={
+//          goodsDto:{
+//            goodsId:this.goodsId
+//          }
+//        }
+//        goodsDetail(params).then(res => {
+//          if(res){
+//            if(res.code=='success'){
+//              this.product = res.goodsDto
+//              console.log(this.goodsId)
+//            }
+//          }
+//        })
       },
 
     },
@@ -205,7 +235,7 @@
       this.orderId = this.$route.query.orderId
       this.orderTitle = '订单号：' + this.orderId
       this._getOrderDet()
-      this._getOrderlog()
+      this._getOrderInfo()
     },
     components: {
       YShelf,

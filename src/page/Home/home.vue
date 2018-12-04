@@ -1,11 +1,23 @@
 <template>
   <div class="home">
     <div v-loading="loading" element-loading-text="加载中..." style="min-height: 35vw;" v-if="!error">
+      <div style="background: #fff;margin-top: 10px;padding: 8px;">
+        <div style="width: 1220px;margin: 0 auto;" >
+          <div style="float: left;margin-right: 10px;">
+            <img src="../../../static/images/notice.png" alt="" width="20">
+          </div>
+          <div style="float: left;color:#dcdfe6">|</div>
+          <div style="float: left;margin-left: 10px;color:red">
+            <marquee direction="left">{{announce}}</marquee>
+          </div>
+          <div style="clear:both"></div>
+        </div>
+      </div>
       <div class="banner" >
         <div class="bg" ref="bg">
           <transition name="fade">
             <div v-for="(item, i) in banner" v-if="i===mark" :key="i" style="position:absolute">
-              <router-link :to="'goodsDetails?goodsId='+item.goodsId">
+              <router-link :to="'goodsDetails?goodsId='+item.goodsId" target="_blank">
                 <img v-if="item.url" class="img1" :src="item.url"/>
               </router-link>
               <!-- <img v-if="item.picUrl2"  class="img2 a" :src="item.picUrl2"/>
@@ -19,21 +31,6 @@
           </ul>
         </div>
       </div>
-      <div v-for="(item,i) in home">
-        <section class="w mt30 clearfix" v-if="item.panelType == 1">
-          <y-shelf :title="item.panelName">
-            <div slot="content" class="floors" >
-              <ul class="clearfix vivas">
-                <li class="vivasli" v-for="(iitem,j) in item.panelDtosGoodsList" :key="j" >
-                  <router-link :to="'search?vendorId='+iitem.goodsId">
-                    <img :src="iitem.url">
-                  </router-link>
-                </li>
-              </ul>
-            </div>
-          </y-shelf>
-        </section>
-      </div>
       <div v-for="(item,i) in home" :key="i">
         <section class="w mt30 clearfix" v-if="item.panelType == 3">
           <y-shelf :title="item.panelName">
@@ -44,17 +41,43 @@
         </section>
       </div>
     </div>
-
+      <div v-for="(item,i) in home">
+        <section class="w mt30 clearfix" v-if="item.panelType == 1">
+          <y-shelf :title="item.panelName">
+            <div slot="content" class="floors" >
+              <ul class="clearfix vivas">
+                <li class="vivasli" v-for="(iitem,j) in item.panelDtosGoodsList" :key="j" >
+                  <router-link :to="'search?vendorId='+iitem.goodsId" target="_blank">
+                    <img :src="iitem.url">
+                  </router-link>
+                </li>
+              </ul>
+            </div>
+          </y-shelf>
+        </section>
+      </div>
     <div class="no-info" v-if="error">
       <div class="no-data">
         <img src="../../../static/images/error.png">
         <br> 抱歉！出错了...
       </div>
     </div>
+      <div v-show="right" class="video" style="right:0;" @click="closed(1)">
+        <img class="videoClose" src="../../../static/images/close1.png" alt="关闭" width="30">
+        <video width="400" autoplay="autoplay" loop="loop">
+          <source :src="videoRight" type="video/mp4" />
+        </video>
+      </div>
+      <div v-show="left" class="video" style="left:0;" @click="closed(2)">
+        <img class="videoClose" src="../../../static/images/close1.png" alt="关闭" width="30">
+        <video width="400" autoplay="autoplay" loop="loop">
+          <source :src="videoLeft" type="video/mp4" />
+        </video>
+      </div>
   </div>
 </template>
 <script>
-  import { productHome, goodsDetails, getBanner, getPanel } from '/api/index.js'
+  import { productHome, goodsDetails, getBanner, getPanel,announcement, getVideo } from '/api/index.js'
   import YShelf from '/components/shelf'
   import product from '/components/product'
   import mallGoodsIndex from '/components/mallGoodsIndex'
@@ -75,7 +98,12 @@
         loading: false,
         notify: '1',
         dialogVisible: false,
-        timer: ''
+        timer: '',
+        left:true,
+        right:true,
+        announce:'',
+        videoLeft:'',
+        videoRight:''
       }
     },
     methods: {
@@ -147,36 +175,82 @@
           this.dialogVisible = true
           setStore('notify', this.notify)
         }
+      },
+      _getBanner(){
+        let params = {
+          materialDto: {
+            materialType: "1"
+          }
+        }
+        getBanner(params).then(res => {
+          if(res) {
+            if (res.code !== "success") {
+              this.error = true
+              return
+            }
+            let data = res
+            this.loading = false
+            this.banner = data.materialDtoList
+            }
+          })
+        },
+      _getPanel(){
+        let panelParams = {
+          panelDto :null
+        }
+        getPanel(panelParams).then(res => {
+          if(res){
+            if (res.success === false) {
+              this.error = true
+              return
+            }
+            this.home = res.panelDtoList
+          }
+        })
+      },
+      getAnnounce(){
+        let panelParams = {
+          announcementMgrDto :null
+        }
+        announcement(panelParams).then(res => {
+          if(res){
+            if (res.code==='success') {
+              this.announce=res.announcementMgrDtos[0].announcementContent
+
+            }
+          }
+        })
+      },
+      videoShow(){
+        let panelParams = {
+          videoMgrDto :null
+        }
+        getVideo(panelParams).then(res => {
+          if(res){
+            if (res.code==='success') {
+
+              this.videoLeft=res.videoMgrDtos[0].url
+              this.videoRight=res.videoMgrDtos[1].url
+              console.log(this.videoLeft)
+            }
+
+          }
+        })
+      },
+      closed(i){
+          if(i==1){
+              this.right=false
+          }else{
+              this.left=false
+          }
       }
     },
     mounted () {
-      let params = {
-        materialDto: {
-          materialType: "1"
-        }
-      }
-      let panelParams = {
-        panelDto :null
-      }
-
-      getBanner(params).then(res => {
-        if (res.code !== "success") {
-          this.error = true
-          return
-        }
-        let data = res
-        this.loading = false
-        this.banner = data.materialDtoList
-      })
-      getPanel(panelParams).then(res => {
-        if (res.success === false) {
-          this.error = true
-          return
-        }
-        this.home = res.panelDtoList
-//        console.log(this.home)
-      })
+      this._getBanner()
+      this. _getPanel()
       this.showNotify()
+      this.getAnnounce()
+      this.videoShow()
     },
     created () {
       this.play()
@@ -509,8 +583,8 @@
     float: left;
     margin-left:10px;
     margin-bottom:10px;
-    width: 292px;
-    height: 150px;
+    width: 141px;
+    height: 100px;
     overflow: hidden;
   }
   /*.vivasli {*/
@@ -522,5 +596,17 @@
   /*}*/
   .w{
     width: 1200px;
+  }
+  .video{
+    width: 400px;
+    position:fixed;
+    z-index: 999;
+    bottom:0;
+  }
+  .videoClose{
+    position: relative;
+    top:30px;
+    left:370px;
+    z-index: 1000;
   }
 </style>

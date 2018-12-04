@@ -3,19 +3,21 @@ import axios from 'axios'
 axios.defaults.timeout = 10000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www=form-urlencoded'
 axios.defaults.withCredentials = true
-// axios.defaults.baseURL = 'http://192.168.1.121:8081'
-axios.defaults.baseURL = 'http://192.168.1.112:9000/rims/'
-axios.interceptors.response.use(data => {
-  return data
-}, err => {
-  if (err.status == 500) {
-    // Message.error({message: '服务器被吃了⊙﹏⊙∥'})
-  } else {
-    // Message.error({message: '未知错误!'})
-
-  }
-  return Promise.resolve(err)
-})
+axios.defaults.baseURL = 'http://221.180.247.82:80/rims/'
+// axios.defaults.baseURL = 'http://10.68.86.21:7001/rims/'
+// axios.defaults.baseURL = 'http://192.168.1.112:9000/rims/'
+// axios.defaults.baseURL = 'http://10.10.10.60:8080/rims/'
+// axios.interceptors.response.use(data => {
+//   return data
+// }, err => {
+//   if (err.status == 500) {
+//     // Message.error({message: '服务器被吃了⊙﹏⊙∥'})
+//   } else {
+//     // Message.error({message: '未知错误!'})
+//
+//   }
+//   return Promise.resolve(err)
+// })
 
 export default {
   fetchGet (url, params = {}) {

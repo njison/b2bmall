@@ -299,11 +299,11 @@
           }
         }
         getCartList(cartParams).then(res => {
-
-          if (res.code === "success") {
-            setStore('buyCart', res.cartDtoList)
-          }
-          // 重新初始化一次本地数据
+          if(res){
+            if (res.code === "success") {
+              setStore('buyCart', res.cartDtoList)
+            }
+          }// 重新初始化一次本地数据
         }).then(this.INIT_BUYCART)
       },
       // 删除商品
@@ -316,14 +316,15 @@
         }
 
         cartDel(cartDelParams).then(res => {
-          if (res.code=='success') {
-            this.messageSuccess('删除成功！')
-            this.EDIT_CART({goodsId})
-          } else {
-            this.messageError('删除失败！')
-          }
+            if(res){
+              if (res.code=='success') {
+                this.messageSuccess('删除成功！')
+                this.EDIT_CART({goodsId})
+              } else {
+                this.messageError('删除失败！')
+              }
+            }
         })
-
       },
       toCart () {
         this.$router.push({path: '/cart'})

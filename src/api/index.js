@@ -68,5 +68,11 @@ export const geetest = (params) => {
 export const goodsDetails = (params) => {
   return http.fetchGet('/goods/goodsDetails', params)
 }
-
-
+//公告
+export const announcement = (params) => {
+  return http.fetchPost('/announcement/queryEffectAnnouncement', params)
+}
+//视频
+export const getVideo = (params) => {
+  return http.fetchPost('/video/queryEffectVideo', params)
+}

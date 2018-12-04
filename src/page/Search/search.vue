@@ -1,3 +1,4 @@
+<script src="../../../../../../project/dianduidian/vue_vue/src/main.js"></script>
 <template>
   <div>
     <y-header>
@@ -27,6 +28,7 @@
       </div>
     </div>
     <div >
+      <!--根据品牌搜索-->
       <div class="nav-subs-brand">
         <div class="nav-sub-bgs"></div>
         <div class="nav-sub-wrappers">
@@ -52,6 +54,7 @@
           </div>
         </div>
       </div>
+      <!--根据供货商搜索-->
       <div class="nav-subs-brand">
         <div class="nav-sub-bgs"></div>
         <div class="nav-sub-wrappers">
@@ -64,6 +67,106 @@
                   <li v-for="(key,value) in vendorList" class="searchTitle"
                       :class="{ selected: key.venderId == selectedVendorId }"
                       @click="selectByVendor(key.venderId)">{{ key.venderName }}</li>
+                </div>
+              </ul>
+            </div>
+            <div style="width: 100px">
+              <div v-if="vendorList.length>4">
+                <div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>
+                <div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--屏幕尺寸-->
+      <div class="nav-subs-brand">
+        <div class="nav-sub-bgs"></div>
+        <div class="nav-sub-wrappers">
+          <div class="w"  >
+            <div class="searchType">  屏幕尺寸：</div>
+            <div style="float: left;width: 100%;">
+              <ul class="nav-lists">
+                <div :class='{showAll:isshowVendor==true}' class="searchNav">
+                  <li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>
+                  <!--<li v-for="(key,value) in vendorList" class="searchTitle"-->
+                      <!--:class="{ selected: key.venderId == selectedVendorId }"-->
+                      <!--@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>-->
+                </div>
+              </ul>
+            </div>
+            <div style="width: 100px">
+              <div v-if="vendorList.length>4">
+                <div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>
+                <div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--运行内存-->
+      <div class="nav-subs-brand">
+        <div class="nav-sub-bgs"></div>
+        <div class="nav-sub-wrappers">
+          <div class="w"  >
+            <div class="searchType">  运行内存：</div>
+            <div style="float: left;width: 100%;">
+              <ul class="nav-lists">
+                <div :class='{showAll:isshowVendor==true}' class="searchNav">
+                  <li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>
+                  <!--<li v-for="(key,value) in vendorList" class="searchTitle"-->
+                      <!--:class="{ selected: key.venderId == selectedVendorId }"-->
+                      <!--@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>-->
+                </div>
+              </ul>
+            </div>
+            <div style="width: 100px">
+              <div v-if="vendorList.length>4">
+                <div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>
+                <div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--机身内存-->
+      <div class="nav-subs-brand">
+        <div class="nav-sub-bgs"></div>
+        <div class="nav-sub-wrappers">
+          <div class="w"  >
+            <div class="searchType">  机身内存：</div>
+            <div style="float: left;width: 100%;">
+              <ul class="nav-lists">
+                <div :class='{showAll:isshowVendor==true}' class="searchNav">
+                  <li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>
+                  <!--<li v-for="(key,value) in vendorList" class="searchTitle"-->
+                      <!--:class="{ selected: key.venderId == selectedVendorId }"-->
+                      <!--@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>-->
+                </div>
+              </ul>
+            </div>
+            <div style="width: 100px">
+              <div v-if="vendorList.length>4">
+                <div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>
+                <div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--CPU核数-->
+      <div class="nav-subs-brand">
+        <div class="nav-sub-bgs"></div>
+        <div class="nav-sub-wrappers">
+          <div class="w"  >
+            <div class="searchType">  CPU核数：</div>
+            <div style="float: left;width: 100%;">
+              <ul class="nav-lists">
+                <div :class='{showAll:isshowVendor==true}' class="searchNav">
+                  <li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>
+                  <!--<li v-for="(key,value) in vendorList" class="searchTitle"-->
+                      <!--:class="{ selected: key.venderId == selectedVendorId }"-->
+                      <!--@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>-->
                 </div>
               </ul>
             </div>
@@ -91,7 +194,23 @@
         <!--商品-->
         <div class="goods-box w">
           <mall-goods v-for="(item,i) in goods" :key="i" :msg="item"></mall-goods>
+
         </div>
+        <div style="clear: both"></div>
+        <div style="width: 1220px;margin:0 auto;">
+          <div style="float:right">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[4, 8, 12, 16]"
+              :page-size="pageSize"
+              layout="total, sizes, prev, pager, next"
+              :total="total">
+            </el-pagination>
+          </div>
+        </div>
+
       </div>
       <div class="no-info" v-if="noResult" >
         <div class="no-data">
@@ -100,7 +219,10 @@
         </div>
       </div>
     </div>
+
   </div>
+    <div style="width: 100%;clear: both"></div>
+
  <y-footer></y-footer>
   </div>
 </template>
@@ -128,7 +250,7 @@
         windowWidth: null,
         sort: '',
         currentPage: 1,
-        pageSize: 20,
+        pageSize: 16,
         total: 0,
         key: '',
         brandList: [],
@@ -142,10 +264,18 @@
         isshowBrand: false,
         isshowVendor: false,
         selectAllBrand: true,
-        selectAllVendor: true
+        selectAllVendor: true,
       }
     },
     methods: {
+      handleSizeChange (val) {
+        this.pageSize = val
+        this._getSearch()
+      },
+      handleCurrentChange (val) {
+        this.currentPage = val
+        this._getSearch()
+      },
       closeShow (i) {
         if (i==1 ) {
           this.isshowBrand = false
@@ -174,29 +304,37 @@
       _getSearch () {
         let params = {
           searchType: 'ES_SQL_SEARCH_GOODS',
-          searchValue: this.key
+          searchValue: this.key,
+          size: this.pageSize,
+          from: this.currentPage
 
         }
         getSearch(params).then(res => {
-          if ( res.code == 'success') {
-            this.goods = res.list
-            this.total = res.list.length
-            this.noResult = false
-            if (this.total === 0) {
+          if(res){
+            if ( res.code == 'success') {
+              this.goods = res.list
+              this.total = res.total
+              this.noResult = false
+              if (this.total === 0) {
+                this.noResult = true
+              }
+              this.error = false
+            } else {
               this.noResult = true
+              this.error = true
             }
-            this.error = false
-          } else {
-            this.noResult = true
-            this.error = true
+            this.loading = false
+            this.searching = false
           }
-          this.loading = false
-          this.searching = false
         })
       },
       // 默认排序
       reset () {
         this.sortType=1
+        this.selectAllBrand = true
+        this.selectAllVendor = true
+        this.selectedVendorId = ''
+        this.selectedBrandId = ''
         this._getSearch()
       },
       // 价格排序
@@ -264,20 +402,22 @@
           isNull = params
         }
         getSearch(isNull).then(res => {
-          if ( res.code == 'success') {
-            this.goods = res.list
-            this.total = res.list.length
-            this.noResult = false
-            if (this.total === 0) {
+          if(res){
+            if ( res.code == 'success') {
+              this.goods = res.list
+              this.total = res.list.length
+              this.noResult = false
+              if (this.total === 0) {
+                this.noResult = true
+              }
+              this.error = false
+            } else {
               this.noResult = true
+              this.error = true
             }
-            this.error = false
-          } else {
-            this.noResult = true
-            this.error = true
+            this.loading = false
+            this.searching = false
           }
-          this.loading = false
-          this.searching = false
         })
       },
       // 按品牌查询
@@ -309,20 +449,22 @@
           isNull = params
         }
         getSearch(isNull).then(res => {
-          if ( res.code == 'success') {
-            this.goods = res.list
-            this.total = res.list.length
-            this.noResult = false
-            if (this.total === 0) {
+          if(res){
+            if ( res.code == 'success') {
+              this.goods = res.list
+              this.total = res.list.length
+              this.noResult = false
+              if (this.total === 0) {
+                this.noResult = true
+              }
+              this.error = false
+            } else {
               this.noResult = true
+              this.error = true
             }
-            this.error = false
-          } else {
-            this.noResult = true
-            this.error = true
+            this.loading = false
+            this.searching = false
           }
-          this.loading = false
-          this.searching = false
         })
       },
       // 按所有供货商查询
@@ -354,20 +496,22 @@
           isNull = params
         }
         getSearch(isNull).then(res => {
-          if (res.code == 'success') {
-            this.goods = res.list
-            this.total = res.list.length
-            this.noResult = false
-            if (this.total === 0) {
+          if(res){
+            if (res.code == 'success') {
+              this.goods = res.list
+              this.total = res.list.length
+              this.noResult = false
+              if (this.total === 0) {
+                this.noResult = true
+              }
+              this.error = false
+            } else {
               this.noResult = true
+              this.error = true
             }
-            this.error = false
-          } else {
-            this.noResult = true
-            this.error = true
+            this.loading = false
+            this.searching = false
           }
-          this.loading = false
-          this.searching = false
         })
       },
       // 按供货商查询
@@ -399,20 +543,22 @@
           isNull = params
         }
         getSearch(isNull).then(res => {
-          if ( res.code == 'success') {
-            this.goods = res.list
-            this.total = res.list.length
-            this.noResult = false
-            if (this.total === 0) {
+          if(res){
+            if ( res.code == 'success') {
+              this.goods = res.list
+              this.total = res.list.length
+              this.noResult = false
+              if (this.total === 0) {
+                this.noResult = true
+              }
+              this.error = false
+            } else {
               this.noResult = true
+              this.error = true
             }
-            this.error = false
-          } else {
-            this.noResult = true
-            this.error = true
+            this.loading = false
+            this.searching = false
           }
-          this.loading = false
-          this.searching = false
         })
       },
       // 品牌列表
@@ -421,8 +567,10 @@
           dcName:"DIC_BRAND"
         }
         getBrand(params).then(res => {
-          if (res.code === 'success') {
-            this.brandList = res.dcDataMap.DIC_BRAND
+          if(res){
+            if (res.code === 'success') {
+              this.brandList = res.dcDataMap.DIC_BRAND
+            }
           }
         })
       },
@@ -435,9 +583,12 @@
 
         }
         getVendor(params).then(res => {
-          if (res.code === 'success') {
-            this.vendorList = res.venders
+          if(res){
+            if (res.code === 'success') {
+              this.vendorList = res.venders
+            }
           }
+
         })
       }
     },
@@ -744,5 +895,8 @@
     background-color: #5683EA;
     color:white;
     padding: 0px 15px;
+  }
+  .el-pagination{
+    margin: 3vw 0vw 2vw;
   }
 </style>

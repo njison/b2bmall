@@ -134,14 +134,17 @@
         let params = {
           orderDto: {
             userId: this.userId
-          }
+          },
+          pageNum:1,
+          pageSize:9999999
         }
         getOrderList(params).then(res => {
-          if (res.code == 'success'){
-            this.loading=false
-            this.orderList = res.orderDtoList
-            this.total = res.orderDtoList.length
-          } else {
+          if(res){
+            if (res.code == 'success'){
+              this.loading=false
+              this.orderList = res.orderDtoList
+              this.total = res.orderDtoList.length
+            }
           }
         })
       },
@@ -152,10 +155,12 @@
           }
         }
         delOrder(params).then(res => {
-          if (res.success === true) {
-            this.orderList.splice(i, 1)
-          } else {
-            this.messageError('删除失败')
+          if(res){
+            if (res.success === true) {
+              this.orderList.splice(i, 1)
+            } else {
+              this.messageError('删除失败')
+            }
           }
         })
       },
@@ -167,13 +172,14 @@
           }
         }
         orderCancel(params).then(res => {
-          if (res.code == 'success') {
-            this.messageSuccess('取消成功')
-            this._orderList()
-          } else {
-            this.messageError('取消失败')
+          if(res){
+            if (res.code == 'success') {
+              this.messageSuccess('取消成功')
+              this._orderList()
+            } else {
+              this.messageError('取消失败')
+            }
           }
-//          this._orderList()
         })
       }
     },

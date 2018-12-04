@@ -12,8 +12,12 @@
             <div>
               <!--标题-->
               <div class="cart-table-title">
-                <span class="name">商品信息</span> <span class="operation">操作</span> <span
-                class="subtotal">小计</span> <span class="num">数量</span> <span class="price1">单价</span>
+                <span class="name">商品信息</span>
+                <span class="operation">操作</span>
+                <span class="subtotal">小计</span>
+                <!--<span class="num">库存</span>-->
+                <span class="num">数量</span>
+                <span class="price1">单价</span>
               </div>
               <!--列表-->
               <div class="cart-table" v-for="(item,i) in cartList" :key="i">
@@ -35,10 +39,8 @@
                       <div class="name hide-row fl">
                         <div class="name-table">
                           <a @click="goodsDetails(item.goodsId)" :title="item.goodsName" target="_blank"
-                             v-text="item.goodsName"></a>
-                          <!-- <ul class="attribute">
-                            <li>白色</li>
-                          </ul> -->
+                             v-text="item.goodsName"></a>&nbsp;&nbsp;&nbsp;
+                           <span style="color:#d44d44" v-if="item.state==4">该商品已下架</span>
                         </div>
                       </div>
                       <!--删除按钮-->
@@ -50,6 +52,7 @@
                         <!--总价格-->
                         <div v-if="chanelType===4" class="subtotal" style="font-size: 14px">¥ {{item.goodsShipPrice * item.goodsNum}}</div>
                         <div v-else class="subtotal" style="font-size: 14px">¥ {{item.goodsSettlePrice * item.goodsNum}}</div>
+                        <!--<div class="price1">{{item.limit}}</div>-->
                         <!--数量-->
                         <div class="item-cols-num clearfix" style="height: 140px;
                                    display: flex;
@@ -62,14 +65,16 @@
                             <span class="num">
                               <input type="text"
                                      :class="{show:show}"
-                                     v-model="item.goodsNum>=limit?limit:item.goodsNum"
+                                     v-model="item.goodsNum"
                                      maxlength="2" ref="input"
-                                     @blur="getGoodNum(i)">
+                                     @blur="getGoodNum(i,item.inventory)">
                                         <ul :style="ul" >
                                           <li v-for="i in numList" :key="i">{{item.goodsNum}}</li>
                                         </ul>
                             </span>
-                            <span class="up" :class="{'up-disabled':item.goodsNum>=limit}"
+                            <!--<span v-if="limit==0" class="up" :class="{'up-disabled':item.goodsNum>=limit}"-->
+                                  <!--&gt;+</span>-->
+                            <span  class="up" :class="{'up-disabled':item.goodsNum>=item.inventory}"
                                   @click.stop.prevent="up(i)">+</span>
                           </div>
                         </div>
@@ -97,12 +102,12 @@
               </div>
               <div class="shipping">
                 <div class="shipping-box">
-                  <div class="shipping-total shipping-num"><h4
-                    class="highlight">已选择 <i v-text="checkNum"></i> 件商品</h4>
-                    <h5>共计 <i v-text="totalNum"></i> 件商品</h5></div>
-                  <div class="shipping-total shipping-price"><h4
-                    class="highlight">应付总额：<span>￥</span><i v-text="checkPrice"></i>
-                  </h4>
+                  <div class="shipping-total shipping-num">
+                    <h4 class="highlight">已选择 <i v-text="checkNum"></i> 件商品</h4>
+                    <h5>共计 <i v-text="totalNum"></i> 件商品</h5>
+                  </div>
+                  <div class="shipping-total shipping-price">
+                    <h4 class="highlight">应付总额：<span>￥</span><i v-text="checkPrice"></i></h4>
                     <h5 class="shipping-tips ng-scope">应付总额不含运费</h5>
                   </div>
                 </div>
@@ -135,20 +140,22 @@
   </div>
 </template>
 <script>
-  import { cartEdit, editCheckAll, cartDel, getCartList } from '/api/goods'
+//  import Vue from 'vue';
+  import { cartEdit, editCheckAll, cartDel, getCartList, goodsDetail } from '/api/goods'
   import { mapMutations, mapState } from 'vuex'
   import YButton from '/components/YButton'
   import YHeader from '/common/header'
   import YFooter from '/common/footer'
   import BuyNum from '/components/buynum'
   import { getStore } from '/utils/storage'
+//  Window.Vue = Vue
   export default {
     data () {
       return {
         userId: 0,
         checkoutNow: '现在结算',
         submit: true,
-        getcartList: [],
+//        getcartList: [],
         checkStatus: false,
         getNum: '',
         chanelType: '',
@@ -156,7 +163,7 @@
         flag: true,
         Num: '',
         numList: [],
-        limit: 100,
+        limit:'',
         ul: {
           zIndex: 1,
           transform: 'translateY(-36px)'
@@ -228,10 +235,16 @@
       up (i) {
         this.flag = false
         let n = this.cartList[i].goodsNum
-        this.cartList[i].goodsNum++
-        this.numList = [n - 1, n, n + 1]
-        this.show = true
-        this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked)
+        let limit = this.cartList[i].inventory
+          if(Number(limit)<=this.cartList[i].goodsNum) {
+            this.messageError('库存不足')
+            this.cartList[i].goodsNum == 1
+          }else{
+            this.cartList[i].goodsNum++
+            this.numList = [n - 1, n, n + 1]
+            this.show = true
+            this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked)
+          }
       },
       down (i) {
         let n = this.cartList[i].goodsNum
@@ -245,14 +258,18 @@
             this.cartList[i].goodsNum==1
           }
       },
-      getGoodNum (i) {
+      getGoodNum (i,inventory) {
         let n = this.cartList[i].goodsNum
         if ( n > 1 ) {
+          if(Number(inventory)<n){
+            this.messageError('库存不足')
+//            console.log(Number(inventory))
+            this.cartList[i].goodsNum=Number(inventory)
+          }
           this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked)
         } else {
           this.cartList[i].goodsNum==1
         }
-//        this.Num = this.Num > this.limit ? Number(this.limit) : Number(this.Num)
       },
       goodsDetails (id) {
         this.$router.push({
@@ -262,38 +279,24 @@
           }
         })
       },
-      _getCartList () {
-        let cartParams = {
-          cartDto :{
-            userId: getStore('userId')
-          }
-        }
-        getCartList(cartParams).then(res => {
-        if (res.code !== "success") {
-          this.error = true
-          return
-        }
-        this.getcartList = res.cartDtoList
-      })
-      },
       // 全选
       editCheckAll () {
         let checkAll = !this.checkAllFlag
-//        editCheckAll({userId: this.userId, checked: checkAll}).then(res => {
           this.EDIT_CART({checked: checkAll})
-//        })
       },
       // 修改购物车
       _cartEdit (cartParams, goodsId, goodsNum, checked) {
         cartEdit(cartParams).then(res => {
-          if (res.code === 'success') {
-            this.EDIT_CART(
-              {
-                goodsId,
-                goodsNum,
-                checked
-              }
-            )
+          if(res){
+            if (res.code === 'success') {
+              this.EDIT_CART(
+                {
+                  goodsId,
+                  goodsNum,
+                  checked
+                }
+              )
+            }
           }
         })
       },
@@ -342,27 +345,44 @@
           }
         }
         cartDel(cartDelParams).then(res => {
-            if (res.code=='success') {
-              this.EDIT_CART({goodsId})
-              this.messageSuccess('删除成功！')
-            } else {
+            if(res){
+              if (res.code=='success') {
+                this.EDIT_CART({goodsId})
+                this.messageSuccess('删除成功！')
+              } else {
                 this.messageError('删除失败！')
+              }
             }
-
         })
       },
-      checkout (id) {
-        this.checkoutNow = '结算中...'
-        this.submit = false
-        this.$router.push({path: 'checkout'})
-      },
+      checkout () {
+        let flag = 0
+        for (var i = 0; i < this.cartList.length; i++) {
+          if (this.cartList[i].checked == '1') {
+             if (Number(this.cartList[i].inventory) < this.cartList[i].goodsNum) {
+               this.messageError('库存不足')
+               flag++
+             }
+            if (this.cartList[i].state == '4') {
+              this.messageError('该商品已下架')
+              flag++
+            }
+          }
+
+        }
+        if (flag == 0) {
+          this.checkoutNow = '结算中...'
+          this.submit = false
+          this.$router.push({path: 'checkout'})
+        }
+      }
     },
     mounted () {
-      this._getCartList()
+//      this._getCartList()
       this.chanelType = getStore('chanelType')
       this.userId = getStore('userId')
       this.INIT_BUYCART()
-
+//      this.getIventory()
     },
     components: {
       YButton,
@@ -514,7 +534,7 @@
         box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06);
       }
       .name {
-        width: 380px;
+        width: 30%;
         margin-left: 20px;
         color: #323232;
         display: table;
@@ -767,4 +787,7 @@
   transition:all .2s ease-out!important;
   transform:translateY(-54px)!important;
   }
+  /*.clearfix{*/
+    /*clear: both;*/
+  /*}*/
 </style>

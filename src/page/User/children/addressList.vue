@@ -38,14 +38,14 @@
           <input type="text" placeholder="收货人姓名" v-model="msg.userName">
         </div>
         <div>
-          <input type="number" placeholder="手机号码" v-model="msg.tel" @blur="upperCase">
+          <input type="number" placeholder="手机号码" v-model="msg.tel">
         </div>
         <div>
           <input type="text" placeholder="收货地址" v-model="msg.streetName">
         </div>
         <div>
-          <el-checkbox v-if="msg.isDefault==='true'" class="auto-login" v-model="msg.isDefault" checked>设为默认</el-checkbox>
-          <el-checkbox v-else class="auto-login" v-model="msg.isDefault">设为默认</el-checkbox>
+          <!--<el-checkbox v-if="msg.isDefault==='true'" class="auto-login" v-model="msg.isDefault" checked>设为默认</el-checkbox>-->
+          <el-checkbox v-model="msg.isDefault">设为默认</el-checkbox>
         </div>
         <y-button text='保存'
                   class="btn"
@@ -73,11 +73,13 @@
           userName: '',
           tel: '',
           streetName: '',
-          isDefault: true
+          isDefault:false
         },
         checked: true,
         userId: '',
-        getAddress:[]
+        getAddress:[],
+        checkBlank:false,
+        checkPhone:false
       }
     },
     computed: {
@@ -98,13 +100,26 @@
            message: m
         })
       },
-      upperCase(){
-        var phone = this.msg.tel
-        if(!(/^1[34578]\d{9}$/.test(phone))){
-          this.message("手机号码有误，请重填");
-          return false;
-        }
-      },
+//      upperCase(){
+//        var phone = this.msg.tel
+//        if(!(/^1[34578]\d{9}$/.test(phone))){
+//          this.messageError("手机号码有误，请重填");
+//          this.checkPhone=false
+//          return false;
+//        }else{
+//          this.checkPhone=true
+//        }
+//      },
+//      isBlank(){
+//        if (this.msg.streetName.replace(/(^\s*)|(\s*$)/g, "")==""||this.msg.userName.replace(/(^\s*)|(\s*$)/g, "")==""){
+//          this.checkBlank=false
+//          this.messageError("请填写完整 !");
+//          return false;
+//        }else{
+//          this.checkBlank=true
+//        }
+//
+//      },
       getAddressList(){
         let params = {
           addressDto: {
@@ -112,11 +127,12 @@
           }
         }
         getAddressList(params).then(res => {
-          if (res.code !== "success") {
-            this.error = true
-            return
+          if(res){
+            if (res.code !== "success") {
+              return
+            }
+            this.getAddress = res.addressDtoList
           }
-          this.getAddress = res.addressDtoList
         })
       },
       changeDef (item) {
@@ -128,44 +144,55 @@
       },
       // 保存
       saveAddress (add) {
-        this.popupOpen = false
-        if (add.addressId) {
-          let params = {
-            addressDto: {
-              isDefault: add.isDefault,
-              addressDetail: add.streetName,
-              addressPhone: add.tel,
-              userId: add.userId,
-              addressName: add.userName,
-              addressId: add.addressId
+        var phone = this.msg.tel
+        if(this.msg.streetName.replace(/(^\s*)|(\s*$)/g, "")==""||this.msg.userName.replace(/(^\s*)|(\s*$)/g, "")=="") {
+          this.messageError("请填写完整 !");
+        }else if(!(/^1[34578]\d{9}$/.test(phone))){
+          this.messageError("手机号码有误，请重填");
+        }else {
+          this.popupOpen = false
+          if (add.addressId) {
+            let params = {
+              addressDto: {
+                isDefault: add.isDefault,
+                addressDetail: add.streetName,
+                addressPhone: add.tel,
+                userId: add.userId,
+                addressName: add.userName,
+                addressId: add.addressId
+              }
             }
+            modifyAddress(params).then(res => {
+              if (res) {
+                if (res.code = '"success"') {
+                  this.messageSuccess('修改成功')
+                  this.getAddressList()
+                } else {
+                  this.messageError('修改失败')
+                }
+              }
+            })
+          } else {
+            let params = {
+              addressDto: {
+                isDefault: add.isDefault,
+                addressDetail: add.streetName,
+                addressPhone: add.tel,
+                userId: add.userId,
+                addressName: add.userName
+              }
+            }
+            addAddress(params).then(res => {
+              if (res) {
+                if (res.code = '"success"') {
+                  this.messageSuccess('添加成功')
+                  this.getAddressList()
+                } else {
+                  this.messageError('修改失败')
+                }
+              }
+            })
           }
-          modifyAddress(params).then(res => {
-            if (res.code = '"success"') {
-              this.messageSuccess('修改成功')
-              this.getAddressList()
-            }else{
-              this.messageError('修改失败')
-            }
-          })
-        } else {
-          let params = {
-            addressDto: {
-              isDefault: add.isDefault,
-              addressDetail: add.streetName,
-              addressPhone: add.tel,
-              userId: add.userId,
-              addressName: add.userName
-            }
-          }
-          addAddress(params).then(res => {
-            if (res.code = '"success"') {
-              this.messageSuccess('添加成功')
-              this.getAddressList()
-            }else{
-              this.messageError('修改失败')
-            }
-          })
         }
       },
       // 删除
@@ -177,9 +204,11 @@
           }
         }
         deleteAddress(params).then(res => {
-          if (res.code = '"success"') {
-            this.messageSuccess('删除成功')
-            this.getAddressList()
+          if(res){
+            if (res.code = '"success"') {
+              this.messageSuccess('删除成功')
+              this.getAddressList()
+            }
           }
         })
       },
@@ -191,7 +220,7 @@
           this.msg.userName = item.addressName
           this.msg.tel = item.addressPhone
           this.msg.streetName = item.addressDetail
-          this.msg.isDefault= item.isDefault
+          this.msg.isDefault= item.isDefault=='true'
           this.msg.addressId = item.addressId
 //          console.log(item.addressId)
         } else {

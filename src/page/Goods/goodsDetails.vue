@@ -6,8 +6,8 @@
         <div class="gallery">
           <div class="thumbnail">
             <ul>
-              <li v-for="(item,i) in small" :key="i" :class="{on:big===item}" @click="big=item">
-                <img v-lazy="item" :alt="product.goodsName">
+              <li v-for="(item,i) in product.fileDtoList" :key="i" :class="{on:product.url===item.url}" v-if='i<=4' @click="product.url=item.url">
+                <img v-lazy="item.url" :alt="product.goodsName">
               </li>
             </ul>
           </div>
@@ -39,17 +39,19 @@
           <div class="height-range">
             <span >供应商名称：{{product.venderName}}</span>
           </div>
-          <!--<div class="height-range">-->
-            <!--<span >产品简介：{{product.goodsTitle}}</span>-->
-          <!--</div>-->
-
+          <div class="height-range">
+            <span >商品剩余数量：{{product.inventory}} 台</span>
+          </div>
+          <div class="height-range" v-if="product.status==4">
+            <span style="color:#d44d44">该商品已下架</span>
+          </div>
         </div>
         <div class="num">
           <span class="params-name">数量</span>
           <div class="item-cols-num clearfix" style="height: 140px;display: flex;align-items: center; justify-content: center;">
             <div class="select">
               <span class="down"
-                    @click.stop.prevent="down()" :class="{'down-disabled':goodsNum<=1}">-</span>
+                    @click.stop.prevent="down()" :class="{'down-disabled':goodsNum==0}">-</span>
               <span class="num">
                 <input type="text"
                        :class="{show:show}"
@@ -60,13 +62,30 @@
                   <li v-for="i in numList" :key="i">{{goodsNum}}</li>
                 </ul>
               </span>
-              <span class="up" :class="{'up-disabled':goodsNum>=limit}"
+              <span class="up" :class="{'up-disabled':goodsNum>=product.inventory}"
                     @click.stop.prevent="up()">+</span>
             </div>
           </div>
           <!--<buy-num @edit-num="editNum" :limit="100" :Num="goodsNum"></buy-num>-->
         </div>
-        <div class="buy">
+        <div class="buy" v-if="product.status==4" @click="soldOut">
+          <y-button text="加入购物车"
+                    classStyle="disabled-btn"
+                    style="width: 145px;height: 50px;line-height: 48px;">
+          </y-button>
+          <y-button text="现在购买"
+                    classStyle="disabled-btn"
+                    style="width: 145px;height: 50px;line-height: 48px;margin-left: 10px"></y-button>
+        </div>
+        <div class="buy" v-else-if="product.inventory=='0'" @click="noBuy">
+          <y-button text="加入购物车"
+                    classStyle="main-btn"
+                    style="width: 145px;height: 50px;line-height: 48px">
+          </y-button>
+          <y-button text="现在购买"
+                    style="width: 145px;height: 50px;line-height: 48px;margin-left: 10px"></y-button>
+        </div>
+        <div class="buy" v-else="product.inventory!='0'">
           <y-button text="加入购物车"
                     @btnClick="addCart(product.goodsId,product.goodsShipPrice,product.goodsSettlePrice,product.goodsRetailPrice,product.goodsName,product.url)"
                     classStyle="main-btn"
@@ -106,7 +125,7 @@
         flag: true,
         Num: '',
         numList: [],
-        limit: 100,
+        limit:1,
         chanelType:getStore('chanelType')
       }
     },
@@ -115,6 +134,11 @@
     },
     methods: {
       ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART']),
+      message (m) {
+        this.$message.error({
+          message: m
+        })
+      },
       _productDet (goodsId) {
           let params={
             goodsDto:{
@@ -122,9 +146,12 @@
               }
           }
         goodsDetail(params).then(res => {
+          if(res){
             if(res.code=='success'){
               this.product = res.goodsDto
+              this.limit = Number(this.product.inventory)
             }
+          }
         })
       },
       addCart (id, goodsShipPrice,goodsSettlePrice, goodsRetailPrice, name, img) {
@@ -140,7 +167,15 @@
 
           addCart(cartAddParams).then(res => {
             // 并不重新请求数据
-            this.ADD_CART({ goodsNum: this.goodsNum, goodsId: id, goodsSettlePrice: goodsSettlePrice, goodsRetailPrice:goodsRetailPrice ,goodsShipPrice:goodsShipPrice, goodsName: name, goodsImg: img})
+            this.ADD_CART({
+              goodsNum: this.goodsNum,
+              goodsId: id,
+              goodsSettlePrice: goodsSettlePrice,
+              goodsRetailPrice:goodsRetailPrice ,
+              goodsShipPrice:goodsShipPrice,
+              goodsName: name,
+              goodsImg: img
+            })
           })
 
           // 加入购物车动画
@@ -177,10 +212,22 @@
         }
       },
       blur () {
+//          console.log('数量'+this.goodsNum)
+//          console.log('水位'+this.limit)
+          if( this.goodsNum > this.limit ){
+            this.message('所填数量大于库存 !')
+          }
         this.goodsNum = this.goodsNum > this.limit ? Number(this.limit) : Number(this.goodsNum)
+//        this.message('所填数量大于库存 !')
       },
       editNum (num) {
         this.goodsNum = num
+      },
+      noBuy(){
+        this.message('没有库存，无法购买 !')
+      },
+      soldOut(){
+        this.message('该商品已下架，无法购买 !')
       }
     },
     components: {
@@ -286,6 +333,7 @@
         /*border-top: 1px solid #ebebeb;*/
         display: flex;
         align-items: center;
+        padding-left: 8px;
       }
       .buy {
         position: relative;
