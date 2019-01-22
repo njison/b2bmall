@@ -42,6 +42,11 @@
           <div class="height-range">
             <span >商品剩余数量：{{product.inventory}} 台</span>
           </div>
+          <div class="height-range">颜色分类：
+            <span :class="{ colorChosed: key.attrValue == selectedcolorId }"
+                  @click="selectByColor(key.attrValue,key.attrValueName,key.inventory)"
+            class="colorChoose" v-for="(key,value) in colorSelect">{{key.attrValueName}} </span>
+          </div>
           <div class="height-range" v-if="product.status==4">
             <span style="color:#d44d44">该商品已下架</span>
           </div>
@@ -55,9 +60,7 @@
               <span class="num">
                 <input type="text"
                        :class="{show:show}"
-                       v-model="goodsNum>=limit?limit:goodsNum"
-                       @blur="blur()"
-                       maxlength="2">
+                       v-model="goodsNum>=limit?limit:goodsNum">
                 <ul>
                   <li v-for="i in numList" :key="i">{{goodsNum}}</li>
                 </ul>
@@ -126,6 +129,28 @@
         Num: '',
         numList: [],
         limit:1,
+        colorSelect:[
+//          {
+//            color: '白色',
+//            id:'0'
+//          },
+//          {
+//            color: '红色',
+//            id:'1'
+//          },
+//          {
+//            color: '香槟色',
+//            id:'2'
+//          },
+//          {
+//            color: '玫瑰金',
+//            id:'3'
+//          }
+
+        ],
+        selectedcolorId:'',
+        selectedColor:'',
+        inventory:'',
         chanelType:getStore('chanelType')
       }
     },
@@ -139,9 +164,14 @@
           message: m
         })
       },
+      selectByColor(id,color,inventory){
+        this.selectedcolorId = id
+        this.selectedColor = color
+        this.inventory = inventory
+      },
       _productDet (goodsId) {
           let params={
-            goodsDto:{
+              goodsDto:{
                   goodsId:goodsId
               }
           }
@@ -150,55 +180,92 @@
             if(res.code=='success'){
               this.product = res.goodsDto
               this.limit = Number(this.product.inventory)
+              var isCol14 = res.goodsDto.goodsAttrDtos
+//              this.colorSelect = res.goodsDto.goodsAttrDtos[0].attrList
+              for( var i=0;i<isCol14.length;i++){
+                if(isCol14[i].attrCode=='COL14'){
+                  this.colorSelect = res.goodsDto.goodsAttrDtos[i].attrList
+                  return
+                }
+              }
+
             }
           }
         })
       },
       addCart (id, goodsShipPrice,goodsSettlePrice, goodsRetailPrice, name, img) {
-        if (!this.showMoveImg) {     // 动画是否在运动
-          let cartAddParams = {
-            cartDto :{
-              goodsNum: this.goodsNum,
-              goodsId:id,
-              userId:getStore('userId'),
-              userName:getStore('userName')
+        if(this.selectedcolorId==''){
+          this.message('请选择商品颜色！')
+        }else {
+          if(this.inventory<='0' || this.inventory < this.goodsNum){
+            this.message('库存不足，无法购买！')
+          }else {
+            if (!this.showMoveImg) {     // 动画是否在运动
+              let cartAddParams = {
+                cartDto: {
+                  goodsNum: this.goodsNum,
+                  goodsId: id,
+                  userId: getStore('userId'),
+                  userName: getStore('userName'),
+                  colorId: this.selectedcolorId,
+                  colorName: this.selectedColor
+                }
+
+              }
+
+              addCart(cartAddParams).then(res => {
+                // 并不重新请求数据
+                this.ADD_CART({
+                  goodsNum: this.goodsNum,
+                  goodsId: id,
+                  goodsSettlePrice: goodsSettlePrice,
+                  goodsRetailPrice: goodsRetailPrice,
+                  goodsShipPrice: goodsShipPrice,
+                  goodsName: name,
+                  goodsImg: img,
+                  colorId: this.selectedcolorId,
+                  colorName: this.selectedColor
+                })
+              })
+
+              // 加入购物车动画
+              var dom = event.target
+              // 获取点击的坐标
+              let elLeft = dom.getBoundingClientRect().left + (dom.offsetWidth / 2)
+              let elTop = dom.getBoundingClientRect().top + (dom.offsetHeight / 2)
+              // 需要触发
+              this.ADD_ANIMATION({moveShow: true, elLeft: elLeft, elTop: elTop, img: img})
+              if (!this.showCart) {
+                this.SHOW_CART({showCart: true})
+              }
             }
-          }
-
-          addCart(cartAddParams).then(res => {
-            // 并不重新请求数据
-            this.ADD_CART({
-              goodsNum: this.goodsNum,
-              goodsId: id,
-              goodsSettlePrice: goodsSettlePrice,
-              goodsRetailPrice:goodsRetailPrice ,
-              goodsShipPrice:goodsShipPrice,
-              goodsName: name,
-              goodsImg: img
-            })
-          })
-
-          // 加入购物车动画
-          var dom = event.target
-          // 获取点击的坐标
-          let elLeft = dom.getBoundingClientRect().left + (dom.offsetWidth / 2)
-          let elTop = dom.getBoundingClientRect().top + (dom.offsetHeight / 2)
-          // 需要触发
-          this.ADD_ANIMATION({moveShow: true, elLeft: elLeft, elTop: elTop, img: img})
-          if (!this.showCart) {
-            this.SHOW_CART({showCart: true})
           }
         }
       },
       checkout (goodsId) {
-        this.$router.push({path: '/checkout', query: {goodsId, num: this.goodsNum}})
+          if(this.selectedcolorId==''){
+            this.message('请选择商品颜色！')
+          }else{
+            if(this.inventory<='0' || this.inventory < this.goodsNum){
+              this.message('库存不足，无法购买！')
+            }else{
+              this.$router.push({path: '/checkout', query: {goodsId, num: this.goodsNum,color:this.selectedColor,attrValue:this.selectedcolorId,inventory:this.inventory}})
+
+            }
+          }
+
       },
       up () {
         this.flag = false
         let n = this.goodsNum
-        this.goodsNum++
-        this.numList = [n - 1, n, n + 1]
-        this.show = true
+        if( n >= this.limit ){
+          this.message('所填数量大于库存 !')
+          n==this.limit
+        }else{
+          this.goodsNum++
+          this.numList = [n - 1, n, n + 1]
+          this.show = true
+        }
       },
       down () {
         let n = this.goodsNum
@@ -212,8 +279,7 @@
         }
       },
       blur () {
-//          console.log('数量'+this.goodsNum)
-//          console.log('水位'+this.limit)
+//
           if( this.goodsNum > this.limit ){
             this.message('所填数量大于库存 !')
           }
@@ -493,5 +559,16 @@
   .down.down-disabled {
     background-position: 0 -300px;
     cursor: not-allowed;
+  }
+  .colorChoose{
+    display: inline-block;
+    padding: 5px 3px;
+    border:1px solid #DCDCDC;
+    margin-right: 5px;
+    background: #FFF;
+  }
+  .colorChosed{
+    border:1px solid #5683EA;
+    color:#5683EA
   }
 </style>

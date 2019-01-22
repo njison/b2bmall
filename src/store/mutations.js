@@ -19,7 +19,7 @@ export default {
     }
   },
   // 加入购物车
-  [ADD_CART] (state, {goodsId, goodsRetailPrice, goodsSettlePrice, goodsShipPrice, goodsName, goodsImg, goodsNum}) {
+  [ADD_CART] (state, {goodsId, goodsRetailPrice, goodsSettlePrice, goodsShipPrice, goodsName, goodsImg, goodsNum,colorId,colorName}) {
     let cart = state.cartList // 购物车
     let falg = true
     let goods = {
@@ -29,11 +29,13 @@ export default {
       goodsShipPrice, //出货价
       goodsName,
       goodsImg,
-      goodsNum
+      goodsNum,
+      colorId,
+      colorName
     }
     if (cart.length) {        // 有内容
       cart.forEach(item => {
-        if (item.goodsId === goodsId) {
+        if (item.goodsId === goodsId && item.colorId === colorId) {
           if (item.goodsNum >= 0) {
             falg = false
             item.goodsNum += goodsNum
@@ -76,10 +78,10 @@ export default {
     // }
   },
   // 移除商品
-  [REDUCE_CART] (state, {goodsId}) {
+  [REDUCE_CART] (state, {goodsId,colorId,colorName}) {
     let cart = state.cartList
     cart.forEach((item, i) => {
-      if (item.goodsId === goodsId) {
+      if (item.goodsId === goodsId && item.colorId === colorId) {
         if (item.goodsNum > 1) {
           item.goodsNum--
         } else {
@@ -92,18 +94,18 @@ export default {
     setStore('buyCart', state.cartList)
   },
   // 修改购物车
-  [EDIT_CART] (state, {goodsId, goodsNum, checked}) {
+  [EDIT_CART] (state, {goodsId, goodsNum, checked,colorId,colorName}) {
     let cart = state.cartList
     if (goodsNum) {
       cart.forEach((item, i) => {
-        if (item.goodsId === goodsId) {
+        if (item.goodsId === goodsId && item.colorId === colorId) {
           item.goodsNum = goodsNum
           item.checked = checked
         }
       })
     } else if (goodsId) {
       cart.forEach((item, i) => {
-        if (item.goodsId === goodsId) {
+        if (item.goodsId === goodsId && item.colorId === colorId) {
           cart.splice(i, 1)
         }
       })

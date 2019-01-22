@@ -1,4 +1,4 @@
-<script src="../../../../../../project/dianduidian/vue_vue/src/main.js"></script>
+<!--<script src="../../../../../../project/dianduidian/vue_vue/src/main.js"></script>-->
 <template>
   <div>
     <y-header>
@@ -79,106 +79,106 @@
           </div>
         </div>
       </div>
-      <!--屏幕尺寸-->
-      <div class="nav-subs-brand">
-        <div class="nav-sub-bgs"></div>
-        <div class="nav-sub-wrappers">
-          <div class="w"  >
-            <div class="searchType">  屏幕尺寸：</div>
-            <div style="float: left;width: 100%;">
-              <ul class="nav-lists">
-                <div :class='{showAll:isshowVendor==true}' class="searchNav">
-                  <li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>
-                  <!--<li v-for="(key,value) in vendorList" class="searchTitle"-->
-                      <!--:class="{ selected: key.venderId == selectedVendorId }"-->
-                      <!--@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>-->
-                </div>
-              </ul>
-            </div>
-            <div style="width: 100px">
-              <div v-if="vendorList.length>4">
-                <div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>
-                <div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--运行内存-->
-      <div class="nav-subs-brand">
-        <div class="nav-sub-bgs"></div>
-        <div class="nav-sub-wrappers">
-          <div class="w"  >
-            <div class="searchType">  运行内存：</div>
-            <div style="float: left;width: 100%;">
-              <ul class="nav-lists">
-                <div :class='{showAll:isshowVendor==true}' class="searchNav">
-                  <li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>
-                  <!--<li v-for="(key,value) in vendorList" class="searchTitle"-->
-                      <!--:class="{ selected: key.venderId == selectedVendorId }"-->
-                      <!--@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>-->
-                </div>
-              </ul>
-            </div>
-            <div style="width: 100px">
-              <div v-if="vendorList.length>4">
-                <div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>
-                <div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--机身内存-->
-      <div class="nav-subs-brand">
-        <div class="nav-sub-bgs"></div>
-        <div class="nav-sub-wrappers">
-          <div class="w"  >
-            <div class="searchType">  机身内存：</div>
-            <div style="float: left;width: 100%;">
-              <ul class="nav-lists">
-                <div :class='{showAll:isshowVendor==true}' class="searchNav">
-                  <li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>
-                  <!--<li v-for="(key,value) in vendorList" class="searchTitle"-->
-                      <!--:class="{ selected: key.venderId == selectedVendorId }"-->
-                      <!--@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>-->
-                </div>
-              </ul>
-            </div>
-            <div style="width: 100px">
-              <div v-if="vendorList.length>4">
-                <div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>
-                <div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--CPU核数-->
-      <div class="nav-subs-brand">
-        <div class="nav-sub-bgs"></div>
-        <div class="nav-sub-wrappers">
-          <div class="w"  >
-            <div class="searchType">  CPU核数：</div>
-            <div style="float: left;width: 100%;">
-              <ul class="nav-lists">
-                <div :class='{showAll:isshowVendor==true}' class="searchNav">
-                  <li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>
-                  <!--<li v-for="(key,value) in vendorList" class="searchTitle"-->
-                      <!--:class="{ selected: key.venderId == selectedVendorId }"-->
-                      <!--@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>-->
-                </div>
-              </ul>
-            </div>
-            <div style="width: 100px">
-              <div v-if="vendorList.length>4">
-                <div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>
-                <div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!--&lt;!&ndash;屏幕尺寸&ndash;&gt;-->
+      <!--<div class="nav-subs-brand">-->
+        <!--<div class="nav-sub-bgs"></div>-->
+        <!--<div class="nav-sub-wrappers">-->
+          <!--<div class="w"  >-->
+            <!--<div class="searchType">  屏幕尺寸：</div>-->
+            <!--<div style="float: left;width: 100%;">-->
+              <!--<ul class="nav-lists">-->
+                <!--<div :class='{showAll:isshowVendor==true}' class="searchNav">-->
+                  <!--<li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>-->
+                  <!--&lt;!&ndash;<li v-for="(key,value) in vendorList" class="searchTitle"&ndash;&gt;-->
+                      <!--&lt;!&ndash;:class="{ selected: key.venderId == selectedVendorId }"&ndash;&gt;-->
+                      <!--&lt;!&ndash;@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>&ndash;&gt;-->
+                <!--</div>-->
+              <!--</ul>-->
+            <!--</div>-->
+            <!--<div style="width: 100px">-->
+              <!--<div v-if="vendorList.length>4">-->
+                <!--<div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>-->
+                <!--<div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--&lt;!&ndash;运行内存&ndash;&gt;-->
+      <!--<div class="nav-subs-brand">-->
+        <!--<div class="nav-sub-bgs"></div>-->
+        <!--<div class="nav-sub-wrappers">-->
+          <!--<div class="w"  >-->
+            <!--<div class="searchType">  运行内存：</div>-->
+            <!--<div style="float: left;width: 100%;">-->
+              <!--<ul class="nav-lists">-->
+                <!--<div :class='{showAll:isshowVendor==true}' class="searchNav">-->
+                  <!--<li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>-->
+                  <!--&lt;!&ndash;<li v-for="(key,value) in vendorList" class="searchTitle"&ndash;&gt;-->
+                      <!--&lt;!&ndash;:class="{ selected: key.venderId == selectedVendorId }"&ndash;&gt;-->
+                      <!--&lt;!&ndash;@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>&ndash;&gt;-->
+                <!--</div>-->
+              <!--</ul>-->
+            <!--</div>-->
+            <!--<div style="width: 100px">-->
+              <!--<div v-if="vendorList.length>4">-->
+                <!--<div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>-->
+                <!--<div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--&lt;!&ndash;机身内存&ndash;&gt;-->
+      <!--<div class="nav-subs-brand">-->
+        <!--<div class="nav-sub-bgs"></div>-->
+        <!--<div class="nav-sub-wrappers">-->
+          <!--<div class="w"  >-->
+            <!--<div class="searchType">  机身内存：</div>-->
+            <!--<div style="float: left;width: 100%;">-->
+              <!--<ul class="nav-lists">-->
+                <!--<div :class='{showAll:isshowVendor==true}' class="searchNav">-->
+                  <!--<li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>-->
+                  <!--&lt;!&ndash;<li v-for="(key,value) in vendorList" class="searchTitle"&ndash;&gt;-->
+                      <!--&lt;!&ndash;:class="{ selected: key.venderId == selectedVendorId }"&ndash;&gt;-->
+                      <!--&lt;!&ndash;@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>&ndash;&gt;-->
+                <!--</div>-->
+              <!--</ul>-->
+            <!--</div>-->
+            <!--<div style="width: 100px">-->
+              <!--<div v-if="vendorList.length>4">-->
+                <!--<div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>-->
+                <!--<div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--&lt;!&ndash;CPU核数&ndash;&gt;-->
+      <!--<div class="nav-subs-brand">-->
+        <!--<div class="nav-sub-bgs"></div>-->
+        <!--<div class="nav-sub-wrappers">-->
+          <!--<div class="w"  >-->
+            <!--<div class="searchType">  CPU核数：</div>-->
+            <!--<div style="float: left;width: 100%;">-->
+              <!--<ul class="nav-lists">-->
+                <!--<div :class='{showAll:isshowVendor==true}' class="searchNav">-->
+                  <!--<li :class="{ selectedBrand: selectAllVendor == true }" class="searchTitle" @click="searchALlVendor">全部</li>-->
+                  <!--&lt;!&ndash;<li v-for="(key,value) in vendorList" class="searchTitle"&ndash;&gt;-->
+                      <!--&lt;!&ndash;:class="{ selected: key.venderId == selectedVendorId }"&ndash;&gt;-->
+                      <!--&lt;!&ndash;@click="selectByVendor(key.venderId)">{{ key.venderName }}</li>&ndash;&gt;-->
+                <!--</div>-->
+              <!--</ul>-->
+            <!--</div>-->
+            <!--<div style="width: 100px">-->
+              <!--<div v-if="vendorList.length>4">-->
+                <!--<div  v-if="isshowVendor==false" class="searchMOre showMore" @click="showAll(2)">更多></div>-->
+                <!--<div  v-if="isshowVendor==true" class="searchMOre showMore" @click="closeShow(2)">收起></div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
     </div>
     <div class="nav">
       <div class="w">

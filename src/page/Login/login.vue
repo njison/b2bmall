@@ -275,7 +275,8 @@ export default {
         userName: this.ruleForm.userName,
         userPwd: pwd,
         verify:this.ruleForm.checkCode,
-        smsCode: this.ruleForm.phoneCode
+        smsCode: this.ruleForm.phoneCode,
+        isMallLogin:1
       }
        userLogin(params).then(res => {
            if(res) {

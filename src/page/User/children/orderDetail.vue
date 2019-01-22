@@ -74,9 +74,14 @@
           <div >
             <div class="goods-table">
               <div class="cart-items" v-for="(goods,i) in item.orderItemDtoList" :key="i">
-                <a @click="goodsDetails(goods.goodsId)" class="img-box"><img :src="goods.url" alt=""></a>
+                <a @click="goodsDetails(goods.goodsId)" class="img-box">
+                  <img :src="goods.url" alt="">
+                </a>
                 <div class="name-cell ellipsis">
                   <a @click="goodsDetails(goods.goodsId)" title="" target="_blank">{{goods.goodsName}}</a>
+                  <ul class="attribute">
+                    <li>{{goods.colorName}}</li>
+                  </ul>
                 </div>
                 <div class="n-b">
                   <div class="price">¥ {{goods.goodsPrice}}</div>
@@ -90,8 +95,8 @@
               <p style="font-size: 14px;font-weight: bolder;"> <span style="padding-right:47px">商品总计：</span>
                 <span style="font-size: 16px;font-weight: 500;line-height: 32px;">¥ {{item.orderPrice}}</span>
               </p>
-              <p><span style="padding-right:30px">运费：</span><span style="font-weight: 700;">+ ¥ 0.00</span></p>
-              <p class="price-total"><span>应付金额：</span><span class="price-red">¥ {{item.orderPrice}}</span></p>
+              <!--<p><span style="padding-right:30px">运费：</span><span style="font-weight: 700;">+ ¥ 0.00</span></p>-->
+              <!--<p class="price-total"><span>应付金额：</span><span class="price-red">¥ {{item.orderPrice}}</span></p>-->
             </div>
 
             <div class="gray-sub-title cart-title">
@@ -485,5 +490,11 @@
   .price-red {
     font-weight: 700;
     color: #d44d44;
+  }
+  .attribute, .name p {
+    color: #999;
+    font-size: 12px;
+    padding-top: 4px;
+    line-height: 17px;
   }
 </style>

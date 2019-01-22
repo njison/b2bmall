@@ -40,12 +40,15 @@
                         <div class="name-table">
                           <a @click="goodsDetails(item.goodsId)" :title="item.goodsName" target="_blank"
                              v-text="item.goodsName"></a>&nbsp;&nbsp;&nbsp;
+                          <ul class="attribute">
+                            <li>{{item.colorName}}</li>
+                          </ul>
                            <span style="color:#d44d44" v-if="item.state==4">该商品已下架</span>
                         </div>
                       </div>
                       <!--删除按钮-->
                       <div class="operation">
-                        <a class="items-delete-btn" @click="cartdel(item.goodsId)"></a>
+                        <a class="items-delete-btn" @click="cartdel(item)"></a>
                       </div>
                       <!--商品数量-->
                       <div>
@@ -239,11 +242,13 @@
           if(Number(limit)<=this.cartList[i].goodsNum) {
             this.messageError('库存不足')
             this.cartList[i].goodsNum == 1
+            this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked,this.cartList[i].colorId,this.cartList[i].colorName)
+
           }else{
             this.cartList[i].goodsNum++
             this.numList = [n - 1, n, n + 1]
             this.show = true
-            this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked)
+            this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked,this.cartList[i].colorId,this.cartList[i].colorName)
           }
       },
       down (i) {
@@ -253,7 +258,7 @@
             this.cartList[i].goodsNum--
             this.numList = [n - 1, n, n + 1]
             this.show = true
-            this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked)
+            this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked,this.cartList[i].colorId,this.cartList[i].colorName)
           }else{
             this.cartList[i].goodsNum==1
           }
@@ -261,12 +266,12 @@
       getGoodNum (i,inventory) {
         let n = this.cartList[i].goodsNum
         if ( n > 1 ) {
-          if(Number(inventory)<n){
+          if(Number(inventory)<=n){
             this.messageError('库存不足')
 //            console.log(Number(inventory))
             this.cartList[i].goodsNum=Number(inventory)
           }
-          this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked)
+          this.EditNum(this.cartList[i].goodsNum, this.cartList[i].goodsId, this.cartList[i].checked,this.cartList[i].colorId,this.cartList[i].colorName)
         } else {
           this.cartList[i].goodsNum==1
         }
@@ -285,7 +290,7 @@
           this.EDIT_CART({checked: checkAll})
       },
       // 修改购物车
-      _cartEdit (cartParams, goodsId, goodsNum, checked) {
+      _cartEdit (cartParams, goodsId, goodsNum, checked,colorId,colorName) {
         cartEdit(cartParams).then(res => {
           if(res){
             if (res.code === 'success') {
@@ -293,7 +298,9 @@
                 {
                   goodsId,
                   goodsNum,
-                  checked
+                  checked,
+                  colorId,
+                  colorName
                 }
               )
             }
@@ -307,6 +314,8 @@
           let checked = item.checked
           let goodsId = item.goodsId
           let goodsNum = item.goodsNum
+          let colorId = item.colorId
+          let colorName = item.colorName
           // 勾选
           if (type === 'check') {
             let newChecked = checked === '1' ? '0' : '1'
@@ -315,39 +324,49 @@
                 userId:  getStore('userId'),
                 goodsId: goodsId,
                 goodsNum: goodsNum,
-                checked: newChecked
+                checked: newChecked,
+                colorId:colorId,
+                colorName:colorName
               }
             }
-            this._cartEdit(cartParams, goodsId, goodsNum, newChecked)
+            this._cartEdit(cartParams, goodsId, goodsNum, newChecked,colorId,colorName)
           }
         } else {
           console.log('缺少所需参数')
         }
       },
-      EditNum (goodsNum, goodsId, checked) { // 数量
+      EditNum (goodsNum, goodsId, checked,colorId,colorName) { // 数量
 
         let cartParams = {
           cartDto : {
             userId:  getStore('userId'),
             goodsId: goodsId,
             goodsNum: goodsNum,
-            checked: checked
+            checked: checked,
+            colorId:colorId,
+            colorName:colorName
           }
         }
-        this._cartEdit(cartParams, goodsId, goodsNum, checked)
+        this._cartEdit(cartParams, goodsId, goodsNum, checked,colorId,colorName)
       },
       // 删除整条购物车
-      cartdel (goodsId) {
+      cartdel (item) {
+        var goodsId = item.goodsId
+        var colorId = item.colorId
+        var colorName = item.colorName
+
         let cartDelParams = {
           cartDto : {
             userId:  getStore('userId'),
-            goodsId: goodsId
+            goodsId: goodsId,
+            colorId:colorId,
+            colorName:colorName
           }
         }
         cartDel(cartDelParams).then(res => {
             if(res){
               if (res.code=='success') {
-                this.EDIT_CART({goodsId})
+                this.EDIT_CART({goodsId,colorId,colorName})
                 this.messageSuccess('删除成功！')
               } else {
                 this.messageError('删除失败！')
@@ -786,6 +805,12 @@
   z-index: 99!important;
   transition:all .2s ease-out!important;
   transform:translateY(-54px)!important;
+  }
+  .attribute, .name p {
+    color: #999;
+    font-size: 12px;
+    padding-top: 4px;
+    line-height: 17px;
   }
   /*.clearfix{*/
     /*clear: both;*/

@@ -57,6 +57,7 @@
                 <span class="subtotal">小计</span>
                 <span class="num">数量</span>
                 <span class="price">单价</span>
+                <!--<span class="price">颜色</span>-->
               </div>
               <!--列表-->
               <div class="cart-table" v-for="(item,i) in cartList" :key="i" v-if="item.checked === '1'">
@@ -74,9 +75,9 @@
                         <div class="name-table">
                           <a @click="goodsDetails(item.goodsId)" :title="item.goodsName" target="_blank"
                              v-text="item.goodsName"></a>
-                          <!-- <ul class="attribute">
-                            <li>白色</li>
-                          </ul> -->
+                          <ul class="attribute">
+                            <li>{{item.colorName}}</li>
+                          </ul>
                         </div>
                       </div>
                       <!--商品数量-->
@@ -162,7 +163,7 @@
       return {
         cartList: [],
         addList: [],
-        addressId: '0',
+        addressId: '',
         popupOpen: false,
         popupTitle: '管理收货地址',
         num: '', // 立刻购买
@@ -188,7 +189,9 @@
         product:[],
         checkBlank:false,
         checkPhone:false,
-        radio: '1'
+        radio: '1',
+        color:'',
+        colorId:''
       }
     },
     computed: {
@@ -276,6 +279,7 @@
         }
         getCartList(cartParams).then(res => {
           this.cartList =  res.cartDtoList
+          console.log(this.cartList)
         })
       },
       //验证库存
@@ -299,10 +303,11 @@
         if (flag == 0) {
           this._submitOrder ()
         }
+
       },
       // 提交订单后跳转付款页面
       _submitOrder () {
-
+        var isChecked = 0
         this.submitOrder = '提交订单中...'
         this.submit = true
 
@@ -310,21 +315,27 @@
           this.messageError('请选择收货地址')
           this.submitOrder = '提交订单'
           this.submit = false
+          isChecked = 1
           return
         }
         if (this.cartList.length === 0) {
           this.messageError('非法操作')
           this.submitOrder = '提交订单'
           this.submit = false
+          isChecked = 1
           return
         }
-        var orderItems = []
-        for (var i = 0; i < this.cartList.length; i++) {
+
+        if(isChecked ==0){
+          var orderItems = []
+          for (var i = 0; i < this.cartList.length; i++) {
             var orderItem = new Object();
             if (this.cartList[i].checked === '1' && this.chanelType === 4) {
               orderItem.placeOrderMethod = this.cartList[i].placeOrderMethod;
               orderItem.goodsId = this.cartList[i].goodsId;
               orderItem.goodsNum = this.cartList[i].goodsNum;
+              orderItem.colorId = this.cartList[i].colorId;
+              orderItem.colorName = this.cartList[i].colorName;
               orderItem.goodsPrice = this.cartList[i].goodsShipPrice;
               orderItem.totalPrice = this.cartList[i].goodsShipPrice * this.cartList[i].goodsNum;
               orderItem.venderId = this.cartList[i].venderId;
@@ -334,6 +345,9 @@
               orderItem.placeOrderMethod = this.cartList[i].placeOrderMethod;
               orderItem.goodsId = this.cartList[i].goodsId;
               orderItem.goodsNum = this.cartList[i].goodsNum;
+//              orderItem.goodsColor = this.cartList[i].goodsColor;
+              orderItem.colorId = this.cartList[i].colorId;
+              orderItem.colorName = this.cartList[i].colorName;
               orderItem.goodsPrice = this.cartList[i].goodsSettlePrice;
               orderItem.totalPrice = this.cartList[i].goodsSettlePrice * this.cartList[i].goodsNum;
               orderItem.venderId = this.cartList[i].venderId;
@@ -342,66 +356,35 @@
             }
 
           }
-//        }
-        let params = {
-          orderDto:{
-            userId: this.userId,
-            addressId:this.addressId,
-            paymentMethod:'1',
-            buyOrgId:getStore('orgCode'),
-            comments:'',
-            linkPerson:this.userName,
-            linkPersonTelephone:this.tel,
-            linkPersonAddress:this.streetName
-          },
-          orderItemDtos:orderItems
+          let params = {
+            orderDto:{
+              userId: this.userId,
+              addressId:this.addressId,
+              paymentMethod:'1',
+              buyOrgId:getStore('orgCode'),
+              comments:'',
+              linkPerson:this.userName,
+              linkPersonTelephone:this.tel,
+              linkPersonAddress:this.streetName
+            },
+            orderItemDtos:orderItems
 
-        }
-        submitOrder(params).then(res => {
-          if(res){
-            if (res.code =='success' ) {
-              this.messageSuccess('操作成功')
-              this.$router.push({path: '/user/orderList'})
-            } else {
-              this.messageError('操作失败')
-              this.submitOrder = '提交订单'
-              this.submit = false
+          }
+//          console.log(params)
+          submitOrder(params).then(res => {
+            if(res){
+              if (res.code =='success' ) {
+                this.messageSuccess('操作成功')
+                this.$router.push({path: '/user/orderList'})
+              } else {
+                this.messageError('操作失败')
+                this.submitOrder = '提交订单'
+                this.submit = false
+              }
             }
-          }
-        })
-//        var orderItems = []
-//        for (var i = 0; i < this.cartList.length; i++) {
-//          var array = []
-//          if (this.cartList[i].checked === '1') {
-//            array.push(this.cartList[i])
-//          }
-//          this._productDet(this.cartList[i].goodsId)
-//          console.log(this.cartList[i].goodsNum)
-//          console.log('库存'+this.limit)
-//          if(Number(this.limit)<Number(this.cartList[i].goodsNum)){
-//            this.messageError('库存不足')
-//            this.submitOrder = '提交订单'
-//          }else {
-//
-//          }
-//        }
-//        var array = []
-//        for (var i = 0; i < this.cartList.length; i++) {
-//          if (this.cartList[i].checked === '1') {
-//            array.push(this.cartList[i])
-//          }
-//        }
+          })
+        }
 
-      },
-      // 付款
-      payment (orderId) {
-        // 需要拿到地址id
-        this.$router.push({
-          path: '/order/payment',
-          query: {
-            'orderId': orderId
-          }
-        })
       },
       // 选择地址
       chooseAddress (addressId, userName, tel, streetName) {
@@ -507,10 +490,11 @@
           }
         })
       },
-      _productDet (goodsId) {
+      _productDet (goodsId,colorId) {
         let params={
           goodsDto:{
-            goodsId:goodsId
+            goodsId:goodsId,
+            colorId:colorId
           }
         }
         goodsDetail(params).then(res => {
@@ -520,6 +504,9 @@
               item.checked = '1'
               item.goodsImg = item.url
               item.goodsNum = this.num
+              item.colorId = this.colorId
+              item.colorName = this.color
+              item.inventory = this.inventory
               if(this.chanelType===4){
                 item.productPrice = item.goodsShipPrice
               }else{
@@ -568,7 +555,10 @@
       if (query.goodsId && query.num) {
         this.goodsId = query.goodsId
         this.num = query.num
-        this._productDet(this.goodsId)
+        this.color = query.color
+        this.colorId = query.attrValue
+        this.inventory = query.inventory
+        this._productDet(this.goodsId,this.colorId)
       } else {
         this._getCartList()
       }

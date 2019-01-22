@@ -35,6 +35,9 @@
                     </div>
                     <div class="ellipsis">
                       <a style="color: #626262;" @click="goodsDetails(good.goodsId)">{{good.goodsName}}</a>
+                      <ul class="attribute">
+                        <li>{{good.colorName}}</li>
+                      </ul>
                     </div>
                   </div>
                   <div class="cart-l-r">
@@ -318,5 +321,11 @@
     div:last-child {
       padding-right: 24px;
     }
+  }
+  .attribute, .name p {
+    color: #999;
+    font-size: 12px;
+    padding-top: 4px;
+    line-height: 17px;
   }
 </style>

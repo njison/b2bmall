@@ -78,6 +78,9 @@
                                     <div class="cart-cell">
                                       <h4>
                                       <p style="'font-style: normal;text-decoration: none;color: #5079d9;cursor: pointer;transition: all .15s ease-out;" v-text="item.goodsName"></p>
+                                        <ul class="attribute">
+                                          <li>{{item.colorName}}</li>
+                                        </ul>
                                     </h4>
                                       <h6><span class="price-icon">¥</span>
                                         <span v-if="chanelType===4" class="price-num">{{item.goodsShipPrice}}</span>
@@ -87,7 +90,7 @@
                                       </h6></div>
                                   </div>
                                 </router-link>
-                                <div class="del-btn del" @click="delGoods(item.goodsId)">删除</div>
+                                <div class="del-btn del" @click="delGoods(item)">删除</div>
                               </div>
                             </div>
                           </li>
@@ -307,11 +310,17 @@
         }).then(this.INIT_BUYCART)
       },
       // 删除商品
-      delGoods (goodsId) {
+      delGoods (item) {
+        var goodsId = item.goodsId
+        var colorId = item.colorId
+        var colorName = item.colorName
+
         let cartDelParams = {
           cartDto :{
             userId:  getStore('userId'),
-            goodsId:goodsId
+            goodsId:goodsId,
+            colorId:colorId,
+            colorName:colorName
           }
         }
 
@@ -319,7 +328,7 @@
             if(res){
               if (res.code=='success') {
                 this.messageSuccess('删除成功！')
-                this.EDIT_CART({goodsId})
+                this.EDIT_CART({goodsId,colorId,colorName})
               } else {
                 this.messageError('删除失败！')
               }
@@ -1122,6 +1131,12 @@
     &:hover {
       background-position: -75px -60px;
     }
+  }
+  .attribute, .name p {
+    color: #999;
+    font-size: 12px;
+    padding-top: 4px;
+    line-height: 17px;
   }
 </style>
 

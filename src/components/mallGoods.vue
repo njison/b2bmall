@@ -1,13 +1,14 @@
 <template>
   <div class="good-item">
     <div style="">
+      <router-link target="_blank" :to="'goodsDetails?goodsId='+msg.goodsId">
       <div class="good-img">
-        <router-link target="_blank" :to="'goodsDetails?goodsId='+msg.goodsId">
+        <!--<router-link target="_blank" :to="'goodsDetails?goodsId='+msg.goodsId">-->
           <div class="imgBox" style="text-align: center">
             <img v-lazy="msg.goodsHostImg" :alt="msg.goodsName" width="100%" v-if="msg.goodsHostImg">
             <img v-else="!msg.goodsHostImg" src="../../static/images/CMlogo1.png" :alt="msg.goodsName" style="margin-top:20px;">
           </div>
-        </router-link>
+        <!--</router-link>-->
       </div>
       <h6 class="good-title" v-html="msg.goodsName"></h6>
       <h3 class="sub-title ellipsis">{{msg.goodsAd}}</h3>
@@ -25,6 +26,7 @@
         <p v-if="chanelType===4" ><span style="font-size:14px">￥</span>{{msg.goodsShipPrice}}</p>
         <p v-else ><span style="font-size:14px">￥</span>{{msg.goodsSettlePrice}}</p>
       </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -139,10 +141,10 @@
       transform: translateY(-3px);
       box-shadow: 1px 1px 20px #999;
       .good-price p {
-        display: none;
+        /*display: none;*/
       }
       .ds {
-        display: flex;
+        /*display: flex;*/
       }
     }
     .ds {

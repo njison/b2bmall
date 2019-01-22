@@ -8,7 +8,7 @@
         <el-table-column prop="attrValueName" label="参数" width="886"  >
           <template slot-scope="scope">
             <span v-if="scope.row.attrValueName">
-               <span v-if="scope.row.attrValueName=='1'">是</span>
+              <span v-if="scope.row.attrValueName=='1'">是</span>
               <span v-else-if="scope.row.attrValueName=='0'">否</span>
               <span v-else>{{scope.row.attrValueName}}</span>
             </span>

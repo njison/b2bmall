@@ -3,10 +3,10 @@ import axios from 'axios'
 axios.defaults.timeout = 10000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www=form-urlencoded'
 axios.defaults.withCredentials = true
-axios.defaults.baseURL = 'http://221.180.247.82:80/rims/'
-// axios.defaults.baseURL = 'http://10.68.86.21:7001/rims/'
-// axios.defaults.baseURL = 'http://192.168.1.112:9000/rims/'
-// axios.defaults.baseURL = 'http://10.10.10.60:8080/rims/'
+// axios.defaults.baseURL = 'http://221.180.247.82:80/rims/'
+// axios.defaults.baseURL = 'http://192.168.1.171:8089/ln-web/'
+axios.defaults.baseURL = 'http://192.168.1.112:9000/rims/'
+// axios.defaults.baseURL = 'http://192.168.1.143:8080/rims/'
 // axios.interceptors.response.use(data => {
 //   return data
 // }, err => {
