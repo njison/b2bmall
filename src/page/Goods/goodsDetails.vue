@@ -40,7 +40,7 @@
             <span >供应商名称：{{product.venderName}}</span>
           </div>
           <div class="height-range">
-            <span >商品剩余数量：{{product.inventory}} 台</span>
+            <span >商品剩余数量：{{inventory}} 台</span>
           </div>
           <div class="height-range">颜色分类：
             <span :class="{ colorChosed: key.attrValue == selectedcolorId }"
@@ -181,7 +181,7 @@
               this.product = res.goodsDto
               this.limit = Number(this.product.inventory)
               var isCol14 = res.goodsDto.goodsAttrDtos
-//              this.colorSelect = res.goodsDto.goodsAttrDtos[0].attrList
+              this.inventory = res.goodsDto.inventory
               for( var i=0;i<isCol14.length;i++){
                 if(isCol14[i].attrCode=='COL14'){
                   this.colorSelect = res.goodsDto.goodsAttrDtos[i].attrList
