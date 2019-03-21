@@ -7,7 +7,7 @@
             <img src="../../../static/images/notice.png" alt="" width="20">
           </div>
           <div style="float: left;color:#dcdfe6">|</div>
-          <div style="float: left;margin-left: 10px;color:red">
+          <div style="float: left;margin-left: 10px;color:red;width: 95%;">
             <marquee direction="left">{{announce}}</marquee>
           </div>
           <div style="clear:both"></div>
@@ -103,7 +103,7 @@
         right:true,
         announce:'',
         videoLeft:'',
-        videoRight:''
+        videoRight:'',
       }
     },
     methods: {
@@ -215,8 +215,9 @@
         announcement(panelParams).then(res => {
           if(res){
             if (res.code==='success') {
-              this.announce=res.announcementMgrDtos[0].announcementContent
-
+                if(res.announcementMgrDtos!=''||res.announcementMgrDtos!=null||res.announcementMgrDtos!=0){
+                  this.announce=res.announcementMgrDtos[0].announcementContent
+                }
             }
           }
         })
@@ -228,12 +229,14 @@
         getVideo(panelParams).then(res => {
           if(res){
             if (res.code==='success') {
-
-              this.videoLeft=res.videoMgrDtos[0].url
-              this.videoRight=res.videoMgrDtos[1].url
-              console.log(this.videoLeft)
+                if(res.videoMgrDtos!='' && res.videoMgrDtos!=null && res.videoMgrDtos.length!=0){
+                  this.videoLeft=res.videoMgrDtos[0].url
+                  this.videoRight=res.videoMgrDtos[1].url
+                }else{
+                  this.left=false
+                  this.right=false
+                }
             }
-
           }
         })
       },

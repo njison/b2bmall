@@ -99,8 +99,8 @@
                     <span :class="{'checkbox-on':checkAllFlag}" class="blue-checkbox-new" @click="editCheckAll"></span>
                     <span @click="editCheckAll">全选</span>
                   </div>
-                  <div class="delete-choose-goods">删除选中的商品
-                  </div>
+                  <!--<div class="delete-choose-goods">删除选中的商品-->
+                  <!--</div>-->
                 </div>
               </div>
               <div class="shipping">

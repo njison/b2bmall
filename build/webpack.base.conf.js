@@ -2,7 +2,7 @@ var path = require('path')
 var utils = require('./utils')
 var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
-
+require("babel-polyfill")
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -15,9 +15,11 @@ module.exports = {
   //   'vuex': 'Vuex',
   //   'axios': 'axios'
   // },
-  entry: {
-    app: './src/main.js'
-  },
+  // entry: {
+    // app: ['eventsource-polyfill', 'event-source-polyfill', "babel-polyfill", "./src/main.js"]
+    // app: './src/main.js'
+  // },
+  entry: ["event-source-polyfill", "babel-polyfill", "./app/js"],
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
@@ -59,7 +61,18 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [
+          resolve('src'),
+          resolve('test'),
+          resolve('node_modules/webpack-dev-server/client'),
+          resolve('node_modules/vue-awesome'),
+          resolve('node_modules/element-ui/packages'),
+          resolve('node_modules/element-ui/src'),
+          resolve('./node_modules/element-ui/src'),
+          resolve('./node_modules/element-ui/packages'),
+          resolve('./node_modules/_element-ui@2.3.9@element-ui/src'),
+          resolve('./node_modules/_element-ui@2.3.9@element-ui/packages')
+        ]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

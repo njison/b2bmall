@@ -8,7 +8,7 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../b2bmall'),
     assetsSubDirectory: 'static',
     assetsPublicPath: './',
-    productionSourceMap: true,
+    productionSourceMap: false,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
     // Before setting to `true`, make sure to:
@@ -39,7 +39,12 @@ module.exports = {
         changeOrigin: true,
         onProxyReq(proxyReq, req, res) {
         }
-      }
+      },
+      // '/upload':{                                // 要代理的接口名
+      //   target:'http://192.168.1.144:8080/rims/Inventory/upload',   // 要代理的接口地址
+      //   changeOrigin:true,                            // 允许跨域
+      //   pathRewrite:{'^/upload':''}            // 接口名重写
+      // }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README

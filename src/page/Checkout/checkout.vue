@@ -42,7 +42,7 @@
       <y-shelf title="支付方式">
         <div slot="content">
           <el-radio class="checkType" v-model="radio" label="1">线下支付</el-radio>
-          <el-radio class="checkType" disabled v-model="radio" label="2">线上支付</el-radio>
+          <!--<el-radio class="checkType" disabled v-model="radio" label="2">线上支付</el-radio>-->
         </div>
       </y-shelf>
       <!--支付方式-->
@@ -130,7 +130,7 @@
             <input type="text" maxlength="20" placeholder="收货人姓名" v-model="msg.userName">
           </div>
           <div>
-            <input type="number" placeholder="手机号码" v-model="msg.tel">
+            <input type="text" placeholder="手机号码" v-model="msg.tel">
           </div>
           <div>
             <input type="text" placeholder="收货地址" v-model="msg.streetName">
@@ -158,6 +158,8 @@
   import YHeader from '/common/header'
   import YFooter from '/common/footer'
   import { getStore } from '/utils/storage'
+  import { Encrypt, Decrypt }  from '/utils/secret'
+  import md5 from 'js-md5';
   export default {
     data () {
       return {
@@ -279,7 +281,6 @@
         }
         getCartList(cartParams).then(res => {
           this.cartList =  res.cartDtoList
-          console.log(this.cartList)
         })
       },
       //验证库存
@@ -330,14 +331,15 @@
           var orderItems = []
           for (var i = 0; i < this.cartList.length; i++) {
             var orderItem = new Object();
+
             if (this.cartList[i].checked === '1' && this.chanelType === 4) {
               orderItem.placeOrderMethod = this.cartList[i].placeOrderMethod;
               orderItem.goodsId = this.cartList[i].goodsId;
               orderItem.goodsNum = this.cartList[i].goodsNum;
               orderItem.colorId = this.cartList[i].colorId;
               orderItem.colorName = this.cartList[i].colorName;
-              orderItem.goodsPrice = this.cartList[i].goodsShipPrice;
-              orderItem.totalPrice = this.cartList[i].goodsShipPrice * this.cartList[i].goodsNum;
+              orderItem.goodsPriceStr = Encrypt(this.cartList[i].goodsSettlePrice+'');
+              orderItem.totalPriceStr = Encrypt(this.cartList[i].goodsSettlePrice * this.cartList[i].goodsNum+'');
               orderItem.venderId = this.cartList[i].venderId;
               orderItem.venderName = this.cartList[i].venderName;
               orderItems.push(orderItem)
@@ -345,11 +347,10 @@
               orderItem.placeOrderMethod = this.cartList[i].placeOrderMethod;
               orderItem.goodsId = this.cartList[i].goodsId;
               orderItem.goodsNum = this.cartList[i].goodsNum;
-//              orderItem.goodsColor = this.cartList[i].goodsColor;
               orderItem.colorId = this.cartList[i].colorId;
               orderItem.colorName = this.cartList[i].colorName;
-              orderItem.goodsPrice = this.cartList[i].goodsSettlePrice;
-              orderItem.totalPrice = this.cartList[i].goodsSettlePrice * this.cartList[i].goodsNum;
+              orderItem.goodsPriceStr = Encrypt(this.cartList[i].goodsSettlePrice+'');
+              orderItem.totalPriceStr = Encrypt(this.cartList[i].goodsSettlePrice * this.cartList[i].goodsNum+'');
               orderItem.venderId = this.cartList[i].venderId;
               orderItem.venderName = this.cartList[i].venderName;
               orderItems.push(orderItem)
@@ -415,10 +416,40 @@
       // 保存
       saveAddress (add) {
         var phone = this.msg.tel
+
+        var pattern = /[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/im;
+
+        var str = "and,delete,or,exec,insert,select,union,update,count,*,',join,>,<";
+        var sqlStr = str.split(',');
+        var flag = true;
+
+        for (var i = 0; i < sqlStr.length; i++) {
+          if (this.msg.streetName.toLowerCase().indexOf(sqlStr[i]) != -1) {
+            flag = false;
+            break;
+          }
+        }
+
         if(this.msg.streetName.replace(/(^\s*)|(\s*$)/g, "")==""||this.msg.userName.replace(/(^\s*)|(\s*$)/g, "")==""){
+
           this.messageError("请填写完整 !");
+
         }else if(!(/^1[34578]\d{9}$/.test(phone))){
+
           this.messageError("手机号码有误，请重填");
+
+        }else if(this.msg.streetName === '' || this.msg.streetName === null){
+
+          this.messageError("地址不能为空 !");
+
+        }else if(pattern.test(this.msg.streetName)){
+
+          this.messageError("地址不符合规则，请重新填写 !");
+
+        }else if(flag==false){
+
+          this.messageError("地址不符合规则，请重新填写 !");
+
         }else {
           this.popupOpen = false
           if (add.addressId) {
@@ -673,10 +704,10 @@
 
   .s-content {
     .md {
-      > div {
+       div {
         text-align: left;
         margin-bottom: 15px;
-        > input {
+        input {
           width: 100%;
           height: 50px;
           font-size: 18px;

@@ -8,9 +8,13 @@ import VueCookie from 'vue-cookie'
 import { userInfo } from './api'
 import { getStore, removeStore } from '/utils/storage'
 import ElementUI from 'element-ui'
+import 'babel-polyfill'
+import 'event-source-polyfill'
+// import md5 from 'js-md5';
 /*Vue.prototype.$loading = Loading.service
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message*/
+
 Vue.use(ElementUI)
 Vue.use(infiniteScroll)
 Vue.use(VueCookie)
@@ -20,7 +24,9 @@ Vue.use(VueLazyload, {
   loading: './static/images/CMlogo1.png'
   // attempt: 1
 })
+
 Vue.config.productionTip = false
+// Vue.prototype.$md5 = md5;
 router.beforeEach(function (to, from, next) {
   let params = {
       userToken: getStore('token')

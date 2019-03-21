@@ -38,7 +38,7 @@
           <input type="text" placeholder="收货人姓名" v-model="msg.userName">
         </div>
         <div>
-          <input type="number" placeholder="手机号码" v-model="msg.tel">
+          <input type="text" placeholder="手机号码" v-model="msg.tel">
         </div>
         <div>
           <input type="text" placeholder="收货地址" v-model="msg.streetName">
@@ -145,11 +145,41 @@
       // 保存
       saveAddress (add) {
         var phone = this.msg.tel
+
+        var pattern = /[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/im;
+
+        var str = "and,delete,or,exec,insert,select,union,update,count,*,',join,>,<";
+        var sqlStr = str.split(',');
+        var flag = true;
+
+        for (var i = 0; i < sqlStr.length; i++) {
+          if (this.msg.streetName.toLowerCase().indexOf(sqlStr[i]) != -1) {
+            flag = false;
+            break;
+          }
+        }
+
         if(this.msg.streetName.replace(/(^\s*)|(\s*$)/g, "")==""||this.msg.userName.replace(/(^\s*)|(\s*$)/g, "")=="") {
+
           this.messageError("请填写完整 !");
+
         }else if(!(/^1[34578]\d{9}$/.test(phone))){
+
           this.messageError("手机号码有误，请重填");
-        }else {
+
+        }else if(this.msg.streetName === '' || this.msg.streetName === null){
+
+          this.messageError("地址不能为空 !");
+
+        }else if(pattern.test(this.msg.streetName)){
+
+          this.messageError("地址不符合规则，请重新填写 !");
+
+        }else if(flag==false){
+
+          this.messageError("地址不符合规则，请重新填写 !");
+
+        }else{
           this.popupOpen = false
           if (add.addressId) {
             let params = {
@@ -212,7 +242,8 @@
           }
         })
       },
-      // 修改
+
+  // 修改
       update (item) {
         this.popupOpen = true
         if (item) {

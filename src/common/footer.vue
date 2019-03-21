@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <div class="cop"><p>版权所有©2018 中国移动集团公司辽宁省公司</p></div>
+    <div class="cop"><p>版权所有©2019 中国移动集团公司辽宁省公司</p></div>
 
   </div>
 </template>

@@ -19,7 +19,9 @@
               <div class="last">
                 <span class="sub-total">实付金额</span>
                 <span class="operation">订单操作</span>
-                <span class="order-detail"> <a @click="orderDetail(item.orderId)">查看详情 ><em class="icon-font"></em></a> </span>
+                <span class="order-detail">
+                  <a @click="orderDetail(item.orderId)">查看详情 ><em class="icon-font"></em></a>
+                </span>
               </div>
             </div>
             <!--<div class="pr" v-if="item.orderItemDtoList.length==0" style="height:110px;text-align: center;line-height: 110px; ">此订单无商品</div>-->
@@ -53,14 +55,16 @@
               <div class="prod-operation pa" style="right: 0;top: 0;">
                 <div class="total">¥ {{item.orderPrice}}</div>
                 <div class="type" v-if="item.state=='1'">
-                  <el-button @click="cancelOrder(item.orderId)" type="primary" size="small" class="del-order">取消订单</el-button></div>
+                  <el-button @click="isCancelOrder(item.orderId)" type="primary" size="small" class="del-order">取消订单</el-button></div>
                 <div class="status">
-                  <p v-if="item.state=='0'">供货商已取消</p>
+                  <!--供货商已取消-->
+                  <p v-if="item.state=='0'">供货商审批不通过</p>
                   <p v-if="item.state=='1'">待确认</p>
                   <p v-if="item.state=='2'">待发货</p>
                   <p v-if="item.state=='3'">待收货</p>
                   <p v-if="item.state=='4'">交易完成</p>
-                  <p v-if="item.state=='5'">采购方已取消</p>
+                  <!--采购方已取消-->
+                  <p v-if="item.state=='5'">已取消</p>
                   <!--{{getOrderStatus(item.state)}}-->
                 </div>
               </div>
@@ -75,12 +79,23 @@
         </div>
       </div>
     </y-shelf>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose">
+      <span>是否取消此订单 ?</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="cancelOrder">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 <script>
   import { getOrderList, orderCancel } from '/api/goods'
   import YShelf from '/components/shelf'
-  import { getStore } from '/utils/storage'
+  import { setStore,getStore } from '/utils/storage'
   export default {
     data () {
       return {
@@ -91,10 +106,19 @@
         currentPage: 1,
         pageSize: 5,
         total: 0,
-        orderItemDtoList: ''
+        orderItemDtoList: '',
+        dialogVisible: false,
+        orderId:''
       }
     },
     methods: {
+      handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
       messageSuccess (m) {
         this.$message({
           message: m,
@@ -126,10 +150,11 @@
         })
       },
       orderDetail (orderId) {
+        setStore('orderId', orderId)
         this.$router.push({
-          path: 'orderDetail',
-          query: {
-            orderId: orderId
+          name: 'orderDetail',
+          params: {
+            'orderId': orderId
           }
         })
       },
@@ -167,10 +192,14 @@
           }
         })
       },
-      cancelOrder (orderId) {
+      isCancelOrder(orderId){
+        this.orderId = orderId
+        this.dialogVisible = true
+      },
+      cancelOrder () {
         let params = {
           orderDto: {
-            orderId: orderId,
+            orderId: this.orderId,
             userId: this.userId
           }
         }
@@ -178,6 +207,7 @@
           if(res){
             if (res.code == 'success') {
               this.messageSuccess('取消成功')
+              this.dialogVisible = false
               this._orderList()
             } else {
               this.messageError('取消失败')

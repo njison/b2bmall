@@ -428,7 +428,7 @@
         this.loading = true
         let isNull = ''
 //        console.log('按品牌查询,vendorId='+this.vendorId)
-        if (this.venderId) {
+        if (this.vendorId) {
           let params = {
             searchType: 'ES_SQL_MULTI_SEARCH',
             searchValue: '',

@@ -1,4 +1,8 @@
 import http from './public'
+//清除用户信息loginSessionInvalidate
+export const cleanUserInfo = (params) => {
+  return http.fetchPost('/loginSessionInvalidate', params)
+}
 // 登陆
 export const userLogin = (params) => {
   return http.fetchPost('/login', params)
@@ -35,10 +39,10 @@ export const upload = (params) => {
 export const updateheadimage = (params) => {
   return http.fetchPost('/member/updateheadimage', params)
 }
-// 捐赠列表
-export const thanksList = (params) => {
-  return http.fetchGet('/member/thanks', params)
-}
+// // 捐赠列表
+// export const thanksList = (params) => {
+//   return http.fetchGet('/member/thanks', params)
+// }
 // 首页接口
 export const productHome = (params) => {
   return http.fetchGet('/goods/home', params)
@@ -76,3 +80,32 @@ export const announcement = (params) => {
 export const getVideo = (params) => {
   return http.fetchPost('/video/queryEffectVideo', params)
 }
+//提交imei
+export const subImei = (params) => {
+  return http.fetchPost('/VenderInOut/checkChannelInSerialNoAvailable', params)
+}
+//入库
+export const subGoods = (params) => {
+  return http.fetchPost('/VenderInOut/InStorageWithOrder', params)
+}
+// 获取wareHouse
+export const getWareHouse = (params) => {
+  return http.fetchPost('/wareHouse/queryWarehouseListByOrgId', params)
+}
+//获取DocketId
+export const getDocketId = (params) => {
+  return http.fetchPost('/terminalStatusMgr/queryInOrderIdByOrderId', params)
+}
+// 获取退货订单列表
+export const getReturnOrderList = (params) => {
+  return http.fetchPost('/VenderInOut/getInOrderDetails', params)
+}
+// 退货
+export const returnGoods = (params) => {
+  return http.fetchPost('/ChannelRefundGoods/addNewRefundGoodsApply', params)
+}
+// 获取用户信息
+export const getApplyOperId = (params) => {
+  return http.fetchPost('/SimNetWorkBusi/getCurrentLoginMessage', params)
+}
+

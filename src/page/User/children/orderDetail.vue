@@ -24,12 +24,12 @@
             </el-steps>
           </div>
           <!--待收货-->
-          <div class="orderStatus"  v-if="item.state =='3' "  >
+          <div class="orderStatus"  v-if="item.state =='3' "  @click="insert()">
             <el-steps :active="3" style="width:80%">
               <el-step title="下单" :description="item.createDate"></el-step>
               <el-step title="供货商确认" :description="item.confirmDate"></el-step>
               <el-step title="供货商发货" :description="item.sendDate"></el-step>
-              <el-step title="收货" :description="item.receiveDate"></el-step>
+              <el-step   title="收货" :description="item.receiveDate"></el-step>
               <el-step title="交易成功" :description="item.completeDate"></el-step>
             </el-steps>
           </div>
@@ -46,14 +46,15 @@
           <div class="orderStatus"  v-if="item.state =='0'||item.state =='5' "  >
             <el-steps :active="2" style="width:80%">
               <el-step title="下单"v-bind:description="item.createDate"></el-step>
-              <el-step title="交易完成" v-bind:description="item.completeDate"></el-step>
+              <el-step title="交易取消" v-bind:description="item.completeDate"></el-step>
             </el-steps>
           </div>
           <div class="status-now">
             <ul>
+
+              <!--<li v-if="item.state=='3'" class="status-title" @click="insert()"><h3>订单状态：{{item.orderState}}</h3></li>-->
               <li class="status-title"><h3>订单状态：{{item.orderState}}</h3></li>
-              <!--<li class="button">-->
-              <!--</li>-->
+              <li v-if="item.state=='4'" class="button" @click="returnGoods()">退货</li>
             </ul>
           </div>
 
@@ -132,11 +133,8 @@
                 <div class="address">地市售后联系电话:{{key.phoneNo3}}</div>
               </div>
             </div>
-
-
           </div>
         </div>
-
         <div v-loading="loading" element-loading-text="加载中..." v-else>
           <div style="padding: 100px 0;text-align: center">
             获取该订单信息失败
@@ -148,7 +146,8 @@
   </div>
 </template>
 <script>
-  import { getOrderList, getOrderLogList, goodsDetail } from '/api/goods'
+  import { getOrderList, getOrderLogList, goodsDetail,  } from '/api/goods'
+  import { getDocketId } from '/api/index.js'
   import YShelf from '/components/shelf'
   import { getStore } from '/utils/storage'
   import countDown from '/components/countDown'
@@ -158,7 +157,7 @@
         orderList: [],
         userId: '',
         orderStatus: 0,
-        orderId: '',
+        orderId: getStore('orderId'),
         userName: '',
         tel: '',
         streetName: '',
@@ -171,11 +170,29 @@
         loading: true,
         countTime: 0,
         orderLog:[],
-        product:[]
+        product:[],
+        docketId:''
 
       }
     },
     methods: {
+      returnGoods(){
+        this.$router.push({
+          path: '/putInStorage',
+          query: {
+            orderId: this.orderId,
+            docketId:this.docketId
+          }
+        })
+      },
+      insert(){
+        this.$router.push({
+          path: '/insertGoods',
+          query: {
+            orderId: this.orderId
+          }
+        })
+      },
       orderPayment (orderId) {
         window.open(window.location.origin + '/order/payment?orderId=' + orderId)
       },
@@ -218,6 +235,22 @@
         })
 
       },
+      _getDocketId(){
+        let params = {
+          orderDto: {
+            orderId: this.orderId
+          },
+        }
+        getDocketId(params).then(res => {
+          if(res){
+            if (res.code == 'success'){
+              if(res.orderDto){
+                this.docketId = res.orderDto.docketId
+              }
+            }
+          }
+        })
+      },
       _getOrderInfo(){
 //        let params={
 //          goodsDto:{
@@ -237,10 +270,11 @@
     },
     created () {
       this.userId = getStore('userId')
-      this.orderId = this.$route.query.orderId
+//      this.orderId = this.$route.params.orderId
       this.orderTitle = '订单号：' + this.orderId
       this._getOrderDet()
       this._getOrderInfo()
+      this._getDocketId()
     },
     components: {
       YShelf,

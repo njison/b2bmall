@@ -1,12 +1,34 @@
 import axios from 'axios'
 // import {Message} from 'element-ui'
+
 axios.defaults.timeout = 10000
-axios.defaults.headers.post['Content-Type'] = 'application/x-www=form-urlencoded'
+axios.defaults.headers.post['Content-Type'] = 'application/x-www=form-urlencoded,multipart/form-data,text/plain'
 axios.defaults.withCredentials = true
-axios.defaults.baseURL = 'http://221.180.247.82:80/rims/'
-// axios.defaults.baseURL = 'http://192.168.1.171:8089/ln-web/'
-// axios.defaults.baseURL = 'http://192.168.1.112:9000/rims/'
-// axios.defaults.baseURL = 'http://192.168.1.143:8080/rims/'
+
+// axios.defaults.baseURL = 'http://192.168.1.161:8080/ln-web/'
+// axios.defaults.baseURL = 'http://192.168.1.144:8088/rims/'
+// axios.defaults.baseURL = 'http://192.168.1.120:9083/ln-web/'
+axios.defaults.baseURL = 'http://192.168.1.192:8080'
+
+// 判断访问地址
+// 生产
+// if(window.location.href.indexOf('221.180.247.82')>-1){
+//
+//   axios.defaults.baseURL = 'http://221.180.247.82:80/rims/'
+//
+// }else if(window.location.href.indexOf('10.68.76.20')>-1){
+// // 内网
+//   axios.defaults.baseURL = 'http://10.68.76.20:8000/rims/'
+//
+// }else if(window.location.href.indexOf('192.168.1.112')>-1){
+// // 测试
+//   axios.defaults.baseURL = 'http://192.168.1.112:9000/ln-web/'
+//
+// }else if(window.location.href.indexOf('localhost:8080')>-1){
+// // 本地
+//   axios.defaults.baseURL = 'http://192.168.1.120:9083/ln-web/'
+// }
+// 判断访问地址 end
 // axios.interceptors.response.use(data => {
 //   return data
 // }, err => {
