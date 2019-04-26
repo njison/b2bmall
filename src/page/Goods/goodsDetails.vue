@@ -188,7 +188,8 @@
                   return
                 }
               }
-
+            }else{
+              this.message(res.desc)
             }
           }
         })
@@ -279,10 +280,9 @@
         }
       },
       blur () {
-//
-          if( this.goodsNum > this.limit ){
-            this.message('所填数量大于库存 !')
-          }
+        if( this.goodsNum > this.limit ){
+          this.message('所填数量大于库存 !')
+        }
         this.goodsNum = this.goodsNum > this.limit ? Number(this.limit) : Number(this.goodsNum)
 //        this.message('所填数量大于库存 !')
       },

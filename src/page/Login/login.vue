@@ -275,7 +275,11 @@ export default {
         userName: this.ruleForm.userName
       }
       cleanUserInfo(params).then(res => {
+        if(res) {
+          if (res.isSuccess == 'success') {
 
+          }
+        }
       })
 
     },

@@ -215,7 +215,7 @@
         announcement(panelParams).then(res => {
           if(res){
             if (res.code==='success') {
-                if(res.announcementMgrDtos!=''||res.announcementMgrDtos!=null||res.announcementMgrDtos!=0){
+                if(res.announcementMgrDtos!='' && res.announcementMgrDtos!=null && res.announcementMgrDtos!=0){
                   this.announce=res.announcementMgrDtos[0].announcementContent
                 }
             }
@@ -249,14 +249,15 @@
       }
     },
     mounted () {
+
+    },
+    created () {
+      this.play()
       this._getBanner()
       this. _getPanel()
       this.showNotify()
       this.getAnnounce()
       this.videoShow()
-    },
-    created () {
-      this.play()
     },
     components: {
       YShelf,

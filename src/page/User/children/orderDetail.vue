@@ -207,7 +207,8 @@
       _getOrderDet () {
         let params = {
           orderDto: {
-            orderId: this.orderId
+            orderId: this.orderId,
+            orderDetailQry:'sss'
           },
           pageNum:1,
           pageSize:9999999

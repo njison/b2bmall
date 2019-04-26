@@ -8,7 +8,7 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../b2bmall'),
     assetsSubDirectory: 'static',
     assetsPublicPath: './',
-    productionSourceMap: false,
+    productionSourceMap: false,   //是否显示js代码
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
     // Before setting to `true`, make sure to:
@@ -23,19 +23,19 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8080,
+    port: 8082,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/member': {
-        target: 'http://127.0.0.1:8081/',
+        target: 'http://127.0.0.1:8086/',
         changeOrigin: true,
         onProxyReq(proxyReq, req, res) {
         }
       },
       '/goods': {
-        target: 'http://127.0.0.1:8081/',
+        target: 'http://127.0.0.1:8086/',
         changeOrigin: true,
         onProxyReq(proxyReq, req, res) {
         }

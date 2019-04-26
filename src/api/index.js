@@ -1,5 +1,5 @@
 import http from './public'
-//清除用户信息loginSessionInvalidate
+//清除用户信息Session
 export const cleanUserInfo = (params) => {
   return http.fetchPost('/loginSessionInvalidate', params)
 }

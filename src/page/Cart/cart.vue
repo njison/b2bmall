@@ -53,7 +53,7 @@
                       <!--商品数量-->
                       <div>
                         <!--总价格-->
-                        <div v-if="chanelType===4" class="subtotal" style="font-size: 14px">¥ {{item.goodsShipPrice * item.goodsNum}}</div>
+                        <div v-if="chanelType==='4'" class="subtotal" style="font-size: 14px">¥ {{item.goodsShipPrice * item.goodsNum}}</div>
                         <div v-else class="subtotal" style="font-size: 14px">¥ {{item.goodsSettlePrice * item.goodsNum}}</div>
                         <!--<div class="price1">{{item.limit}}</div>-->
                         <!--数量-->

@@ -15,11 +15,10 @@ module.exports = {
   //   'vuex': 'Vuex',
   //   'axios': 'axios'
   // },
-  // entry: {
-    // app: ['eventsource-polyfill', 'event-source-polyfill', "babel-polyfill", "./src/main.js"]
-    // app: './src/main.js'
-  // },
-  entry: ["event-source-polyfill", "babel-polyfill", "./app/js"],
+  // entry: ['./app.js'],
+  entry: {
+    app: './src/main.js',
+  },
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
